@@ -254,6 +254,12 @@ body {
   animation: float 6s ease-in-out infinite;
 }
 
+/* Shimmer sweep (timeline CTA button) */
+@keyframes shimmer {
+  0%   { transform: translateX(-100%); }
+  100% { transform: translateX(200%); }
+}
+
 /* Noise texture */
 .noise::after {
   content: "";

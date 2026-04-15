@@ -117,7 +117,16 @@ export default function Navbar() {
                 />
               </Link>
             ))}
-            <ThemeToggle />
+            
+            <div className="flex items-center gap-4 ml-4">
+              <Link href="/events/upcoming" className="text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase hover:text-ieee-light transition-colors">
+                Events
+              </Link>
+              <Link href="/join" className="rounded-full bg-ieee-light px-6 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all hover:bg-ieee-blue hover:shadow-[0_0_20px_rgba(0,163,224,0.3)]">
+                Join IEEE
+              </Link>
+              <ThemeToggle />
+            </div>
           </div>
 
           {/* Mobile hamburger + theme */}

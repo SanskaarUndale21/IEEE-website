@@ -143,13 +143,13 @@ export default function About() {
               {/* Small 1 */}
               <div className="about-img img-zoom rounded-2xl shadow-lg shadow-black/5 dark:shadow-black/20">
                 <div className="relative aspect-square">
-                  <Image src="/images/about.jpg" alt="Activities" fill className="object-cover rounded-2xl" />
+                  <Image src="/images/ig_25.jpeg" alt="Activities" fill className="object-cover rounded-2xl" />
                 </div>
               </div>
               {/* Small 2 */}
               <div className="about-img img-zoom rounded-2xl shadow-lg shadow-black/5 dark:shadow-black/20">
                 <div className="relative aspect-square">
-                  <Image src="/images/abt01.jpg" alt="Campus" fill className="object-cover rounded-2xl" />
+                  <Image src="/images/sgbit topview.jpg" alt="Campus" fill className="object-cover rounded-2xl" />
                 </div>
               </div>
             </div>
