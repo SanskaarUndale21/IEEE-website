@@ -36,7 +36,7 @@ export default function EventsPage() {
       <section className="noise relative flex h-[50vh] items-center justify-center overflow-hidden">
         <div className="absolute inset-0">
           <Image src="/images/events_background01.jpg" alt="Events" fill className="object-cover opacity-20 dark:opacity-25" />
-          <div className="absolute inset-0 bg-gradient-to-b from-white/60 to-white dark:from-dark/60 dark:to-dark" />
+          <div className="absolute inset-0 bg-gradient-to-b from-white/50 to-white dark:from-[#111827]/60 dark:to-[#111827]" />
         </div>
         <div className="relative z-10 text-center">
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.6 }} className="section-label mb-4">Our Legacy</motion.p>
@@ -52,16 +52,16 @@ export default function EventsPage() {
       </section>
 
       {/* Events grid */}
-      <section ref={containerRef} className="px-6 py-20">
+      <section ref={containerRef} className="bg-[var(--bg)] px-5 py-16 md:px-8 md:py-20">
         <div className="mx-auto max-w-7xl">
-          <div className="space-y-20">
+          <div className="space-y-16 md:space-y-20">
             {events.map((event, index) => {
               const isEven = index % 2 === 0;
               return (
                 <Link
                   key={event.slug}
                   href={`/events/${event.slug}`}
-                  className={`event-row group grid items-center gap-10 lg:grid-cols-2 ${!isEven ? "lg:[direction:rtl]" : ""}`}
+                  className={`event-row group grid items-center gap-8 md:gap-10 lg:grid-cols-2 ${!isEven ? "lg:[direction:rtl]" : ""}`}
                 >
                   {/* Image */}
                   <div className={`img-zoom relative aspect-[16/10] overflow-hidden rounded-2xl shadow-xl shadow-black/5 dark:shadow-black/30 ${!isEven ? "lg:[direction:ltr]" : ""}`}>

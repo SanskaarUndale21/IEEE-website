@@ -5,14 +5,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-
-const navLinks = [
-  { name: "Home",    href: "/" },
-  { name: "About",   href: "/about" },
-  { name: "Events",  href: "/events" },
-  { name: "Team",    href: "/team" },
-  { name: "Contact", href: "#contact" },
-];
+import { NAV_LINKS, IMAGES } from "@/constants";
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -74,9 +67,9 @@ export default function Navbar() {
       >
         <div className="mx-auto flex max-w-7xl items-center justify-between px-6">
           {/* Logo */}
-          <Link href="#home" className="flex items-center gap-3 group">
+          <Link href="/" className="flex items-center gap-3 group">
             <div className="relative h-9 w-9 transition-transform duration-300 group-hover:scale-110">
-              <Image src="/images/ieee_new_logo.png" alt="IEEE" fill className="object-contain" priority />
+              <Image src={IMAGES.logo} alt="IEEE" fill className="object-contain" priority />
             </div>
             <div className="flex flex-col">
               <span className="font-display text-sm font-bold tracking-[0.15em] text-gray-900 dark:text-white">IEEE</span>
@@ -86,7 +79,7 @@ export default function Navbar() {
 
           {/* Desktop nav */}
           <div className="hidden items-center gap-7 md:flex">
-            {navLinks.map((link) => (
+            {NAV_LINKS.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
@@ -98,12 +91,27 @@ export default function Navbar() {
             ))}
 
             <div className="ml-2 flex items-center gap-3">
+              {/* Events CTA */}
+              <Link
+                href="/events/upcoming"
+                className="group relative overflow-hidden rounded-full border border-ieee-light/40 bg-ieee-light/5 px-5 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-ieee-light transition-all duration-300 hover:border-ieee-light/80 hover:bg-ieee-light/15 hover:shadow-[0_0_20px_rgba(14,165,233,0.25)]"
+              >
+                <span className="relative z-10 flex items-center gap-1.5">
+                  <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" className="transition-transform duration-300 group-hover:rotate-12">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                  </svg>
+                  Events
+                </span>
+              </Link>
+
+              {/* Join IEEE CTA */}
               <Link
                 href="/join"
                 className="rounded-full bg-[var(--ieee-blue)] px-5 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition-all duration-300 hover:bg-[#004F7D] hover:shadow-[0_4px_16px_rgba(0,98,155,0.35)]"
               >
                 Join IEEE
               </Link>
+
               <ThemeToggle />
             </div>
           </div>
@@ -130,18 +138,28 @@ export default function Navbar() {
             className="fixed inset-0 z-40 flex items-center justify-center bg-white/95 backdrop-blur-2xl dark:bg-black/95 md:hidden"
           >
             <div className="flex flex-col items-center gap-8">
-              {navLinks.map((link, i) => (
+              {NAV_LINKS.map((link, i) => (
                 <motion.div key={link.name} initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + i * 0.07 }}>
                   <Link href={link.href} onClick={() => setMobileOpen(false)} className="font-display text-3xl font-light tracking-[0.35em] text-gray-900 dark:text-white/90 transition-colors hover:text-ieee-light">
                     {link.name}
                   </Link>
                 </motion.div>
               ))}
-              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + navLinks.length * 0.07 }}>
+              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + NAV_LINKS.length * 0.07 }} className="flex flex-col items-center gap-4">
+                <Link
+                  href="/events/upcoming"
+                  onClick={() => setMobileOpen(false)}
+                  className="inline-flex items-center gap-2 rounded-full border border-ieee-light/40 bg-ieee-light/5 px-8 py-3 text-sm font-bold uppercase tracking-[0.2em] text-ieee-light"
+                >
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
+                    <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+                  </svg>
+                  Events
+                </Link>
                 <Link
                   href="/join"
                   onClick={() => setMobileOpen(false)}
-                  className="mt-4 inline-block rounded-full bg-[var(--ieee-blue)] px-8 py-3 text-sm font-bold uppercase tracking-[0.2em] text-white"
+                  className="inline-block rounded-full bg-[var(--ieee-blue)] px-8 py-3 text-sm font-bold uppercase tracking-[0.2em] text-white"
                 >
                   Join IEEE
                 </Link>

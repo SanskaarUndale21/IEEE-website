@@ -7,36 +7,28 @@ import Link from "next/link";
 import gsap from "gsap";
 import Scene from "@/components/three/Scene";
 import { FloatingGlobe, ParticleField } from "@/components/three/Models";
+import { IMAGES } from "@/constants";
 
 const SLIDES = [
-  { src: "/images/5.JPG",             alt: "IEEE SGBIT Event" },
-  { src: "/images/sgbit topview.jpg", alt: "SGBIT Campus Aerial View" },
+  { src: IMAGES.event1,           alt: "IEEE SGBIT Event" },
+  { src: IMAGES.collegeTopView,   alt: "SGBIT Campus Aerial View" },
 ];
 
-const SLIDE_INTERVAL = 5000; // ms between slides
+const SLIDE_INTERVAL = 5000;
 
 export default function Hero() {
-  const textRef       = useRef<HTMLDivElement>(null);
-  const cursorGlow    = useRef<HTMLDivElement>(null);
+  const textRef    = useRef<HTMLDivElement>(null);
+  const cursorGlow = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
 
-  /* ── image slider ─────────────────────────────────────────── */
   useEffect(() => {
-    const id = setInterval(() => {
-      setCurrent((prev) => (prev + 1) % SLIDES.length);
-    }, SLIDE_INTERVAL);
+    const id = setInterval(() => setCurrent((p) => (p + 1) % SLIDES.length), SLIDE_INTERVAL);
     return () => clearInterval(id);
   }, []);
 
-  /* ── cursor glow ──────────────────────────────────────────── */
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (cursorGlow.current) {
-      gsap.to(cursorGlow.current, {
-        x: e.clientX - 200,
-        y: e.clientY - 200,
-        duration: 1.2,
-        ease: "power2.out",
-      });
+      gsap.to(cursorGlow.current, { x: e.clientX - 200, y: e.clientY - 200, duration: 1.2, ease: "power2.out" });
     }
   }, []);
 
@@ -45,19 +37,11 @@ export default function Hero() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [handleMouseMove]);
 
-  /* ── hero intro animations ────────────────────────────────── */
   useEffect(() => {
     if (!textRef.current) return;
     const ctx = gsap.context(() => {
       const tl = gsap.timeline({ delay: 0.6 });
-      tl.from(".hero-line", {
-        y: 130,
-        opacity: 0,
-        rotateX: -80,
-        stagger: 0.18,
-        duration: 1.3,
-        ease: "power4.out",
-      })
+      tl.from(".hero-line",    { y: 130, opacity: 0, rotateX: -80, stagger: 0.18, duration: 1.3, ease: "power4.out" })
         .from(".hero-divider", { scaleX: 0, duration: 0.9, ease: "power2.inOut" }, "-=0.5")
         .from(".hero-sub",     { y: 30, opacity: 0, duration: 0.7, ease: "power3.out" }, "-=0.4")
         .from(".hero-tag",     { y: 20, opacity: 0, duration: 0.6, ease: "power3.out" }, "-=0.3")
@@ -75,49 +59,30 @@ export default function Hero() {
         <AnimatePresence mode="sync">
           {SLIDES.map((slide, idx) =>
             idx === current ? (
-              <motion.div
-                key={slide.src}
-                className="absolute inset-0"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ duration: 1.8, ease: "easeInOut" }}
-              >
-                <Image
-                  src={slide.src}
-                  alt={slide.alt}
-                  fill
-                  className="object-cover opacity-30 dark:opacity-30"
-                  priority={idx === 0}
-                  quality={85}
-                />
+              <motion.div key={slide.src} className="absolute inset-0" initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} transition={{ duration: 1.8, ease: "easeInOut" }}>
+                <Image src={slide.src} alt={slide.alt} fill className="object-cover opacity-25 dark:opacity-30" priority={idx === 0} quality={85} />
               </motion.div>
             ) : null
           )}
         </AnimatePresence>
-
-        {/* gradient overlay — keeps text readable regardless of slide */}
-        <div className="absolute inset-0 bg-gradient-to-b from-[#FAFAFA]/20 via-[#FAFAFA]/5 to-[#FAFAFA]/90 dark:from-[#111827]/60 dark:via-[#111827]/30 dark:to-[#111827] z-[1]" />
+        <div className="absolute inset-0 z-[1] bg-gradient-to-b from-[#FAFAFA]/30 via-[#FAFAFA]/10 to-[#FAFAFA]/95 dark:from-[#111827]/60 dark:via-[#111827]/30 dark:to-[#111827]" />
       </div>
 
       {/* ── Mouse glow ────────────────────────────────────────── */}
-      <div
-        ref={cursorGlow}
-        className="pointer-events-none fixed z-[1] h-[400px] w-[400px] rounded-full bg-ieee-light/5 blur-[120px] dark:bg-ieee-light/8"
-      />
+      <div ref={cursorGlow} className="pointer-events-none fixed z-[1] h-[400px] w-[400px] rounded-full bg-ieee-light/5 blur-[120px] dark:bg-ieee-light/8" />
 
       {/* ── Grid lines ────────────────────────────────────────── */}
       <div className="pointer-events-none absolute inset-0 z-[2]">
         {[20, 40, 60, 80].map((p) => (
-          <div key={`v${p}`} className="absolute top-0 h-full w-px bg-gray-300/20 dark:bg-white/[0.02]" style={{ left: `${p}%` }} />
+          <div key={`v${p}`} className="absolute top-0 h-full w-px bg-gray-400/15 dark:bg-white/[0.02]" style={{ left: `${p}%` }} />
         ))}
         {[25, 50, 75].map((p) => (
-          <div key={`h${p}`} className="absolute left-0 h-px w-full bg-gray-300/20 dark:bg-white/[0.02]" style={{ top: `${p}%` }} />
+          <div key={`h${p}`} className="absolute left-0 h-px w-full bg-gray-400/15 dark:bg-white/[0.02]" style={{ top: `${p}%` }} />
         ))}
       </div>
 
       {/* ── 3-D Globe + Particles ─────────────────────────────── */}
-      <div className="absolute inset-0 z-[3] opacity-45 dark:opacity-55">
+      <div className="absolute inset-0 z-[3] opacity-40 dark:opacity-55">
         <Scene className="h-full w-full">
           <FloatingGlobe />
           <ParticleField count={1200} />
@@ -127,78 +92,54 @@ export default function Hero() {
       {/* ── Slide indicator dots ─────────────────────────────── */}
       <div className="absolute bottom-24 left-1/2 z-10 flex -translate-x-1/2 gap-2">
         {SLIDES.map((_, idx) => (
-          <button
-            key={idx}
-            onClick={() => setCurrent(idx)}
-            aria-label={`Go to slide ${idx + 1}`}
-            className={`h-1.5 rounded-full transition-all duration-500 ${
-              idx === current
-                ? "w-6 bg-ieee-light"
-                : "w-1.5 bg-gray-400/40 dark:bg-white/20"
-            }`}
-          />
+          <button key={idx} onClick={() => setCurrent(idx)} aria-label={`Go to slide ${idx + 1}`}
+            className={`h-1.5 rounded-full transition-all duration-500 ${idx === current ? "w-6 bg-ieee-light" : "w-1.5 bg-gray-500/40 dark:bg-white/20"}`} />
         ))}
       </div>
 
       {/* ── Hero content ──────────────────────────────────────── */}
-      <div
-        ref={textRef}
-        className="relative z-10 flex flex-col items-center px-4 text-center"
-        style={{ perspective: "1000px" }}
-      >
-        <motion.div
-          initial={{ opacity: 0, scale: 0.5 }}
-          animate={{ opacity: 1, scale: 1 }}
-          transition={{ duration: 1, delay: 0.3 }}
-          className="mb-6"
-        >
-          <Image
-            src="/images/ieee_new_logo.png"
-            alt="IEEE"
-            width={72}
-            height={72}
-            className="mx-auto drop-shadow-xl"
-            priority
-          />
+      <div ref={textRef} className="relative z-10 flex flex-col items-center px-4 text-center" style={{ perspective: "1000px" }}>
+        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.3 }} className="mb-5 sm:mb-6">
+          <Image src={IMAGES.logo} alt="IEEE" width={64} height={64} className="mx-auto drop-shadow-xl sm:w-[72px] sm:h-[72px]" priority />
         </motion.div>
 
         <div className="overflow-hidden">
-          <h1 className="hero-line font-display text-7xl font-black tracking-[0.15em] text-gray-900 dark:text-white sm:text-8xl lg:text-[10rem]">
+          <h1 className="hero-line font-display text-6xl font-black tracking-[0.15em] text-gray-900 dark:text-white sm:text-7xl md:text-8xl lg:text-[10rem]">
             IEEE
           </h1>
         </div>
         <div className="overflow-hidden">
-          <h2 className="hero-line font-display text-4xl font-extralight tracking-[0.5em] text-gray-600 dark:text-white/80 sm:text-5xl lg:text-7xl">
+          <h2 className="hero-line font-display text-3xl font-extralight tracking-[0.5em] text-gray-600 dark:text-white/80 sm:text-4xl md:text-5xl lg:text-7xl">
             SGBIT
           </h2>
         </div>
 
-        <div className="hero-divider my-6 h-[2px] w-20 origin-center bg-gradient-to-r from-ieee-blue to-ieee-light" />
+        <div className="hero-divider my-5 h-[2px] w-16 origin-center bg-gradient-to-r from-ieee-blue to-ieee-light sm:my-6 sm:w-20" />
 
-        <p className="hero-sub text-sm tracking-[0.35em] text-gray-500 dark:text-white/50 md:text-base">
+        <p className="hero-sub text-[11px] tracking-[0.3em] text-gray-600 dark:text-white/50 sm:text-sm md:tracking-[0.35em]">
           STUDENT BRANCH &bull; BELAGAVI
         </p>
-        <p className="hero-tag mt-3 max-w-md text-xs tracking-widest text-gray-400 dark:text-white/30">
+        <p className="hero-tag mt-2 max-w-xs text-[10px] tracking-widest text-gray-500 dark:text-white/30 sm:mt-3 sm:max-w-md sm:text-xs">
           Advancing Technology for the Benefit of Humanity
         </p>
 
-        <div className="mt-10 flex flex-wrap items-center justify-center gap-6">
-          <Link href="/join" className="hero-cta btn-primary group relative overflow-hidden px-10 py-4 scale-110">
+        <div className="mt-8 flex flex-wrap items-center justify-center gap-4 sm:mt-10 sm:gap-6">
+          <Link href="/join" className="hero-cta btn-primary group relative overflow-hidden px-8 py-3.5 sm:scale-110 sm:px-10 sm:py-4">
             <span>Join IEEE</span>
           </Link>
-          <Link href="/events/upcoming" className="hero-cta text-[11px] font-bold tracking-[0.3em] text-white/50 uppercase transition-all hover:text-ieee-light hover:tracking-[0.4em] flex items-center gap-2">
+          <Link
+            href="/events/upcoming"
+            className="hero-cta flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.25em] text-gray-600 transition-all hover:text-ieee-light dark:text-white/50 dark:hover:text-ieee-light sm:text-[11px] sm:tracking-[0.3em]"
+          >
             Upcoming Events
-            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
           </Link>
         </div>
 
-        <div className="hero-scroll mt-16">
-          <a
-            href="#about"
-            className="group flex flex-col items-center gap-2 text-gray-400 dark:text-white/25 transition-colors hover:text-ieee-light"
-          >
+        <div className="hero-scroll mt-12 sm:mt-16">
+          <a href="#about" className="group flex flex-col items-center gap-2 text-gray-500 dark:text-white/25 transition-colors hover:text-ieee-light">
             <span className="text-[8px] tracking-[0.5em] uppercase">Scroll</span>
             <motion.div animate={{ y: [0, 8, 0] }} transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}>
               <div className="h-7 w-px bg-gradient-to-b from-transparent to-current" />
@@ -211,16 +152,12 @@ export default function Hero() {
       </div>
 
       {/* ── Corner labels ─────────────────────────────────────── */}
-      <motion.p
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}
-        className="absolute bottom-8 left-8 z-10 hidden text-[9px] tracking-[0.25em] text-gray-400 dark:text-white/15 md:block"
-      >
+      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}
+        className="absolute bottom-8 left-8 z-10 hidden text-[9px] tracking-[0.25em] text-gray-500 dark:text-white/15 md:block">
         S.G. BALEKUNDRI INSTITUTE<br />OF TECHNOLOGY
       </motion.p>
-      <motion.p
-        initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}
-        className="absolute bottom-8 right-8 z-10 hidden text-right text-[9px] tracking-[0.25em] text-gray-400 dark:text-white/15 md:block"
-      >
+      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}
+        className="absolute bottom-8 right-8 z-10 hidden text-right text-[9px] tracking-[0.25em] text-gray-500 dark:text-white/15 md:block">
         IEEE STUDENT<br />BRANCH
       </motion.p>
     </section>

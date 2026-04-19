@@ -77,7 +77,7 @@ export default function About() {
   }, []);
 
   return (
-    <section id="about" ref={sectionRef} className="noise relative overflow-hidden px-6 py-32 md:py-40">
+    <section id="about" ref={sectionRef} className="noise relative overflow-hidden bg-[var(--bg)] px-5 py-24 md:px-8 md:py-32">
       {/* Glow */}
       <div className="pointer-events-none absolute -right-40 top-20 h-[600px] w-[600px] rounded-full bg-ieee-blue/5 blur-[180px] dark:bg-ieee-blue/8" />
 

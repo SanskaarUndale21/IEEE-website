@@ -321,3 +321,42 @@ body {
 }
 .member-card:hover .member-social,
 .member-card.active .member-social { transform: translateY(0); }
+
+/* ===== RESPONSIVE BASE ===== */
+img { max-width: 100%; height: auto; }
+
+/* Prevent horizontal overflow site-wide */
+html, body { overflow-x: hidden; }
+
+/* ===== MOBILE TOUCH IMPROVEMENTS ===== */
+button, a { -webkit-tap-highlight-color: transparent; }
+
+/* ===== LIGHT MODE EXPLICIT BACKGROUNDS ===== */
+/* Ensure sections with no bg class still get the right bg in both modes */
+.section-bg { background: var(--bg); }
+.section-bg-alt { background: var(--bg-secondary); }
+
+/* ===== ACTIVITIES BENTO — MOBILE ===== */
+@media (max-width: 767px) {
+  /* On mobile, bento rows stack; ensure cells have consistent border */
+  .bento-row > div {
+    border-radius: 0 !important;
+  }
+  /* Give outer bento a rounded border on mobile */
+  .bento-outer {
+    border-radius: 1rem;
+    overflow: hidden;
+  }
+}
+
+/* ===== HERO RESPONSIVE ===== */
+@media (max-width: 480px) {
+  /* Prevent hero title overflow on very small phones */
+  #home h1 { letter-spacing: 0.08em; }
+  #home h2 { letter-spacing: 0.3em; }
+}
+
+/* ===== FORM RESPONSIVE ===== */
+@media (max-width: 640px) {
+  .input-field { font-size: 1rem; } /* prevent iOS zoom on focus */
+}
