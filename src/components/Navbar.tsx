@@ -7,10 +7,10 @@ import Image from "next/image";
 import Link from "next/link";
 
 const navLinks = [
-  { name: "Home", href: "#home" },
-  { name: "About", href: "#about" },
-  { name: "Events", href: "#events" },
-  { name: "Team", href: "#team" },
+  { name: "Home",    href: "/" },
+  { name: "About",   href: "/about" },
+  { name: "Events",  href: "/events" },
+  { name: "Team",    href: "/team" },
   { name: "Contact", href: "#contact" },
 ];
 
@@ -50,21 +50,9 @@ function ThemeToggle() {
 export default function Navbar() {
   const [scrolled, setScrolled] = useState(false);
   const [mobileOpen, setMobileOpen] = useState(false);
-  const [activeSection, setActiveSection] = useState("home");
 
   useEffect(() => {
-    const handleScroll = () => {
-      setScrolled(window.scrollY > 50);
-      // Detect active section
-      const sections = ["home", "about", "events", "team", "contact"];
-      for (const id of sections.reverse()) {
-        const el = document.getElementById(id);
-        if (el && window.scrollY >= el.offsetTop - 200) {
-          setActiveSection(id);
-          break;
-        }
-      }
-    };
+    const handleScroll = () => setScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
@@ -97,32 +85,23 @@ export default function Navbar() {
           </Link>
 
           {/* Desktop nav */}
-          <div className="hidden items-center gap-8 md:flex">
+          <div className="hidden items-center gap-7 md:flex">
             {navLinks.map((link) => (
               <Link
                 key={link.name}
                 href={link.href}
-                className={`group relative text-[11px] font-medium uppercase tracking-[0.2em] transition-colors duration-300 ${
-                  activeSection === link.href.slice(1)
-                    ? "text-ieee-light"
-                    : "text-gray-500 hover:text-gray-900 dark:text-white/50 dark:hover:text-white"
-                }`}
+                className="group relative text-[11px] font-semibold uppercase tracking-[0.2em] text-gray-500 transition-colors duration-300 hover:text-gray-900 dark:text-white/50 dark:hover:text-white"
               >
                 {link.name}
-                <motion.span
-                  className="absolute -bottom-1 left-0 h-[1.5px] bg-ieee-light"
-                  initial={false}
-                  animate={{ width: activeSection === link.href.slice(1) ? "100%" : "0%" }}
-                  transition={{ duration: 0.3 }}
-                />
+                <span className="absolute -bottom-0.5 left-0 h-[1.5px] w-0 bg-ieee-light transition-all duration-300 group-hover:w-full" />
               </Link>
             ))}
-            
-            <div className="flex items-center gap-4 ml-4">
-              <Link href="/events/upcoming" className="text-[10px] font-bold tracking-[0.2em] text-white/40 uppercase hover:text-ieee-light transition-colors">
-                Events
-              </Link>
-              <Link href="/join" className="rounded-full bg-ieee-light px-6 py-2.5 text-[10px] font-black uppercase tracking-[0.2em] text-white transition-all hover:bg-ieee-blue hover:shadow-[0_0_20px_rgba(0,163,224,0.3)]">
+
+            <div className="ml-2 flex items-center gap-3">
+              <Link
+                href="/join"
+                className="rounded-full bg-[var(--ieee-blue)] px-5 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-white transition-all duration-300 hover:bg-[#004F7D] hover:shadow-[0_4px_16px_rgba(0,98,155,0.35)]"
+              >
                 Join IEEE
               </Link>
               <ThemeToggle />
@@ -158,6 +137,15 @@ export default function Navbar() {
                   </Link>
                 </motion.div>
               ))}
+              <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + navLinks.length * 0.07 }}>
+                <Link
+                  href="/join"
+                  onClick={() => setMobileOpen(false)}
+                  className="mt-4 inline-block rounded-full bg-[var(--ieee-blue)] px-8 py-3 text-sm font-bold uppercase tracking-[0.2em] text-white"
+                >
+                  Join IEEE
+                </Link>
+              </motion.div>
             </div>
           </motion.div>
         )}

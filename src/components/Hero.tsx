@@ -87,7 +87,7 @@ export default function Hero() {
                   src={slide.src}
                   alt={slide.alt}
                   fill
-                  className="object-cover opacity-15 dark:opacity-25"
+                  className="object-cover opacity-30 dark:opacity-30"
                   priority={idx === 0}
                   quality={85}
                 />
@@ -97,7 +97,7 @@ export default function Hero() {
         </AnimatePresence>
 
         {/* gradient overlay — keeps text readable regardless of slide */}
-        <div className="absolute inset-0 bg-gradient-to-b from-white/70 via-white/40 to-white dark:from-dark/70 dark:via-dark/40 dark:to-dark z-[1]" />
+        <div className="absolute inset-0 bg-gradient-to-b from-[#FAFAFA]/20 via-[#FAFAFA]/5 to-[#FAFAFA]/90 dark:from-[#111827]/60 dark:via-[#111827]/30 dark:to-[#111827] z-[1]" />
       </div>
 
       {/* ── Mouse glow ────────────────────────────────────────── */}

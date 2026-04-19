@@ -34,6 +34,11 @@ function OrbitalRing({
     return g;
   }, [points]);
 
+  const line = useMemo(() => {
+    const mat = new THREE.LineBasicMaterial({ color, transparent: true, opacity });
+    return new THREE.Line(geometry, mat);
+  }, [geometry, color, opacity]);
+
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
     if (ref.current) {
@@ -41,18 +46,7 @@ function OrbitalRing({
     }
   });
 
-  return (
-    <line ref={ref} rotation={tilt}>
-      <bufferGeometry attach="geometry" {...geometry} />
-      <lineBasicMaterial
-        attach="material"
-        color={color}
-        transparent
-        opacity={opacity}
-        linewidth={1}
-      />
-    </line>
-  );
+  return <primitive ref={ref} object={line} rotation={tilt} />;
 }
 
 /* ─── Orbiting Particle Dot ─────────────────────────────────── */

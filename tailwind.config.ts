@@ -7,9 +7,10 @@ const config: Config = {
     extend: {
       colors: {
         "ieee-blue": "#00629B",
-        "ieee-light": "#00A3E0",
-        dark: "#050505",
-        "dark-card": "#0d0d0d",
+        "ieee-light": "#0EA5E9",
+        dark: "#111827",
+        "dark-secondary": "#1A2332",
+        "dark-card": "#1E2A3B",
         "dark-border": "rgba(255,255,255,0.08)",
       },
       fontFamily: {
@@ -24,26 +25,11 @@ const config: Config = {
         "pulse-glow": "pulseGlow 3s ease-in-out infinite",
       },
       keyframes: {
-        fadeIn: {
-          "0%": { opacity: "0" },
-          "100%": { opacity: "1" },
-        },
-        slideUp: {
-          "0%": { opacity: "0", transform: "translateY(40px)" },
-          "100%": { opacity: "1", transform: "translateY(0)" },
-        },
-        marquee: {
-          "0%": { transform: "translateX(0%)" },
-          "100%": { transform: "translateX(-50%)" },
-        },
-        marqueeReverse: {
-          "0%": { transform: "translateX(-50%)" },
-          "100%": { transform: "translateX(0%)" },
-        },
-        pulseGlow: {
-          "0%, 100%": { opacity: "0.4" },
-          "50%": { opacity: "1" },
-        },
+        fadeIn: { "0%": { opacity: "0" }, "100%": { opacity: "1" } },
+        slideUp: { "0%": { opacity: "0", transform: "translateY(40px)" }, "100%": { opacity: "1", transform: "translateY(0)" } },
+        marquee: { "0%": { transform: "translateX(0%)" }, "100%": { transform: "translateX(-50%)" } },
+        marqueeReverse: { "0%": { transform: "translateX(-50%)" }, "100%": { transform: "translateX(0%)" } },
+        pulseGlow: { "0%, 100%": { opacity: "0.4" }, "50%": { opacity: "1" } },
       },
     },
   },

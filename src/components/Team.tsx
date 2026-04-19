@@ -133,9 +133,9 @@ export default function Team() {
                       className="relative overflow-hidden rounded-2xl p-0.5"
                     >
                       <div className="relative z-10 bg-black/90 backdrop-blur-3xl border border-ieee-light/40 px-10 py-5 rounded-[calc(1rem-2px)] shadow-[0_0_50px_rgba(0,163,224,0.2)] flex flex-col items-center">
-                        <motion.p 
-                          initial={{ opacity: 0, tracking: "0.2em" }}
-                          animate={{ opacity: 1, tracking: "0.4em" }}
+                        <motion.p
+                          initial={{ opacity: 0 }}
+                          animate={{ opacity: 1 }}
                           className="text-[9px] font-bold text-ieee-light uppercase mb-1.5"
                         >
                           {execomMembers[hovered].role}

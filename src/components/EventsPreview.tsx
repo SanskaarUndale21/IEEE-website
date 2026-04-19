@@ -1,585 +1,182 @@
 "use client";
 
-import { useRef, useEffect, useState } from "react";
-import { motion, useInView, AnimatePresence } from "framer-motion";
+import { useRef } from "react";
+import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
-import gsap from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { events, EventData } from "@/data/events";
+import { events } from "@/data/events";
 
-gsap.registerPlugin(ScrollTrigger);
-
-/* ─── Canvas ────────────────────────────────────────────────── */
-const TL_W   = 1820;
-const TL_H   = 560;   // tall enough for tall popup cards above/below wave
-const CARD_W = 360;   // wider card
-const CARD_H = 340;   // height for positioning math (actual may vary)
-const DOT_R  = 7;
-const HIT_R  = 24;
-
-/* ─── Organic / asymmetric node positions ───────────────────── */
-//  8 events — deliberately irregular x-spacing + non-uniform y
-const NODES = [
-  { x: 90,   y: 225 },   // 0  – left edge, mid height
-  { x: 310,  y: 105 },   // 1  – close first peak  (narrow gap)
-  { x: 600,  y: 390 },   // 2  – wide first valley (wide gap)
-  { x: 810,  y: 130 },   // 3  – medium peak       (moderate gap)
-  { x: 1090, y: 375 },   // 4  – deep valley       (wide gap)
-  { x: 1310, y: 105 },   // 5  – tallest peak      (moderate gap)
-  { x: 1540, y: 360 },   // 6  – valley            (narrow gap)
-  { x: 1720, y: 160 },   // 7  – end peak          (narrow gap)
-];
-
-/* One extra "button" node the wave leads into */
-const BTN_NODE = { x: 1790, y: 270 };
-
-/* ─── Build smooth S-wave (cubic bezier, midpoint control) ──── */
-function buildPath(pts: { x: number; y: number }[]) {
-  return pts.reduce((d, n, i, arr) => {
-    if (i === 0) return `M ${n.x} ${n.y}`;
-    const p  = arr[i - 1];
-    const mx = (p.x + n.x) / 2;
-    return `${d} C ${mx} ${p.y} ${mx} ${n.y} ${n.x} ${n.y}`;
-  }, "");
-}
-
-const PATH_ALL  = buildPath([...NODES, BTN_NODE]);  // full path incl. button node
-const PATH_MAIN = buildPath(NODES);                   // events-only path
-
-/* ─── Popup position (above or below node) ──────────────────── */
-function popupPos(node: { x: number; y: number }) {
-  const isTop = node.y < 260;
-  const left  = Math.max(4, Math.min(node.x - CARD_W / 2, TL_W - CARD_W - 4));
-  const top   = isTop
-    ? node.y + HIT_R + 18           // below top-peak node
-    : node.y - HIT_R - 18 - CARD_H; // above valley node
-  return { left, top, isTop };
-}
-
-/* ─── Popup Card ────────────────────────────────────────────── */
-function EventPopup({
-  event,
-  node,
-  onEnter,
-  onLeave,
-}: {
-  event: EventData;
-  node: { x: number; y: number };
-  onEnter: () => void;
-  onLeave: () => void;
-}) {
-  const { left, top, isTop } = popupPos(node);
-
-  return (
-    <motion.div
-      initial={{ opacity: 0, y: isTop ? -18 : 18, scale: 0.86 }}
-      animate={{ opacity: 1, y: 0, scale: 1 }}
-      exit={{ opacity: 0, y: isTop ? -18 : 18, scale: 0.86 }}
-      transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
-      onMouseEnter={onEnter}
-      onMouseLeave={onLeave}
-      className="absolute z-50 overflow-hidden rounded-2xl"
-      style={{
-        left,
-        top,
-        width: CARD_W,
-        background: "rgba(4, 8, 14, 0.97)",
-        border: "1px solid rgba(0,163,224,0.2)",
-        boxShadow:
-          "0 32px 80px rgba(0,0,0,0.8), 0 0 0 1px rgba(0,163,224,0.06), 0 0 60px rgba(0,163,224,0.1)",
-        backdropFilter: "blur(24px)",
-        WebkitBackdropFilter: "blur(24px)",
-      }}
-    >
-      {/* ── hero image ── */}
-      <div className="relative w-full overflow-hidden" style={{ height: 200 }}>
-        <Image
-          src={event.image}
-          alt={event.title}
-          fill
-          sizes={`${CARD_W}px`}
-          className="object-cover object-center"
-          priority={false}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/20 to-transparent" />
-        <div
-          className="absolute inset-0"
-          style={{
-            background:
-              "linear-gradient(135deg, rgba(0,98,155,0.25) 0%, transparent 55%)",
-          }}
-        />
-        {/* event number (watermark) */}
-        <span className="absolute bottom-3 left-4 select-none font-display text-5xl font-black leading-none text-white/8">
-          {event.number}
-        </span>
-        {/* link arrow */}
-        <Link
-          href={`/events/${event.slug}`}
-          className="absolute right-3 top-3 flex h-8 w-8 items-center justify-center rounded-full bg-black/40 backdrop-blur-sm transition-all duration-300 hover:bg-ieee-light/40"
-        >
-          <svg
-            width="12"
-            height="12"
-            viewBox="0 0 24 24"
-            fill="none"
-            stroke="white"
-            strokeWidth="2"
-          >
-            <path d="M7 17L17 7M17 7H7M17 7v10" />
-          </svg>
-        </Link>
-      </div>
-
-      {/* ── gallery strip ── */}
-      {event.gallery && event.gallery.length > 0 && (
-        <div className="flex gap-2 px-4 pt-3">
-          {event.gallery.slice(0, 3).map((src, gi) => (
-            <div
-              key={gi}
-              className="relative h-12 w-12 shrink-0 overflow-hidden rounded-lg border border-white/8"
-            >
-              <Image
-                src={src}
-                alt=""
-                fill
-                sizes="48px"
-                className="object-cover object-center"
-              />
-            </div>
-          ))}
-        </div>
-      )}
-
-      {/* ── text ── */}
-      <div className="px-4 pb-4 pt-3">
-        <p className="text-[8px] font-bold tracking-[0.25em] text-ieee-light uppercase">
-          {event.date}
-        </p>
-        <h4 className="mt-1 font-display text-base font-bold leading-snug text-white">
-          {event.title}
-        </h4>
-        <p className="mt-1.5 line-clamp-2 text-[11px] leading-relaxed text-white/45">
-          {event.description}
-        </p>
-        <div className="mt-3 flex flex-wrap gap-1.5">
-          {event.tags.slice(0, 2).map((tag) => (
-            <span
-              key={tag}
-              className="rounded-full border border-ieee-light/15 px-2.5 py-0.5 text-[8px] tracking-[0.1em] text-ieee-light/50 uppercase"
-            >
-              {tag}
-            </span>
-          ))}
-        </div>
-      </div>
-    </motion.div>
-  );
-}
-
-/* ─── Always-visible label ──────────────────────────────────── */
-function EventLabel({
-  event,
-  node,
-  active,
-}: {
-  event: EventData;
-  node: { x: number; y: number };
-  active: boolean;
-}) {
-  const isTop  = node.y < 260;
-  const W_LBL  = 165;
-  const left   = Math.max(0, Math.min(node.x - W_LBL / 2, TL_W - W_LBL));
-
-  return (
-    <div
-      className="pointer-events-none absolute z-10 select-none text-center transition-all duration-300"
-      style={{
-        left,
-        width: W_LBL,
-        ...(isTop
-          ? { top: node.y - HIT_R - 60 }
-          : { top: node.y + HIT_R + 14 }),
-      }}
-    >
-      <p
-        className={`text-[8px] font-bold tracking-[0.22em] uppercase transition-colors duration-300 ${
-          active ? "text-ieee-light" : "text-ieee-light/30"
-        }`}
-      >
-        {event.date}
-      </p>
-      <h3
-        className={`mt-0.5 font-display text-[12px] font-bold leading-tight transition-colors duration-300 ${
-          active ? "text-white" : "text-white/30"
-        }`}
-      >
-        {event.title}
-      </h3>
-    </div>
-  );
-}
-
-/* ─── Pulsing SVG ring ──────────────────────────────────────── */
-function PulseRing({ cx, cy }: { cx: number; cy: number }) {
-  return (
-    <circle
-      cx={cx}
-      cy={cy}
-      r={HIT_R}
-      fill="none"
-      stroke="rgba(0,163,224,0.6)"
-      strokeWidth={1.2}
-      style={{
-        transformOrigin: `${cx}px ${cy}px`,
-        animation: "evtPulse 1.8s ease-out infinite",
-      }}
-    />
-  );
-}
-
-/* ─── Main ──────────────────────────────────────────────────── */
 export default function EventsPreview() {
-  const sectionRef  = useRef<HTMLElement>(null);
-  const pathRef     = useRef<SVGPathElement>(null);
-  const headerRef   = useRef<HTMLDivElement>(null);
-  const leaveTimer  = useRef<ReturnType<typeof setTimeout>>();
-  const headerInView = useInView(headerRef, { once: true, margin: "-80px" });
+  const sectionRef = useRef<HTMLElement>(null);
+  const isInView = useInView(sectionRef, { once: true, margin: "-60px" });
 
-  const [hoveredIdx, setHoveredIdx] = useState<number | null>(null);
-
-  const handleEnter = (i: number) => {
-    clearTimeout(leaveTimer.current);
-    setHoveredIdx(i);
-  };
-  const handleLeave = () => {
-    leaveTimer.current = setTimeout(() => setHoveredIdx(null), 160);
-  };
-
-  /* Animate path stroke-dashoffset on scroll */
-  useEffect(() => {
-    if (!pathRef.current || !sectionRef.current) return;
-    const path = pathRef.current;
-    const len  = path.getTotalLength();
-    gsap.set(path, { strokeDasharray: len, strokeDashoffset: len });
-    const ctx = gsap.context(() => {
-      gsap.to(path, {
-        strokeDashoffset: 0,
-        ease: "none",
-        scrollTrigger: {
-          trigger: sectionRef.current,
-          start: "top 65%",
-          end:   "bottom 30%",
-          scrub: 1.4,
-        },
-      });
-    });
-    return () => ctx.revert();
-  }, []);
+  const [featured, ...rest] = events;
+  const grid = rest.slice(0, 3);
 
   return (
-    <section
-      id="events"
-      ref={sectionRef}
-      className="noise relative overflow-hidden py-32 md:py-40"
-    >
-      {/* Ambient blobs */}
-      <div className="pointer-events-none absolute left-0 top-1/4 h-[700px] w-[700px] rounded-full bg-ieee-blue/[0.04] blur-[200px]" />
-      <div className="pointer-events-none absolute right-0 bottom-0 h-[500px] w-[500px] rounded-full bg-ieee-light/[0.03] blur-[180px]" />
-
-      {/* ── Header ───────────────────────────────────────────── */}
-      <motion.div
-        ref={headerRef}
-        initial={{ opacity: 0, y: 40 }}
-        animate={headerInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.9 }}
-        className="mb-14 px-6 text-center"
-      >
-        <p className="section-label mb-4">What We&apos;ve Built</p>
-        <h2 className="font-display text-3xl font-bold tracking-[0.3em] text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
-          E V E N T S
-        </h2>
-        <p className="mx-auto mt-6 max-w-xl text-sm leading-relaxed text-gray-500 dark:text-white/40">
-          Our journey through innovation — hover any marker to preview an event.
-        </p>
-      </motion.div>
-
-      {/* ── Horizontal wave timeline (no scroll) ─────────────── */}
-      <div className="relative overflow-hidden">
-        {/* edge fade-outs */}
-        <div className="pointer-events-none absolute left-0 top-0 z-20 h-full w-16 bg-gradient-to-r from-[var(--bg)] to-transparent" />
-        <div className="pointer-events-none absolute right-0 top-0 z-20 h-full w-16 bg-gradient-to-l from-[var(--bg)] to-transparent" />
-
-        {/* Canvas — centered, no overflow-x */}
-        <div
-          className="relative mx-auto"
-          style={{ width: TL_W, height: TL_H }}
+    <section id="events" ref={sectionRef} className="relative px-5 py-24 md:px-8 md:py-32 bg-[var(--bg)]">
+      {/* Section header */}
+      <div className="mx-auto max-w-7xl">
+        <motion.div
+          initial={{ opacity: 0, y: 24 }}
+          animate={isInView ? { opacity: 1, y: 0 } : {}}
+          transition={{ duration: 0.7 }}
+          className="mb-12 flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between"
         >
-          {/* ── SVG: wave + nodes ─────────────────────────────── */}
-          <svg
-            width={TL_W}
-            height={TL_H}
-            className="absolute inset-0"
-            style={{ overflow: "visible" }}
-          >
-            <defs>
-              <style>{`
-                @keyframes evtPulse {
-                  0%   { transform: scale(1);   opacity: 0.7; }
-                  100% { transform: scale(2.8); opacity: 0;   }
-                }
-              `}</style>
-            </defs>
-
-            {/* faint ghost guide – always visible */}
-            <path
-              d={PATH_ALL}
-              fill="none"
-              stroke="rgba(0,163,224,0.055)"
-              strokeWidth={2}
-            />
-
-            {/* thick glow blur layer */}
-            <path
-              d={PATH_ALL}
-              fill="none"
-              stroke="rgba(0,163,224,0.075)"
-              strokeWidth={20}
-              strokeLinecap="round"
-              style={{ filter: "blur(12px)" }}
-            />
-
-            {/* scroll-drawn animated stroke */}
-            <path
-              ref={pathRef}
-              d={PATH_ALL}
-              fill="none"
-              stroke="rgba(0,163,224,0.7)"
-              strokeWidth={2}
-              strokeLinecap="round"
-            />
-
-            {/* ── event node circles ── */}
-            {NODES.map((node, i) => {
-              const active = hoveredIdx === i;
-              return (
-                <g key={i}>
-                  {/* ambient glow */}
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={36}
-                    fill={`rgba(0,163,224,${active ? 0.08 : 0.025})`}
-                    style={{ transition: "fill 0.35s" }}
-                  />
-                  {/* ring */}
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={HIT_R}
-                    fill="none"
-                    stroke={
-                      active ? "rgba(0,163,224,1)" : "rgba(0,163,224,0.28)"
-                    }
-                    strokeWidth={1.5}
-                    style={{ transition: "stroke 0.35s" }}
-                  />
-                  {/* dot */}
-                  <circle
-                    cx={node.x}
-                    cy={node.y}
-                    r={DOT_R}
-                    fill={active ? "#00A3E0" : "rgba(0,163,224,0.55)"}
-                    style={{ transition: "fill 0.35s" }}
-                  />
-                  {/* bright core on hover */}
-                  {active && (
-                    <circle cx={node.x} cy={node.y} r={3} fill="white" opacity={0.95} />
-                  )}
-                  {/* pulse ring */}
-                  {active && <PulseRing cx={node.x} cy={node.y} />}
-
-                  {/* number badge */}
-                  <text
-                    x={node.x}
-                    y={
-                      node.y < 260
-                        ? node.y - HIT_R - 14
-                        : node.y + HIT_R + 22
-                    }
-                    textAnchor="middle"
-                    fontSize="8"
-                    fontWeight="800"
-                    letterSpacing="3"
-                    fill={
-                      active
-                        ? "rgba(0,163,224,1)"
-                        : "rgba(0,163,224,0.22)"
-                    }
-                    style={{ transition: "fill 0.35s", fontFamily: "inherit" }}
-                  >
-                    {events[i].number}
-                  </text>
-                </g>
-              );
-            })}
-
-            {/* ── End-of-wave button node ── */}
-            <circle
-              cx={BTN_NODE.x}
-              cy={BTN_NODE.y}
-              r={40}
-              fill="rgba(0,98,155,0.08)"
-            />
-            <circle
-              cx={BTN_NODE.x}
-              cy={BTN_NODE.y}
-              r={18}
-              fill="none"
-              stroke="rgba(0,163,224,0.5)"
-              strokeWidth={1.5}
-              strokeDasharray="4 2.5"
-            />
-            <circle cx={BTN_NODE.x} cy={BTN_NODE.y} r={7} fill="#00629B" />
-            <circle cx={BTN_NODE.x} cy={BTN_NODE.y} r={3} fill="rgba(0,163,224,0.9)" />
-          </svg>
-
-          {/* ── Always-visible event labels ─────────────────── */}
-          {events.map((ev, i) => (
-            <EventLabel
-              key={ev.slug}
-              event={ev}
-              node={NODES[i]}
-              active={hoveredIdx === i}
-            />
-          ))}
-
-          {/* ── Invisible hit areas for hover ───────────────── */}
-          {events.map((_, i) => (
-            <div
-              key={i}
-              className="absolute z-40 cursor-pointer rounded-full"
-              style={{
-                left:   NODES[i].x - HIT_R - 8,
-                top:    NODES[i].y - HIT_R - 8,
-                width:  (HIT_R + 8) * 2,
-                height: (HIT_R + 8) * 2,
-              }}
-              onMouseEnter={() => handleEnter(i)}
-              onMouseLeave={handleLeave}
-            />
-          ))}
-
-          {/* ── Upcoming Events button pinned to BTN_NODE ────── */}
-          <div
-            className="absolute z-30"
-            style={{
-              left:      BTN_NODE.x,
-              top:       BTN_NODE.y + 32,
-              transform: "translateX(-50%)",
-            }}
-          >
-            <Link
-              href="/events/upcoming"
-              className="group relative inline-flex items-center gap-2 overflow-hidden rounded-full border border-ieee-light/50 bg-ieee-blue/20 px-5 py-2 text-[10px] font-bold tracking-[0.18em] text-ieee-light uppercase backdrop-blur-md transition-all duration-400 hover:border-ieee-light hover:bg-ieee-blue/40 hover:shadow-[0_0_28px_8px_rgba(0,163,224,0.3)]"
-            >
-              <motion.span
-                className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent"
-                initial={{ x: "-100%" }}
-                animate={{ x: "220%" }}
-                transition={{ duration: 2.2, repeat: Infinity, ease: "linear", repeatDelay: 0.8 }}
-              />
-              <span className="relative h-1.5 w-1.5 animate-pulse rounded-full bg-ieee-light" />
-              <span className="relative">Upcoming Events</span>
-            </Link>
+          <div>
+            <p className="section-label mb-2">Our Legacy</p>
+            <h2 className="font-display text-3xl font-bold text-gray-900 dark:text-white md:text-4xl">
+              Events & Highlights
+            </h2>
           </div>
-
-          {/* ── Hover popup card ─────────────────────────────── */}
-          <AnimatePresence mode="wait">
-            {hoveredIdx !== null && (
-              <EventPopup
-                key={events[hoveredIdx].slug}
-                event={events[hoveredIdx]}
-                node={NODES[hoveredIdx]}
-                onEnter={() => handleEnter(hoveredIdx)}
-                onLeave={handleLeave}
-              />
-            )}
-          </AnimatePresence>
-        </div>
-      </div>
-
-      {/* ── Bottom CTA row ───────────────────────────────────── */}
-      <motion.div
-        initial={{ opacity: 0, y: 28 }}
-        animate={headerInView ? { opacity: 1, y: 0 } : {}}
-        transition={{ duration: 0.8, delay: 0.9 }}
-        className="mt-20 flex flex-col items-center gap-5"
-      >
-        {/* divider text */}
-        <div className="flex items-center gap-4">
-          <div className="h-px w-14 bg-gradient-to-r from-transparent to-ieee-light/20" />
-          <p className="text-[8px] tracking-[0.45em] text-white/18 uppercase">
-            explore more
-          </p>
-          <div className="h-px w-14 bg-gradient-to-l from-transparent to-ieee-light/20" />
-        </div>
-
-        {/* two CTA buttons */}
-        <div className="flex flex-wrap items-center justify-center gap-4">
-
-          {/* View all past events */}
           <Link
             href="/events"
-            className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full border border-ieee-light/25 bg-ieee-light/5 px-8 py-3.5 text-[11px] font-bold tracking-[0.25em] text-ieee-light uppercase transition-all duration-500 hover:border-ieee-light/55 hover:bg-ieee-light/10 hover:shadow-[0_0_36px_8px_rgba(0,163,224,0.12)]"
+            className="group inline-flex items-center gap-2 text-sm font-semibold text-[var(--ieee-blue)] dark:text-[var(--ieee-light)] transition-all hover:gap-3"
           >
-            <motion.span
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/7 to-transparent"
-              initial={{ x: "-100%" }}
-              animate={{ x: "250%" }}
-              transition={{ duration: 3, repeat: Infinity, ease: "linear", repeatDelay: 1 }}
-            />
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-            >
-              <rect x="3" y="4" width="18" height="18" rx="2" />
-              <path d="M16 2v4M8 2v4M3 10h18" />
-            </svg>
-            <span className="relative">View All Past Events</span>
-          </Link>
-
-          {/* Upcoming events (solid blue) */}
-          <Link
-            href="/events/upcoming"
-            className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-gradient-to-r from-ieee-blue to-ieee-light px-8 py-3.5 text-[11px] font-bold tracking-[0.25em] text-white uppercase transition-all duration-500 hover:-translate-y-0.5 hover:shadow-[0_0_40px_12px_rgba(0,163,224,0.28)]"
-          >
-            <motion.span
-              className="absolute inset-0 bg-gradient-to-r from-transparent via-white/14 to-transparent"
-              initial={{ x: "-100%" }}
-              animate={{ x: "250%" }}
-              transition={{ duration: 2.4, repeat: Infinity, ease: "linear", repeatDelay: 0.4 }}
-            />
-            <svg
-              width="13"
-              height="13"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              className="transition-transform duration-300 group-hover:translate-x-0.5"
-            >
+            View all events
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2">
               <path d="M5 12h14M12 5l7 7-7 7" />
             </svg>
-            <span className="relative">Upcoming Events</span>
           </Link>
+        </motion.div>
+
+        {/* Editorial grid */}
+        <div className="grid gap-4 lg:grid-cols-[1fr_380px]">
+          {/* Featured — large left card */}
+          <motion.div
+            initial={{ opacity: 0, y: 30 }}
+            animate={isInView ? { opacity: 1, y: 0 } : {}}
+            transition={{ duration: 0.7, delay: 0.1 }}
+          >
+            <Link
+              href={`/events/${featured.slug}`}
+              className="group relative block overflow-hidden rounded-2xl bg-gray-900"
+              style={{ minHeight: 480 }}
+            >
+              <Image
+                src={featured.image}
+                alt={featured.title}
+                fill
+                className="object-cover opacity-70 transition-all duration-700 group-hover:opacity-80 group-hover:scale-105"
+                priority
+              />
+              {/* Overlay */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/30 to-transparent" />
+
+              {/* Top bar */}
+              <div className="absolute left-5 top-5 right-5 flex items-center justify-between">
+                <span className="rounded-full bg-[var(--ieee-blue)] px-3 py-1 text-[10px] font-bold uppercase tracking-widest text-white">
+                  Featured
+                </span>
+                <span className="font-display text-5xl font-black text-white/10 select-none">
+                  {featured.number}
+                </span>
+              </div>
+
+              {/* Bottom content */}
+              <div className="absolute bottom-0 left-0 right-0 p-6">
+                <div className="mb-2 flex flex-wrap gap-1.5">
+                  {featured.tags.map((t) => (
+                    <span key={t} className="rounded-full border border-white/20 bg-white/10 px-2.5 py-0.5 text-[9px] font-semibold uppercase tracking-wider text-white/70 backdrop-blur-sm">
+                      {t}
+                    </span>
+                  ))}
+                </div>
+                <h3 className="mb-1.5 font-display text-2xl font-bold leading-snug text-white md:text-3xl">
+                  {featured.title}
+                </h3>
+                <p className="mb-4 line-clamp-2 text-sm leading-relaxed text-white/60">
+                  {featured.description}
+                </p>
+                <div className="flex items-center justify-between">
+                  <span className="text-xs font-semibold tracking-wide text-white/50">{featured.date}</span>
+                  <div className="flex h-9 w-9 items-center justify-center rounded-full border border-white/20 bg-white/10 backdrop-blur-sm transition-all duration-300 group-hover:bg-[var(--ieee-blue)] group-hover:border-[var(--ieee-blue)]">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2">
+                      <path d="M7 17L17 7M17 7H7M17 7v10" />
+                    </svg>
+                  </div>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* Right column — 3 stacked cards */}
+          <div className="flex flex-col gap-4">
+            {grid.map((event, i) => (
+              <motion.div
+                key={event.slug}
+                initial={{ opacity: 0, x: 20 }}
+                animate={isInView ? { opacity: 1, x: 0 } : {}}
+                transition={{ duration: 0.6, delay: 0.15 + i * 0.08 }}
+                className="flex-1"
+              >
+                <Link
+                  href={`/events/${event.slug}`}
+                  className="group flex h-full overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg-card)] transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--ieee-blue)]/20 hover:shadow-[var(--shadow-md)]"
+                >
+                  {/* Image thumbnail */}
+                  <div className="relative w-28 flex-shrink-0 overflow-hidden sm:w-32">
+                    <Image
+                      src={event.image}
+                      alt={event.title}
+                      fill
+                      className="object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
+                    <div className="absolute inset-0 bg-gradient-to-r from-transparent to-black/10" />
+                  </div>
+
+                  {/* Text */}
+                  <div className="flex flex-col justify-center p-4">
+                    <span className="mb-1 text-[10px] font-bold tracking-[0.15em] text-[var(--ieee-blue)] uppercase dark:text-[var(--ieee-light)]">
+                      {event.date}
+                    </span>
+                    <h3 className="mb-1 font-display text-sm font-bold leading-snug text-gray-900 transition-colors group-hover:text-[var(--ieee-blue)] dark:text-white dark:group-hover:text-[var(--ieee-light)]">
+                      {event.title}
+                    </h3>
+                    <p className="line-clamp-2 text-xs leading-relaxed text-[var(--text-secondary)]">
+                      {event.description}
+                    </p>
+                  </div>
+
+                  {/* Arrow */}
+                  <div className="flex flex-shrink-0 items-center pr-4">
+                    <svg
+                      width="14"
+                      height="14"
+                      viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
+                      className="text-[var(--text-muted)] transition-all duration-300 group-hover:translate-x-1 group-hover:text-[var(--ieee-blue)] dark:group-hover:text-[var(--ieee-light)]"
+                    >
+                      <path d="M5 12h14M12 5l7 7-7 7" />
+                    </svg>
+                  </div>
+                </Link>
+              </motion.div>
+            ))}
+
+            {/* More events CTA */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={isInView ? { opacity: 1 } : {}}
+              transition={{ duration: 0.5, delay: 0.45 }}
+            >
+              <Link
+                href="/events"
+                className="group flex h-full min-h-[72px] items-center justify-center gap-3 rounded-xl border border-dashed border-[var(--border-strong)] bg-transparent transition-all duration-300 hover:border-[var(--ieee-blue)] hover:bg-[var(--ieee-blue)]/5"
+              >
+                <span className="text-sm font-semibold text-[var(--text-muted)] transition-colors group-hover:text-[var(--ieee-blue)] dark:group-hover:text-[var(--ieee-light)]">
+                  +{events.length - 4} more events
+                </span>
+                <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" className="text-[var(--text-muted)] transition-all group-hover:translate-x-1 group-hover:text-[var(--ieee-blue)] dark:group-hover:text-[var(--ieee-light)]">
+                  <path d="M5 12h14M12 5l7 7-7 7" />
+                </svg>
+              </Link>
+            </motion.div>
+          </div>
         </div>
-      </motion.div>
+      </div>
     </section>
   );
 }
