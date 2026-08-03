@@ -5,8 +5,9 @@ import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
+import { useTheme } from "next-themes";
 import Scene from "@/components/three/Scene";
-import { FloatingGlobe, ParticleField } from "@/components/three/Models";
+import { HeroGlobe, ParticleField } from "@/components/three/Models";
 import { useLoader } from "@/context/LoaderProvider";
 import { IMAGES } from "@/constants";
 
@@ -21,7 +22,13 @@ export default function Hero() {
   const textRef    = useRef<HTMLDivElement>(null);
   const cursorGlow = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
-  const { isLoading, isRevealing } = useLoader();
+  const { isLoading, isRevealing, phase, phaseRef, progressRef } = useLoader();
+  const { resolvedTheme } = useTheme();
+
+  // while the story plays the globe sits above the preloader backdrop; once it
+  // has settled it drops back to being ambient hero decoration
+  const settled = phase === "done";
+  const ambientOpacity = resolvedTheme === "light" ? 0.4 : 0.55;
 
   // slideshow only starts once the preloader is out of the way
   useEffect(() => {
@@ -87,12 +94,25 @@ export default function Hero() {
       </div>
 
       {/* ── 3-D Globe + Particles ─────────────────────────────── */}
-      <div className="absolute inset-0 z-[3] opacity-40 dark:opacity-55">
+      {/* One canvas for the whole story. During the preload it is pinned above
+          the backdrop (z-210) at full strength; when the backdrop peels off it
+          settles back into the hero at z-3 and ambient opacity. It is never
+          remounted, so the globe the visitor watched grow is the exact globe
+          sitting in the hero. */}
+      <motion.div
+        className={
+          settled
+            ? "pointer-events-none absolute inset-0 z-[3]"
+            : "pointer-events-none fixed inset-0 z-[210]"
+        }
+        animate={{ opacity: isLoading && !isRevealing ? 0.95 : ambientOpacity }}
+        transition={{ duration: 0.9, ease: "easeOut" }}
+      >
         <Scene className="h-full w-full">
-          <FloatingGlobe />
+          <HeroGlobe progressRef={progressRef} phaseRef={phaseRef} />
           <ParticleField count={1200} />
         </Scene>
-      </div>
+      </motion.div>
 
       {/* ── Slide indicator dots ─────────────────────────────── */}
       <div className="absolute bottom-24 left-1/2 z-10 flex -translate-x-1/2 gap-2">

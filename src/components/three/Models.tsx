@@ -3,6 +3,7 @@
 import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import * as THREE from "three";
+import type { LoadPhase } from "@/context/LoaderProvider";
 
 /* ─── Orbital Line Ring ─────────────────────────────────────── */
 function OrbitalRing({
@@ -228,16 +229,21 @@ export function FloatingGlobe() {
   );
 }
 
-/* ─── Preloader: shockwave ring fired on reveal ─────────────── */
-export type LoadPhase = "loading" | "reveal";
-
+/* ─── Shockwave ring fired the moment loading completes ─────── */
 function ShockRing({ phaseRef, delay = 0 }: { phaseRef: React.MutableRefObject<LoadPhase>; delay?: number }) {
   const mesh = useRef<THREE.Mesh>(null!);
   const mat = useRef<THREE.MeshBasicMaterial>(null!);
   const t = useRef(-delay);
+  // a session that skipped the story never saw "reveal", so never fires
+  const armed = useRef(phaseRef.current === "loading");
+  const fired = useRef(false);
 
   useFrame((_, delta) => {
-    if (phaseRef.current === "loading" || !mesh.current || !mat.current) return;
+    if (!mesh.current || !mat.current) return;
+    if (!fired.current) {
+      if (!armed.current || phaseRef.current === "loading") return;
+      fired.current = true;
+    }
     t.current = Math.min(t.current + delta / 1.5, 1);
     if (t.current < 0) return;
     const e = 1 - Math.pow(1 - t.current, 3);
@@ -253,13 +259,15 @@ function ShockRing({ phaseRef, delay = 0 }: { phaseRef: React.MutableRefObject<L
   );
 }
 
-/* ─── PreloaderGlobe ────────────────────────────────────────── */
+/* ─── HeroGlobe ─────────────────────────────────────────────── */
 /**
- * Same globe as the hero, but it starts tiny + spinning fast and grows as the
- * page loads. On reveal it punches past full size and settles to scale 1 —
- * exactly the scale/camera the hero renders at, so the hand-off is seamless.
+ * The hero's globe — and the preloader's globe. Same object, same canvas, never
+ * remounted. It starts as a tiny fast-spinning speck, grows as the page loads,
+ * punches past full size on completion, then settles to scale 1 and simply
+ * carries on as the ambient hero globe. Nothing cross-fades, so the visitor
+ * watches one continuous thing arrive and sit down.
  */
-export function PreloaderGlobe({
+export function HeroGlobe({
   progressRef,
   phaseRef,
 }: {
@@ -274,30 +282,41 @@ export function PreloaderGlobe({
     const g = group.current;
     if (!g) return;
 
+    const phase = phaseRef.current;
     const p = Math.min(Math.max(progressRef.current, 0) / 100, 1);
     const eased = 1 - Math.pow(1 - p, 3);
 
     // grows from a speck to just under full size while loading
     let target = 0.14 + eased * 0.72;
 
-    if (phaseRef.current === "reveal") {
+    if (phase !== "loading") {
       if (revealAt.current === null) revealAt.current = clock.getElapsedTime();
       const dt = clock.getElapsedTime() - revealAt.current;
-      target = dt < 0.5 ? 1.24 : 1;
+      // overshoot, then settle exactly on 1 and stay there for good
+      target = dt < 0.45 ? 1.22 : 1;
     }
 
     g.scale.setScalar(THREE.MathUtils.damp(g.scale.x, target, 4.5, delta));
 
-    // spin starts fast and bleeds off as the load completes
+    // spin starts fast and bleeds off to the ambient drift rate — the rate is
+    // continuous across the handoff, so there is no visible gear change
     spin.current += delta * (2.8 * (1 - eased) + 0.18);
     g.rotation.y = spin.current;
     g.rotation.z = THREE.MathUtils.damp(g.rotation.z, 0, 2, delta);
     g.position.y = THREE.MathUtils.damp(g.position.y, 0, 2.5, delta);
   });
 
+  // a session that skips the story starts already settled
+  const skipped = phaseRef.current === "done";
+
   return (
     <>
-      <group ref={group} scale={0.14} rotation={[0, 0, 0.4]} position={[0, -0.7, 0]}>
+      <group
+        ref={group}
+        scale={skipped ? 1 : 0.14}
+        rotation={[0, 0, skipped ? 0 : 0.4]}
+        position={[0, skipped ? 0 : -0.7, 0]}
+      >
         <FloatingGlobe />
       </group>
       <ShockRing phaseRef={phaseRef} />
