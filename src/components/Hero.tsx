@@ -32,7 +32,7 @@ export default function Hero() {
     const onLoaded = () => setReady(true);
     window.addEventListener(LOADER_EVENT, onLoaded);
     // Safety net: never let a missing preloader hide the hero.
-    const fallback = setTimeout(() => setReady(true), 5000);
+    const fallback = setTimeout(() => setReady(true), 9000);
     return () => {
       window.removeEventListener(LOADER_EVENT, onLoaded);
       clearTimeout(fallback);

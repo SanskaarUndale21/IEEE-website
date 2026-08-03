@@ -10,6 +10,7 @@ import { hasPreloadedThisSession, markLoaderDone } from "@/lib/loaderBus";
 const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
 const MIN_MS = 2600; // floor so the sequence always reads as an animation
+const MAX_MS = 6000; // ceiling — the loader always leaves, even if `load` never fires
 const EXIT_MS = 1000;
 
 export default function Preloader() {
@@ -80,10 +81,12 @@ export default function Preloader() {
     };
 
     const tick = (now: number) => {
-      const t = Math.min((now - start) / duration, 1);
+      const elapsed = now - start;
+      const t = Math.min(elapsed / duration, 1);
       const eased = 1 - Math.pow(1 - t, 2.2);
-      // Stall just short of full until the page has actually finished loading.
-      const p = Math.min(eased, assetsReady ? 1 : 0.92);
+      // Stall just short of full until the page has finished loading — but never past the ceiling.
+      const open = assetsReady || elapsed >= MAX_MS;
+      const p = Math.min(eased, open ? 1 : 0.92);
       paint(p);
       if (p >= 1) {
         finish();
