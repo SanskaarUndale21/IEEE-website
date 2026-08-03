@@ -1,85 +1,164 @@
 "use client";
 
-import { motion, AnimatePresence } from "framer-motion";
-import Image from "next/image";
-import { useLoader } from "@/context/LoaderProvider";
-import { IMAGES } from "@/constants";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import Scene from "@/components/three/Scene";
+import LoaderGlobe from "@/components/three/LoaderGlobe";
+import { hasPreloadedThisSession, markLoaderDone } from "@/lib/loaderBus";
 
-const STAGES = [
-  "INITIALIZING",
-  "ESTABLISHING ORBIT",
-  "LINKING BRANCHES",
-  "ADVANCING TECHNOLOGY",
-];
+/* useLayoutEffect on the client, useEffect on the server (avoids the SSR warning). */
+const useIsoLayoutEffect = typeof window !== "undefined" ? useLayoutEffect : useEffect;
 
-/**
- * Chrome only — the flat backdrop and the counter. The globe itself lives in
- * the hero and renders *above* this layer, so when the backdrop peels away
- * there is no swap: the same globe was there the whole time.
- */
+const MIN_MS = 2600; // floor so the sequence always reads as an animation
+const EXIT_MS = 1000;
+
 export default function Preloader() {
-  const { phase, progress } = useLoader();
+  const [show, setShow] = useState(true);
+  const [exiting, setExiting] = useState(false);
 
-  const pct = Math.round(progress);
-  const stage = STAGES[Math.min(Math.floor(progress / 26), STAGES.length - 1)];
-  const blownAway = phase !== "loading";
+  const progressRef = useRef(0);
+  const countRef = useRef<HTMLSpanElement>(null);
+  const barRef = useRef<HTMLDivElement>(null);
+  const reducedRef = useRef(false);
+
+  /* Skip on in-session navigation back to the home page. */
+  useIsoLayoutEffect(() => {
+    if (hasPreloadedThisSession()) {
+      setShow(false);
+      markLoaderDone();
+    }
+  }, []);
+
+  /* Hold the page still while the globe assembles. */
+  useEffect(() => {
+    if (!show) return;
+    const prev = document.body.style.overflow;
+    document.body.style.overflow = "hidden";
+    window.scrollTo(0, 0);
+    return () => {
+      document.body.style.overflow = prev;
+    };
+  }, [show]);
+
+  useEffect(() => {
+    if (!show) return;
+
+    reducedRef.current =
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const duration = reducedRef.current ? 700 : MIN_MS;
+
+    let raf = 0;
+    let exitTimer: ReturnType<typeof setTimeout>;
+    let holdTimer: ReturnType<typeof setTimeout>;
+    let assetsReady = document.readyState === "complete";
+
+    const onLoad = () => {
+      assetsReady = true;
+    };
+    if (!assetsReady) window.addEventListener("load", onLoad);
+
+    const start = performance.now();
+
+    const paint = (p: number) => {
+      progressRef.current = p;
+      if (countRef.current) {
+        countRef.current.textContent = String(Math.round(p * 100)).padStart(3, "0");
+      }
+      if (barRef.current) {
+        barRef.current.style.transform = `scaleX(${p})`;
+      }
+    };
+
+    const finish = () => {
+      paint(1);
+      // Beat of stillness at full size, then hand the globe to the hero.
+      holdTimer = setTimeout(() => {
+        markLoaderDone();
+        setExiting(true);
+        exitTimer = setTimeout(() => setShow(false), EXIT_MS);
+      }, 420);
+    };
+
+    const tick = (now: number) => {
+      const t = Math.min((now - start) / duration, 1);
+      const eased = 1 - Math.pow(1 - t, 2.2);
+      // Stall just short of full until the page has actually finished loading.
+      const p = Math.min(eased, assetsReady ? 1 : 0.92);
+      paint(p);
+      if (p >= 1) {
+        finish();
+        return;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+
+    paint(0);
+    raf = requestAnimationFrame(tick);
+
+    return () => {
+      cancelAnimationFrame(raf);
+      clearTimeout(exitTimer);
+      clearTimeout(holdTimer);
+      window.removeEventListener("load", onLoad);
+    };
+  }, [show]);
 
   return (
     <AnimatePresence>
-      {phase !== "done" && (
+      {show && (
         <motion.div
           key="preloader"
-          className="pointer-events-none fixed inset-0 z-[200] flex items-center justify-center overflow-hidden bg-[#FAFAFA] dark:bg-[#111827]"
+          className="noise fixed inset-0 z-[200] overflow-hidden bg-[#FAFAFA] dark:bg-[#111827]"
           initial={{ opacity: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.7, ease: "easeInOut" }}
+          animate={{ opacity: exiting ? 0 : 1 }}
+          transition={{ duration: EXIT_MS / 1000, ease: [0.65, 0, 0.35, 1] }}
+          role="status"
+          aria-label="Loading IEEE SGBIT"
         >
-          {/* grid lines — same rhythm as the hero, so the peel reads continuous */}
-          <div className="absolute inset-0">
-            {[20, 40, 60, 80].map((p) => (
-              <div key={`v${p}`} className="absolute top-0 h-full w-px bg-gray-400/15 dark:bg-white/[0.03]" style={{ left: `${p}%` }} />
-            ))}
-            {[25, 50, 75].map((p) => (
-              <div key={`h${p}`} className="absolute left-0 h-px w-full bg-gray-400/15 dark:bg-white/[0.03]" style={{ top: `${p}%` }} />
-            ))}
+          {/* Same camera, same framing as the hero — so the handoff is a crossfade. */}
+          <div className="absolute inset-0 opacity-70 dark:opacity-90">
+            <Scene className="h-full w-full">
+              <LoaderGlobe progressRef={progressRef} reduced={reducedRef.current} />
+            </Scene>
           </div>
 
-          {/* HUD — scales up and blurs out as the globe punches through it */}
+          {/* Chrome: fades out a beat before the globe does. */}
           <motion.div
-            className="relative z-10 flex flex-col items-center"
-            animate={
-              blownAway
-                ? { opacity: 0, scale: 1.4, filter: "blur(8px)" }
-                : { opacity: 1, scale: 1, filter: "blur(0px)" }
-            }
-            transition={{ duration: 0.7, ease: "easeInOut" }}
+            className="absolute inset-0 flex flex-col justify-between p-6 sm:p-10"
+            animate={{ opacity: exiting ? 0 : 1, y: exiting ? -12 : 0 }}
+            transition={{ duration: 0.4, ease: "easeIn" }}
           >
-            <motion.div
-              initial={{ opacity: 0, scale: 0.4 }}
-              animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.9, ease: "easeOut" }}
-            >
-              <Image src={IMAGES.logo} alt="IEEE" width={56} height={56} className="drop-shadow-xl" priority />
-            </motion.div>
-
-            <p className="mt-6 font-display text-[10px] tracking-[0.45em] text-gray-500 dark:text-white/40">
-              IEEE SGBIT
-            </p>
-
-            <div className="mt-5 h-px w-40 overflow-hidden bg-gray-300 dark:bg-white/10 sm:w-56">
-              <div
-                className="h-full bg-gradient-to-r from-ieee-blue to-ieee-light"
-                style={{ width: `${pct}%`, transition: "width 120ms linear" }}
-              />
+            <div className="flex items-start justify-between text-[9px] font-semibold uppercase tracking-[0.4em] text-gray-500 dark:text-white/35 sm:text-[10px]">
+              <span>IEEE SGBIT</span>
+              <span className="text-right">Belagavi</span>
             </div>
 
-            <div className="mt-3 flex w-40 items-center justify-between sm:w-56">
-              <span className="text-[8px] tracking-[0.3em] text-gray-500 dark:text-white/30">{stage}</span>
-              <span className="font-display text-[10px] tabular-nums tracking-widest text-gray-700 dark:text-white/60">
-                {String(pct).padStart(3, "0")}
-              </span>
+            <div className="flex items-end justify-between gap-6">
+              <p className="max-w-[14rem] text-[9px] uppercase leading-[2] tracking-[0.3em] text-gray-500 dark:text-white/30 sm:max-w-xs sm:text-[10px]">
+                Advancing technology for the benefit of humanity
+              </p>
+              <div className="flex items-baseline gap-1.5 tabular-nums" aria-hidden="true">
+                <span
+                  ref={countRef}
+                  className="font-display text-5xl font-black tracking-tight text-gray-900 dark:text-white sm:text-7xl"
+                >
+                  000
+                </span>
+                <span className="text-[10px] font-semibold tracking-[0.2em] text-ieee-light">
+                  %
+                </span>
+              </div>
             </div>
           </motion.div>
+
+          {/* Progress hairline */}
+          <div className="absolute bottom-0 left-0 h-px w-full bg-gray-400/25 dark:bg-white/10">
+            <div
+              ref={barRef}
+              className="h-full w-full origin-left bg-gradient-to-r from-ieee-blue to-ieee-light"
+              style={{ transform: "scaleX(0)" }}
+            />
+          </div>
         </motion.div>
       )}
     </AnimatePresence>
