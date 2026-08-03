@@ -4,6 +4,7 @@ import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import Scene from "@/components/three/Scene";
 import LoaderGlobe from "@/components/three/LoaderGlobe";
+import { ParticleField } from "@/components/three/Models";
 import { hasPreloadedThisSession, markLoaderDone } from "@/lib/loaderBus";
 
 /* useLayoutEffect on the client, useEffect on the server (avoids the SSR warning). */
@@ -83,7 +84,7 @@ export default function Preloader() {
     const tick = (now: number) => {
       const elapsed = now - start;
       const t = Math.min(elapsed / duration, 1);
-      const eased = 1 - Math.pow(1 - t, 2.2);
+      const eased = 1 - Math.pow(1 - t, 1.5);
       // Stall just short of full until the page has finished loading — but never past the ceiling.
       const open = assetsReady || elapsed >= MAX_MS;
       const p = Math.min(eased, open ? 1 : 0.92);
@@ -119,9 +120,10 @@ export default function Preloader() {
           aria-label="Loading IEEE SGBIT"
         >
           {/* Same camera, same framing as the hero — so the handoff is a crossfade. */}
-          <div className="absolute inset-0 opacity-70 dark:opacity-90">
+          <div className="absolute inset-0">
             <Scene className="h-full w-full">
               <LoaderGlobe progressRef={progressRef} reduced={reducedRef.current} />
+              <ParticleField count={700} />
             </Scene>
           </div>
 
