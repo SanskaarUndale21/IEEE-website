@@ -2,6 +2,7 @@
 
 import { memo, useEffect, useRef, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
+import { usePathname } from "next/navigation";
 import Image from "next/image";
 import Scene from "@/components/three/Scene";
 import { PreloaderGlobe, type LoadPhase } from "@/components/three/Models";
@@ -9,9 +10,11 @@ import { useLoader } from "@/context/LoaderProvider";
 import { IMAGES } from "@/constants";
 
 /* Minimum time the story is allowed to run, even on a warm cache. */
-const MIN_DURATION = 2600;
+const MIN_DURATION = 1500;
 /* Time from "reveal" trigger until the overlay is gone. */
-const REVEAL_DURATION = 1400;
+const REVEAL_DURATION = 900;
+/* Plays once per tab, not on every navigation back to the homepage. */
+const SESSION_KEY = "ieee-sgbit-preloaded";
 
 const STAGES = [
   "INITIALIZING",
@@ -35,8 +38,12 @@ const GlobeStage = memo(function GlobeStage({
   );
 });
 
+type Mode = "pending" | "play" | "skip";
+
 export default function Preloader() {
   const { finish } = useLoader();
+  const pathname = usePathname();
+  const [mode, setMode] = useState<Mode>("pending");
   const [progress, setProgress] = useState(0);
   const [phase, setPhase] = useState<LoadPhase>("loading");
   const [gone, setGone] = useState(false);
@@ -47,8 +54,24 @@ export default function Preloader() {
 
   phaseRef.current = phase;
 
+  /* ── the story belongs to the homepage hero, and only on a cold visit ── */
+  useEffect(() => {
+    const reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const seen = sessionStorage.getItem(SESSION_KEY) === "1";
+
+    if (pathname !== "/" || seen || reduced) {
+      setMode("skip");
+      setGone(true);
+      finish();
+      return;
+    }
+    sessionStorage.setItem(SESSION_KEY, "1");
+    setMode("play");
+  }, [pathname, finish]);
+
   /* ── drive the counter: eases toward 100, gated by window load + min time ── */
   useEffect(() => {
+    if (mode !== "play") return;
     const start = performance.now();
     let assetsReady = document.readyState === "complete";
 
@@ -77,24 +100,22 @@ export default function Preloader() {
       cancelAnimationFrame(raf);
       window.removeEventListener("load", onLoad);
     };
-  }, []);
+  }, [mode]);
 
   /* ── at 100 the globe punches out and the overlay peels away ── */
   useEffect(() => {
-    if (progress < 99.5 || phase === "reveal") return;
+    if (mode !== "play" || progress < 99.5 || phase === "reveal") return;
     setPhase("reveal");
     const t = setTimeout(() => {
+      // land the visitor at the top of the hero, since the overlay hid the page
+      window.scrollTo(0, 0);
       finish();
       setGone(true);
     }, REVEAL_DURATION);
     return () => clearTimeout(t);
-  }, [progress, phase, finish]);
+  }, [mode, progress, phase, finish]);
 
-  /* lock scroll while the story plays */
-  useEffect(() => {
-    document.body.style.overflow = gone ? "" : "hidden";
-    return () => { document.body.style.overflow = ""; };
-  }, [gone]);
+  if (mode === "skip") return null;
 
   const pct = Math.round(progress);
   const stage = STAGES[Math.min(Math.floor(progress / 26), STAGES.length - 1)];
@@ -109,6 +130,10 @@ export default function Preloader() {
           exit={{ opacity: 0 }}
           transition={{ duration: 0.7, ease: "easeInOut" }}
         >
+          {/* while deciding, paint nothing but the flat backdrop — this avoids
+              spinning up a WebGL context on routes that skip the story */}
+          {mode === "play" && (
+          <>
           {/* grid lines — same rhythm as the hero, so the transition reads continuous */}
           <div className="pointer-events-none absolute inset-0">
             {[20, 40, 60, 80].map((p) => (
@@ -165,6 +190,8 @@ export default function Preloader() {
               </span>
             </div>
           </motion.div>
+          </>
+          )}
         </motion.div>
       )}
     </AnimatePresence>

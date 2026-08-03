@@ -1,6 +1,9 @@
 "use client";
 
-import { createContext, useContext, useState, useCallback, useMemo } from "react";
+import { createContext, useContext, useState, useCallback, useMemo, useEffect } from "react";
+
+/** Hard ceiling — the site must never stay gated, whatever the preloader does. */
+const SAFETY_TIMEOUT = 6000;
 
 type LoaderState = {
   /** true until the preloader has fully handed off to the page */
@@ -28,6 +31,16 @@ export default function LoaderProvider({ children }: { children: React.ReactNode
   const finish = useCallback(() => {
     setIsRevealing(true);
     setIsLoading(false);
+  }, []);
+
+  // if the preloader ever fails to hand off (WebGL error, stalled load, …)
+  // release the page anyway rather than leaving it blank
+  useEffect(() => {
+    const t = setTimeout(() => {
+      setIsRevealing(true);
+      setIsLoading(false);
+    }, SAFETY_TIMEOUT);
+    return () => clearTimeout(t);
   }, []);
 
   const value = useMemo(
