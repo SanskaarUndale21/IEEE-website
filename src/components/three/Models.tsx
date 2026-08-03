@@ -228,6 +228,84 @@ export function FloatingGlobe() {
   );
 }
 
+/* ─── Preloader: shockwave ring fired on reveal ─────────────── */
+export type LoadPhase = "loading" | "reveal";
+
+function ShockRing({ phaseRef, delay = 0 }: { phaseRef: React.MutableRefObject<LoadPhase>; delay?: number }) {
+  const mesh = useRef<THREE.Mesh>(null!);
+  const mat = useRef<THREE.MeshBasicMaterial>(null!);
+  const t = useRef(-delay);
+
+  useFrame((_, delta) => {
+    if (phaseRef.current === "loading" || !mesh.current || !mat.current) return;
+    t.current = Math.min(t.current + delta / 1.5, 1);
+    if (t.current < 0) return;
+    const e = 1 - Math.pow(1 - t.current, 3);
+    mesh.current.scale.setScalar(0.4 + e * 5.5);
+    mat.current.opacity = 0.45 * (1 - e);
+  });
+
+  return (
+    <mesh ref={mesh} rotation={[Math.PI / 2.3, 0, 0]} scale={0.4}>
+      <torusGeometry args={[1, 0.01, 12, 96]} />
+      <meshBasicMaterial ref={mat} color="#4DC8F5" transparent opacity={0} />
+    </mesh>
+  );
+}
+
+/* ─── PreloaderGlobe ────────────────────────────────────────── */
+/**
+ * Same globe as the hero, but it starts tiny + spinning fast and grows as the
+ * page loads. On reveal it punches past full size and settles to scale 1 —
+ * exactly the scale/camera the hero renders at, so the hand-off is seamless.
+ */
+export function PreloaderGlobe({
+  progressRef,
+  phaseRef,
+}: {
+  progressRef: React.MutableRefObject<number>;
+  phaseRef: React.MutableRefObject<LoadPhase>;
+}) {
+  const group = useRef<THREE.Group>(null!);
+  const revealAt = useRef<number | null>(null);
+  const spin = useRef(0);
+
+  useFrame(({ clock }, delta) => {
+    const g = group.current;
+    if (!g) return;
+
+    const p = Math.min(Math.max(progressRef.current, 0) / 100, 1);
+    const eased = 1 - Math.pow(1 - p, 3);
+
+    // grows from a speck to just under full size while loading
+    let target = 0.14 + eased * 0.72;
+
+    if (phaseRef.current === "reveal") {
+      if (revealAt.current === null) revealAt.current = clock.getElapsedTime();
+      const dt = clock.getElapsedTime() - revealAt.current;
+      target = dt < 0.5 ? 1.24 : 1;
+    }
+
+    g.scale.setScalar(THREE.MathUtils.damp(g.scale.x, target, 4.5, delta));
+
+    // spin starts fast and bleeds off as the load completes
+    spin.current += delta * (2.8 * (1 - eased) + 0.18);
+    g.rotation.y = spin.current;
+    g.rotation.z = THREE.MathUtils.damp(g.rotation.z, 0, 2, delta);
+    g.position.y = THREE.MathUtils.damp(g.position.y, 0, 2.5, delta);
+  });
+
+  return (
+    <>
+      <group ref={group} scale={0.14} rotation={[0, 0, 0.4]} position={[0, -0.7, 0]}>
+        <FloatingGlobe />
+      </group>
+      <ShockRing phaseRef={phaseRef} />
+      <ShockRing phaseRef={phaseRef} delay={0.25} />
+    </>
+  );
+}
+
 /* ─── ParticleField ─────────────────────────────────────────── */
 export function ParticleField({ count = 2000 }: { count?: number }) {
   const pointsRef = useRef<THREE.Points>(null!);

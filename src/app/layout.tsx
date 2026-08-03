@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Inter, Space_Grotesk } from "next/font/google";
 import { ThemeProvider } from "@/context/ThemeProvider";
 import SmoothScroll from "@/context/SmoothScroll";
+import LoaderProvider from "@/context/LoaderProvider";
+import Preloader from "@/components/Preloader";
 import "./globals.css";
 
 const inter = Inter({
@@ -37,7 +39,10 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange={false}
         >
-          <SmoothScroll>{children}</SmoothScroll>
+          <LoaderProvider>
+            <Preloader />
+            <SmoothScroll>{children}</SmoothScroll>
+          </LoaderProvider>
         </ThemeProvider>
       </body>
     </html>

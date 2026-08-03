@@ -7,6 +7,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import Scene from "@/components/three/Scene";
 import { FloatingGlobe, ParticleField } from "@/components/three/Models";
+import { useLoader } from "@/context/LoaderProvider";
 import { IMAGES } from "@/constants";
 
 const SLIDES = [
@@ -20,11 +21,14 @@ export default function Hero() {
   const textRef    = useRef<HTMLDivElement>(null);
   const cursorGlow = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
+  const { isLoading, isRevealing } = useLoader();
 
+  // slideshow only starts once the preloader is out of the way
   useEffect(() => {
+    if (isLoading) return;
     const id = setInterval(() => setCurrent((p) => (p + 1) % SLIDES.length), SLIDE_INTERVAL);
     return () => clearInterval(id);
-  }, []);
+  }, [isLoading]);
 
   const handleMouseMove = useCallback((e: MouseEvent) => {
     if (cursorGlow.current) {
@@ -37,10 +41,11 @@ export default function Hero() {
     return () => window.removeEventListener("mousemove", handleMouseMove);
   }, [handleMouseMove]);
 
+  // hero copy waits for the preloader globe to settle, then rides in behind it
   useEffect(() => {
-    if (!textRef.current) return;
+    if (!textRef.current || !isRevealing) return;
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.6 });
+      const tl = gsap.timeline({ delay: 0.15 });
       tl.from(".hero-line",    { y: 130, opacity: 0, rotateX: -80, stagger: 0.18, duration: 1.3, ease: "power4.out" })
         .from(".hero-divider", { scaleX: 0, duration: 0.9, ease: "power2.inOut" }, "-=0.5")
         .from(".hero-sub",     { y: 30, opacity: 0, duration: 0.7, ease: "power3.out" }, "-=0.4")
@@ -49,7 +54,7 @@ export default function Hero() {
         .from(".hero-scroll",  { opacity: 0, duration: 1 }, "-=0.1");
     }, textRef);
     return () => ctx.revert();
-  }, []);
+  }, [isRevealing]);
 
   return (
     <section id="home" className="noise relative flex h-screen w-full items-center justify-center overflow-hidden">
@@ -98,8 +103,12 @@ export default function Hero() {
       </div>
 
       {/* ── Hero content ──────────────────────────────────────── */}
-      <div ref={textRef} className="relative z-10 flex flex-col items-center px-4 text-center" style={{ perspective: "1000px" }}>
-        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.3 }} className="mb-5 sm:mb-6">
+      <div
+        ref={textRef}
+        className="relative z-10 flex flex-col items-center px-4 text-center"
+        style={{ perspective: "1000px", opacity: isRevealing ? 1 : 0 }}
+      >
+        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={isRevealing ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 0.5 }} transition={{ duration: 1, delay: 0.1 }} className="mb-5 sm:mb-6">
           <Image src={IMAGES.logo} alt="IEEE" width={64} height={64} className="mx-auto drop-shadow-xl sm:w-[72px] sm:h-[72px]" priority />
         </motion.div>
 
@@ -152,11 +161,11 @@ export default function Hero() {
       </div>
 
       {/* ── Corner labels ─────────────────────────────────────── */}
-      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}
+      <motion.p initial={{ opacity: 0 }} animate={{ opacity: isRevealing ? 1 : 0 }} transition={{ delay: 1.6 }}
         className="absolute bottom-8 left-8 z-10 hidden text-[9px] tracking-[0.25em] text-gray-500 dark:text-white/15 md:block">
         S.G. BALEKUNDRI INSTITUTE<br />OF TECHNOLOGY
       </motion.p>
-      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}
+      <motion.p initial={{ opacity: 0 }} animate={{ opacity: isRevealing ? 1 : 0 }} transition={{ delay: 1.6 }}
         className="absolute bottom-8 right-8 z-10 hidden text-right text-[9px] tracking-[0.25em] text-gray-500 dark:text-white/15 md:block">
         IEEE STUDENT<br />BRANCH
       </motion.p>
