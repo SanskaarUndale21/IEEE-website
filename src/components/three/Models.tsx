@@ -56,16 +56,12 @@ function OrbitingDot({
   phase,
   tilt,
   color,
-  opacity = 0.75,
-  size = 0.035,
 }: {
   orbitRadius: number;
   speed: number;
   phase: number;
   tilt: [number, number, number];
   color: string;
-  opacity?: number;
-  size?: number;
 }) {
   const ref = useRef<THREE.Mesh>(null!);
 
@@ -82,28 +78,20 @@ function OrbitingDot({
 
   return (
     <mesh ref={ref} rotation={tilt}>
-      <sphereGeometry args={[size, 8, 8]} />
+      <sphereGeometry args={[0.035, 8, 8]} />
       <meshStandardMaterial
         color={color}
         emissive={color}
         emissiveIntensity={1.2}
         transparent
-        opacity={opacity}
+        opacity={0.75}
       />
     </mesh>
   );
 }
 
 /* ─── Outer Particle Burst ──────────────────────────────────── */
-function StarBurst({
-  count = 300,
-  opacity = 0.4,
-  size = 0.045,
-}: {
-  count?: number;
-  opacity?: number;
-  size?: number;
-}) {
+function StarBurst({ count = 300 }: { count?: number }) {
   const ref = useRef<THREE.Points>(null!);
 
   const { positions, colors } = useMemo(() => {
@@ -143,10 +131,10 @@ function StarBurst({
         <bufferAttribute attach="attributes-color" count={count} array={colors} itemSize={3} />
       </bufferGeometry>
       <pointsMaterial
-        size={size}
+        size={0.045}
         vertexColors
         transparent
-        opacity={opacity}
+        opacity={0.4}
         sizeAttenuation
         depthWrite={false}
       />
@@ -155,16 +143,9 @@ function StarBurst({
 }
 
 /* ─── FloatingGlobe ─────────────────────────────────────────── */
-/**
- * `boost` scales every material's opacity. The hero leaves it at 1, where the
- * globe is ambience behind a photo. The preloader raises it, because there the
- * globe is the only thing on screen and has to actually read.
- */
-export function FloatingGlobe({ boost = 1 }: { boost?: number } = {}) {
+export function FloatingGlobe() {
   const meshRef = useRef<THREE.Mesh>(null!);
   const wireRef = useRef<THREE.Mesh>(null!);
-
-  const b = (v: number) => Math.min(1, v * boost);
 
   useFrame(({ clock }) => {
     const t = clock.getElapsedTime();
@@ -186,9 +167,9 @@ export function FloatingGlobe({ boost = 1 }: { boost?: number } = {}) {
         <meshStandardMaterial
           color="#00629B"
           emissive="#00629B"
-          emissiveIntensity={0.3 * boost}
+          emissiveIntensity={0.3}
           transparent
-          opacity={b(0.15)}
+          opacity={0.15}
           roughness={0.2}
           metalness={0.8}
         />
@@ -201,7 +182,7 @@ export function FloatingGlobe({ boost = 1 }: { boost?: number } = {}) {
           color="#00A3E0"
           wireframe
           transparent
-          opacity={b(0.12)}
+          opacity={0.12}
         />
       </mesh>
 
@@ -213,7 +194,7 @@ export function FloatingGlobe({ boost = 1 }: { boost?: number } = {}) {
           emissive="#00A3E0"
           emissiveIntensity={0.5}
           transparent
-          opacity={b(0.3)}
+          opacity={0.3}
         />
       </mesh>
 
@@ -225,24 +206,24 @@ export function FloatingGlobe({ boost = 1 }: { boost?: number } = {}) {
           emissive="#00629B"
           emissiveIntensity={0.5}
           transparent
-          opacity={b(0.2)}
+          opacity={0.2}
         />
       </mesh>
 
       {/* ── NEW: Line rings around the globe ── */}
-      <OrbitalRing radius={2.5} tilt={[0.5, 0, 0.2]}     speed={0.12}  color="#00A3E0" opacity={b(0.18)} />
-      <OrbitalRing radius={3.0} tilt={[-0.3, 0.5, 0.1]}  speed={-0.09} color="#00629B" opacity={b(0.14)} />
-      <OrbitalRing radius={3.5} tilt={[0.8, -0.3, 0.4]}  speed={0.07}  color="#00A3E0" opacity={b(0.10)} />
-      <OrbitalRing radius={2.2} tilt={[Math.PI/2, 0, 0]} speed={0.15}  color="#4DC8F5" opacity={b(0.12)} />
+      <OrbitalRing radius={2.5} tilt={[0.5, 0, 0.2]}     speed={0.12}  color="#00A3E0" opacity={0.18} />
+      <OrbitalRing radius={3.0} tilt={[-0.3, 0.5, 0.1]}  speed={-0.09} color="#00629B" opacity={0.14} />
+      <OrbitalRing radius={3.5} tilt={[0.8, -0.3, 0.4]}  speed={0.07}  color="#00A3E0" opacity={0.10} />
+      <OrbitalRing radius={2.2} tilt={[Math.PI/2, 0, 0]} speed={0.15}  color="#4DC8F5" opacity={0.12} />
 
       {/* ── NEW: Orbiting glowing dots along the rings ── */}
-      <OrbitingDot orbitRadius={2.5} speed={0.6}  phase={0}           tilt={[0.5, 0, 0.2]}     color="#00A3E0" opacity={b(0.75)} size={0.035 * Math.min(1.6, boost)} />
-      <OrbitingDot orbitRadius={2.5} speed={0.6}  phase={Math.PI}     tilt={[0.5, 0, 0.2]}     color="#00A3E0" opacity={b(0.75)} size={0.035 * Math.min(1.6, boost)} />
-      <OrbitingDot orbitRadius={3.0} speed={0.45} phase={1.2}         tilt={[-0.3, 0.5, 0.1]}  color="#00629B" opacity={b(0.75)} size={0.035 * Math.min(1.6, boost)} />
-      <OrbitingDot orbitRadius={3.5} speed={0.3}  phase={2.5}         tilt={[0.8, -0.3, 0.4]}  color="#4DC8F5" opacity={b(0.75)} size={0.035 * Math.min(1.6, boost)} />
+      <OrbitingDot orbitRadius={2.5} speed={0.6}  phase={0}           tilt={[0.5, 0, 0.2]}     color="#00A3E0" />
+      <OrbitingDot orbitRadius={2.5} speed={0.6}  phase={Math.PI}     tilt={[0.5, 0, 0.2]}     color="#00A3E0" />
+      <OrbitingDot orbitRadius={3.0} speed={0.45} phase={1.2}         tilt={[-0.3, 0.5, 0.1]}  color="#00629B" />
+      <OrbitingDot orbitRadius={3.5} speed={0.3}  phase={2.5}         tilt={[0.8, -0.3, 0.4]}  color="#4DC8F5" />
 
       {/* ── NEW: Shell star-burst particles ── */}
-      <StarBurst count={280} opacity={b(0.4)} size={0.045 * Math.min(1.5, boost)} />
+      <StarBurst count={280} />
     </group>
   );
 }

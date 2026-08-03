@@ -1,4 +1,3 @@
-import Preloader from "@/components/Preloader";
 import Navbar from "@/components/Navbar";
 import Hero from "@/components/Hero";
 import Marquee from "@/components/Marquee";
@@ -12,7 +11,6 @@ import Footer from "@/components/Footer";
 export default function Home() {
   return (
     <main className="relative">
-      <Preloader />
       <Navbar />
       <Hero />
       <Marquee />

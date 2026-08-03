@@ -8,7 +8,6 @@ import gsap from "gsap";
 import Scene from "@/components/three/Scene";
 import { FloatingGlobe, ParticleField } from "@/components/three/Models";
 import { IMAGES } from "@/constants";
-import { LOADER_EVENT, isLoaderDone, hasPreloadedThisSession } from "@/lib/loaderBus";
 
 const SLIDES = [
   { src: IMAGES.event1,           alt: "IEEE SGBIT Event" },
@@ -21,23 +20,6 @@ export default function Hero() {
   const textRef    = useRef<HTMLDivElement>(null);
   const cursorGlow = useRef<HTMLDivElement>(null);
   const [current, setCurrent] = useState(0);
-  const [ready, setReady] = useState(false);
-
-  /* Wait for the preloader to hand the globe over before playing the hero. */
-  useEffect(() => {
-    if (isLoaderDone() || hasPreloadedThisSession()) {
-      setReady(true);
-      return;
-    }
-    const onLoaded = () => setReady(true);
-    window.addEventListener(LOADER_EVENT, onLoaded);
-    // Safety net: never let a missing preloader hide the hero.
-    const fallback = setTimeout(() => setReady(true), 9000);
-    return () => {
-      window.removeEventListener(LOADER_EVENT, onLoaded);
-      clearTimeout(fallback);
-    };
-  }, []);
 
   useEffect(() => {
     const id = setInterval(() => setCurrent((p) => (p + 1) % SLIDES.length), SLIDE_INTERVAL);
@@ -56,9 +38,9 @@ export default function Hero() {
   }, [handleMouseMove]);
 
   useEffect(() => {
-    if (!textRef.current || !ready) return;
+    if (!textRef.current) return;
     const ctx = gsap.context(() => {
-      const tl = gsap.timeline({ delay: 0.35 });
+      const tl = gsap.timeline({ delay: 0.6 });
       tl.from(".hero-line",    { y: 130, opacity: 0, rotateX: -80, stagger: 0.18, duration: 1.3, ease: "power4.out" })
         .from(".hero-divider", { scaleX: 0, duration: 0.9, ease: "power2.inOut" }, "-=0.5")
         .from(".hero-sub",     { y: 30, opacity: 0, duration: 0.7, ease: "power3.out" }, "-=0.4")
@@ -67,7 +49,7 @@ export default function Hero() {
         .from(".hero-scroll",  { opacity: 0, duration: 1 }, "-=0.1");
     }, textRef);
     return () => ctx.revert();
-  }, [ready]);
+  }, []);
 
   return (
     <section id="home" className="noise relative flex h-screen w-full items-center justify-center overflow-hidden">
@@ -100,21 +82,12 @@ export default function Hero() {
       </div>
 
       {/* ── 3-D Globe + Particles ─────────────────────────────── */}
-      <motion.div
-        className="absolute inset-0 z-[3]"
-        initial={{ opacity: 0, scale: 1.06 }}
-        animate={ready ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.06 }}
-        transition={{ duration: 1.2, ease: [0.22, 1, 0.36, 1] }}
-      >
-        <div className="h-full w-full opacity-40 dark:opacity-55">
-          {ready && (
-            <Scene className="h-full w-full">
-              <FloatingGlobe />
-              <ParticleField count={1200} />
-            </Scene>
-          )}
-        </div>
-      </motion.div>
+      <div className="absolute inset-0 z-[3] opacity-40 dark:opacity-55">
+        <Scene className="h-full w-full">
+          <FloatingGlobe />
+          <ParticleField count={1200} />
+        </Scene>
+      </div>
 
       {/* ── Slide indicator dots ─────────────────────────────── */}
       <div className="absolute bottom-24 left-1/2 z-10 flex -translate-x-1/2 gap-2">
@@ -126,7 +99,7 @@ export default function Hero() {
 
       {/* ── Hero content ──────────────────────────────────────── */}
       <div ref={textRef} className="relative z-10 flex flex-col items-center px-4 text-center" style={{ perspective: "1000px" }}>
-        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={ready ? { opacity: 1, scale: 1 } : {}} transition={{ duration: 1, delay: 0.2 }} className="mb-5 sm:mb-6">
+        <motion.div initial={{ opacity: 0, scale: 0.5 }} animate={{ opacity: 1, scale: 1 }} transition={{ duration: 1, delay: 0.3 }} className="mb-5 sm:mb-6">
           <Image src={IMAGES.logo} alt="IEEE" width={64} height={64} className="mx-auto drop-shadow-xl sm:w-[72px] sm:h-[72px]" priority />
         </motion.div>
 
@@ -179,11 +152,11 @@ export default function Hero() {
       </div>
 
       {/* ── Corner labels ─────────────────────────────────────── */}
-      <motion.p initial={{ opacity: 0 }} animate={ready ? { opacity: 1 } : {}} transition={{ delay: 1.6, duration: 0.8 }}
+      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}
         className="absolute bottom-8 left-8 z-10 hidden text-[9px] tracking-[0.25em] text-gray-500 dark:text-white/15 md:block">
         S.G. BALEKUNDRI INSTITUTE<br />OF TECHNOLOGY
       </motion.p>
-      <motion.p initial={{ opacity: 0 }} animate={ready ? { opacity: 1 } : {}} transition={{ delay: 1.6, duration: 0.8 }}
+      <motion.p initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ delay: 2.5 }}
         className="absolute bottom-8 right-8 z-10 hidden text-right text-[9px] tracking-[0.25em] text-gray-500 dark:text-white/15 md:block">
         IEEE STUDENT<br />BRANCH
       </motion.p>
