@@ -28,6 +28,10 @@ export default function TeamPage() {
       <FluidCursor
         colorA="#00629B"
         colorB="#0EA5E9"
+        falloff={0.42}
+        splatRadius={0.32}
+        dyeDissipation={0.975}
+        intensity={1.15}
         className="fixed inset-0 z-0"
       />
 
