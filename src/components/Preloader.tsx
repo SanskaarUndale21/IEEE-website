@@ -78,6 +78,8 @@ export default function Preloader() {
       } catch {
         /* private mode: loader simply replays next visit */
       }
+      // the hero holds its intro back until the overlay starts clearing
+      window.dispatchEvent(new Event("ieee:preloader-done"));
       setExiting(true);
     };
 
