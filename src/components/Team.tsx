@@ -6,6 +6,8 @@ import Image from "next/image";
 import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import { useTheme } from "next-themes";
+import CursorGrid from "@/components/ui/CursorGrid";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -31,6 +33,11 @@ export default function Team() {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const [hovered, setHovered] = useState<number | null>(null);
+  const [mounted, setMounted] = useState(false);
+  const { resolvedTheme } = useTheme();
+
+  useEffect(() => setMounted(true), []);
+  const isDark = resolvedTheme !== "light";
 
   useEffect(() => {
     if (!sectionRef.current) return;
@@ -49,9 +56,28 @@ export default function Team() {
 
   return (
     <section id="team" ref={sectionRef} className="noise relative overflow-hidden bg-[var(--bg)] px-4 py-24 md:px-6 md:py-32">
+      <div className="pointer-events-none absolute inset-0 z-0 overflow-hidden">
+        {mounted && (
+          <CursorGrid
+            cellSize={72}
+            color={isDark ? "#0EA5E9" : "#00629B"}
+            radius={190}
+            falloff="smooth"
+            holdTime={260}
+            fadeDuration={1100}
+            lineWidth={1}
+            maxOpacity={isDark ? 0.5 : 0.32}
+            fillOpacity={isDark ? 0.05 : 0.03}
+            gridOpacity={isDark ? 0.035 : 0.05}
+            cellRadius={2}
+            clickPulse
+            pulseSpeed={520}
+          />
+        )}
+      </div>
       <div className="pointer-events-none absolute left-1/2 top-0 h-[600px] w-[600px] -translate-x-1/2 rounded-full bg-ieee-blue/[0.03] blur-[200px] dark:bg-ieee-blue/[0.06]" />
 
-      <div className="mx-auto max-w-7xl">
+      <div className="relative z-[1] mx-auto max-w-7xl">
 
         {/* ── Header ─────────────────────────────── */}
         <motion.div
