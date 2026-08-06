@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { motion, useInView } from "framer-motion";
+import { useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -10,6 +10,12 @@ import { ABOUT_STATS, ABOUT_VALUES, TIMELINE, IMAGES, FACULTY_ADVISOR } from "@/
 const HalftoneReveal = dynamic(() => import("@/components/three/HalftoneReveal"), {
   ssr: false,
 });
+
+const HERO_SLIDES = [
+  { src: IMAGES.collegeTopView, alt: "SGBIT Campus Aerial View" },
+  { src: IMAGES.event1, alt: "IEEE SGBIT Event" },
+];
+const HERO_SLIDE_INTERVAL = 6000;
 
 const valueIcons = [
   <svg key="0" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5"><path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" /></svg>,
@@ -29,15 +35,55 @@ export default function AboutPage() {
   const valuesInView   = useInView(valuesRef,   { once: true, margin: "-80px" });
   const timelineInView = useInView(timelineRef, { once: true, margin: "-80px" });
 
+  const [slide, setSlide] = useState(0);
+  useEffect(() => {
+    const id = setInterval(() => setSlide((p) => (p + 1) % HERO_SLIDES.length), HERO_SLIDE_INTERVAL);
+    return () => clearInterval(id);
+  }, []);
+
   return (
     <main className="bg-[var(--bg)]">
 
       {/* ── Hero ──────────────────────────────────────────────── */}
-      <section className="noise relative overflow-hidden px-5 pt-16 pb-16 md:px-8 md:pt-20 md:pb-24">
-        {/* Ambient glow */}
-        <div className="pointer-events-none absolute left-1/2 top-0 h-[500px] w-[500px] -translate-x-1/2 -translate-y-1/3 rounded-full bg-ieee-blue/[0.05] blur-[180px] dark:bg-ieee-light/[0.06]" />
+      <section className="noise relative isolate flex min-h-[85vh] w-full items-center overflow-hidden bg-gray-950 px-5 py-24 md:px-8">
+        {/* Full-bleed crossfading campus + event photos, lightly halftoned */}
+        <div className="absolute inset-0 z-0">
+          <AnimatePresence mode="sync">
+            {HERO_SLIDES.map((s, i) =>
+              i === slide ? (
+                <motion.div
+                  key={s.src}
+                  className="absolute inset-0"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 1.4 }}
+                >
+                  <HalftoneReveal
+                    src={s.src}
+                    inkColor="#0EA5E9"
+                    paperColor="#0b1220"
+                    mode="mono"
+                    dotSize={0.55}
+                    dotDensity={64}
+                    angle={28}
+                    contrast={0.75}
+                    revealRadius={0.24}
+                    edge={0.55}
+                    idleReveal={0.55}
+                    follow={0.3}
+                    borderRadius="0px"
+                    className="absolute inset-0"
+                  />
+                </motion.div>
+              ) : null
+            )}
+          </AnimatePresence>
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/70 to-gray-950/30" />
+          <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-gray-950/70 via-transparent to-gray-950/40" />
+        </div>
 
-        <div className="relative z-10 mx-auto max-w-7xl">
+        <div className="relative z-10 mx-auto w-full max-w-5xl text-center">
           <motion.div
             initial={{ opacity: 0, y: -12 }}
             animate={{ opacity: 1, y: 0 }}
@@ -45,7 +91,7 @@ export default function AboutPage() {
           >
             <Link
               href="/"
-              className="mb-10 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)] transition-colors hover:text-[var(--ieee-blue)] dark:hover:text-[var(--ieee-light)]"
+              className="mb-8 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-white/50 transition-colors hover:text-ieee-light"
             >
               <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
                 <path d="M19 12H5M12 5l-7 7 7 7" />
@@ -54,99 +100,47 @@ export default function AboutPage() {
             </Link>
           </motion.div>
 
-          <div className="grid gap-12 lg:grid-cols-[1.05fr_1fr] lg:items-center lg:gap-16">
-            {/* ── Copy ── */}
-            <motion.div
-              initial={{ opacity: 0, x: -24 }}
-              animate={{ opacity: 1, x: 0 }}
-              transition={{ duration: 0.7, delay: 0.1 }}
-            >
-              <p className="section-label mb-4">About Us</p>
-              <h1 className="font-display text-4xl font-bold leading-[1.02] text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
-                Engineering a<br />
-                <span className="gradient-text">Better Tomorrow</span>
-              </h1>
-              <p className="mt-6 max-w-xl text-sm leading-relaxed text-[var(--text-secondary)] md:text-base">
-                The IEEE Student Branch at S.G. Balekundri Institute of Technology, Belagavi — a hub for engineers
-                passionate about technology, innovation, and professional growth.
-              </p>
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.1 }}
+          >
+            <p className="section-label mb-4 !text-ieee-light">About Us</p>
+            <h1 className="font-display text-4xl font-bold leading-[1.02] text-white md:text-6xl lg:text-7xl">
+              Engineering a<br />
+              <span className="text-ieee-light">Better Tomorrow</span>
+            </h1>
+            <p className="mx-auto mt-6 max-w-2xl text-sm leading-relaxed text-white/60 md:text-base">
+              The IEEE Student Branch at S.G. Balekundri Institute of Technology, Belagavi — a hub for engineers
+              passionate about technology, innovation, and professional growth.
+            </p>
 
-              <div className="mt-8 flex flex-wrap gap-4">
-                <Link href="/join" className="btn-primary-sq">Join IEEE</Link>
-                <Link href="/team" className="btn-outline-sq">Meet the Team</Link>
-              </div>
+            <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
+              <Link href="/join" className="btn-primary-sq">Join IEEE</Link>
+              <Link href="/team" className="btn-outline-sq !border-white/25 !text-white hover:!border-ieee-light hover:!text-ieee-light">Meet the Team</Link>
+            </div>
+          </motion.div>
 
-              {/* Stats */}
-              <div className="mt-12 grid grid-cols-2 gap-3 sm:grid-cols-4">
-                {ABOUT_STATS.map((stat, i) => (
-                  <motion.div
-                    key={stat.label}
-                    initial={{ opacity: 0, y: 14 }}
-                    animate={{ opacity: 1, y: 0 }}
-                    transition={{ duration: 0.5, delay: 0.35 + i * 0.08 }}
-                    className="group relative overflow-hidden rounded-xl border border-[var(--border)] bg-[var(--bg-card)] p-4 transition-all duration-300 hover:-translate-y-0.5 hover:border-[var(--ieee-blue)]/30 hover:shadow-[0_8px_24px_rgba(0,98,155,0.12)]"
-                  >
-                    <div className="pointer-events-none absolute inset-0 bg-gradient-to-br from-[var(--ieee-blue)]/4 to-transparent opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                    <p className="font-display text-2xl font-black text-[var(--ieee-blue)] dark:text-[var(--ieee-light)]">{stat.value}</p>
-                    <p className="mt-1 text-[10px] font-medium uppercase tracking-wide text-[var(--text-muted)]">{stat.label}</p>
-                  </motion.div>
-                ))}
-              </div>
-            </motion.div>
-
-            {/* ── Campus image ── */}
-            <motion.div
-              initial={{ opacity: 0, x: 24, scale: 0.97 }}
-              animate={{ opacity: 1, x: 0, scale: 1 }}
-              transition={{ duration: 0.8, delay: 0.15 }}
-              className="relative"
-            >
-              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[2rem] border border-[var(--border)] bg-gray-900 shadow-[var(--shadow-lg)] sm:aspect-[5/6]">
-                <HalftoneReveal
-                  src={IMAGES.collegeTopView}
-                  inkColor="#00629B"
-                  paperColor="#0b1220"
-                  mode="mono"
-                  dotSize={0.7}
-                  dotDensity={90}
-                  angle={28}
-                  contrast={0.9}
-                  revealRadius={0.28}
-                  edge={0.6}
-                  idleReveal={0.2}
-                  follow={0.3}
-                  borderRadius="0px"
-                  className="absolute inset-0"
-                />
-                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-black/70 via-black/5 to-transparent" />
-
-                {/* HUD corners, echoing the home hero */}
-                <span className="pointer-events-none absolute left-4 top-4 h-7 w-7 border-l border-t border-white/40" />
-                <span className="pointer-events-none absolute right-4 top-4 h-7 w-7 border-r border-t border-white/40" />
-                <span className="pointer-events-none absolute bottom-4 left-4 h-7 w-7 border-b border-l border-white/40" />
-                <span className="pointer-events-none absolute bottom-4 right-4 h-7 w-7 border-b border-r border-white/40" />
-
-                <div className="pointer-events-none absolute inset-x-0 bottom-0 flex items-end justify-between p-6">
-                  <div>
-                    <p className="text-[9px] font-bold uppercase tracking-[0.3em] text-ieee-light">Our Campus</p>
-                    <p className="mt-1 font-display text-lg font-bold text-white">S.G. Balekundri Institute of Technology</p>
-                  </div>
-                  <span className="hidden shrink-0 rounded-full border border-white/25 bg-white/10 px-3 py-1.5 text-[9px] font-bold uppercase tracking-[0.25em] text-white/80 backdrop-blur-sm sm:block">
-                    Est. 2014
-                  </span>
-                </div>
-              </div>
-
-              {/* Floating location chip */}
-              <div className="absolute -bottom-5 left-6 hidden items-center gap-2 rounded-full border border-[var(--border)] bg-[var(--bg-card)] px-4 py-2.5 shadow-[var(--shadow-md)] sm:flex">
-                <span className="relative flex h-2 w-2 shrink-0">
-                  <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ieee-light opacity-70" />
-                  <span className="relative inline-flex h-2 w-2 rounded-full bg-ieee-light" />
-                </span>
-                <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--text-primary)]">Belagavi, Karnataka</span>
-              </div>
-            </motion.div>
-          </div>
+          {/* Stats */}
+          <motion.div
+            initial={{ opacity: 0, y: 24 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.7, delay: 0.25 }}
+            className="mx-auto mt-14 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4"
+          >
+            {ABOUT_STATS.map((stat, i) => (
+              <motion.div
+                key={stat.label}
+                initial={{ opacity: 0, scale: 0.9 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ duration: 0.5, delay: 0.35 + i * 0.08 }}
+                className="group relative overflow-hidden rounded-xl border border-white/10 bg-white/[0.04] p-4 backdrop-blur-sm transition-all duration-300 hover:-translate-y-0.5 hover:border-ieee-light/30"
+              >
+                <p className="font-display text-2xl font-black text-ieee-light">{stat.value}</p>
+                <p className="mt-1 text-[10px] font-medium uppercase tracking-wide text-white/50">{stat.label}</p>
+              </motion.div>
+            ))}
+          </motion.div>
         </div>
       </section>
 
