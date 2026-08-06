@@ -68,10 +68,11 @@ export default function AboutPage() {
                     dotDensity={64}
                     angle={28}
                     contrast={0.75}
-                    revealRadius={0.24}
+                    revealRadius={0.42}
                     edge={0.55}
                     idleReveal={0.55}
                     follow={0.3}
+                    distortion={0.35}
                     borderRadius="0px"
                     className="absolute inset-0"
                   />

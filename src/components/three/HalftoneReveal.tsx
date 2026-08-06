@@ -59,6 +59,7 @@ uniform float uRevealRadius;
 uniform float uEdge;
 uniform float uIdleReveal;
 uniform int uTrigger;
+uniform float uDistortion;
 
 in vec2 vUv;
 out vec4 fragColor;
@@ -169,8 +170,8 @@ void main() {
   float t = clamp(dist / radius, 0.0, 1.0);
   float bend = t * t * t * t;
   vec2 dir = dist > 1e-5 ? duv / dist : vec2(0.0);
-  vec2 off = dir * bend * radius * 0.22 / aspect;
-  vec2 ca = dir * bend * 0.0045 / aspect;
+  vec2 off = dir * bend * radius * 0.22 * uDistortion / aspect;
+  vec2 ca = dir * bend * 0.0045 * uDistortion / aspect;
   vec3 sharp = gradeRGB(vec3(
     texture(tMap, clamp(coverUv(vUv - off - ca), 0.0, 1.0)).r,
     texture(tMap, clamp(coverUv(vUv - off), 0.0, 1.0)).g,
@@ -198,6 +199,7 @@ export interface HalftoneRevealProps {
   follow?: number;
   idleReveal?: number;
   trigger?: Trigger;
+  distortion?: number;
   borderRadius?: string;
   className?: string;
 }
@@ -218,6 +220,7 @@ export default function HalftoneReveal({
   follow = 0.37,
   idleReveal = 0,
   trigger = "hover",
+  distortion = 1,
   borderRadius = "16px",
   className = "",
 }: HalftoneRevealProps) {
@@ -273,6 +276,7 @@ export default function HalftoneReveal({
       uEdge: { value: edge },
       uIdleReveal: { value: idleReveal },
       uTrigger: { value: TRIGGERS[trigger] ?? 1 },
+      uDistortion: { value: distortion },
     };
     uniformsRef.current = uniforms;
 
@@ -361,7 +365,8 @@ export default function HalftoneReveal({
     u.uEdge.value = edge;
     u.uIdleReveal.value = idleReveal;
     u.uTrigger.value = TRIGGERS[trigger] ?? 1;
-  }, [dotSize, dotDensity, angle, shape, inkColor, paperColor, mode, contrast, invert, revealRadius, edge, idleReveal, trigger]);
+    u.uDistortion.value = distortion;
+  }, [dotSize, dotDensity, angle, shape, inkColor, paperColor, mode, contrast, invert, revealRadius, edge, idleReveal, trigger, distortion]);
 
   return (
     <div
