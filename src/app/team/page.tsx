@@ -3,7 +3,12 @@
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
+import dynamic from "next/dynamic";
 import { FACULTY_ADVISOR, BOY_MEMBERS, GIRL_MEMBERS } from "@/constants";
+
+const FluidCursor = dynamic(() => import("@/components/three/FluidCursor"), {
+  ssr: false,
+});
 
 type Social = { email: string; linkedin: string; instagram: string; github: string; phone: string };
 
@@ -18,8 +23,15 @@ export default function TeamPage() {
   const allMembers = [...BOY_MEMBERS, ...GIRL_MEMBERS];
 
   return (
-    <main className="relative min-h-screen bg-[var(--bg)] px-5 pb-12 pt-28 md:px-8 md:pt-32">
-      <div className="mx-auto max-w-7xl">
+    <main className="noise relative min-h-screen overflow-hidden bg-gray-950 px-5 pb-12 pt-28 md:px-8 md:pt-32">
+      {/* Colored fluid trail follows the cursor across the whole page */}
+      <FluidCursor
+        colorA="#00629B"
+        colorB="#0EA5E9"
+        className="fixed inset-0 z-0"
+      />
+
+      <div className="relative z-10 mx-auto max-w-7xl">
 
         {/* Header - Compact */}
         <motion.div
@@ -28,11 +40,11 @@ export default function TeamPage() {
           transition={{ duration: 0.6 }}
           className="mb-8 text-center"
         >
-          <p className="section-label mb-2">IEEE SGBIT</p>
-          <h1 className="font-display text-3xl font-bold tracking-[0.2em] text-gray-900 dark:text-white md:text-5xl lg:text-6xl">
+          <p className="section-label mb-2 !text-ieee-light">IEEE SGBIT</p>
+          <h1 className="font-display text-3xl font-bold tracking-[0.2em] text-white md:text-5xl lg:text-6xl">
             EXECOM 2025
           </h1>
-          <p className="mx-auto mt-2 max-w-xl text-xs leading-relaxed text-[var(--text-secondary)]">
+          <p className="mx-auto mt-2 max-w-xl text-xs leading-relaxed text-white/50">
             Technical leadership at IEEE SGBIT.
           </p>
         </motion.div>
@@ -45,7 +57,7 @@ export default function TeamPage() {
           className="mb-12"
         >
           <div className="mx-auto max-w-4xl">
-            <div className="overflow-hidden rounded-[2.5rem] bg-[var(--bg-card)] border border-[var(--border)] shadow-[var(--shadow-lg)] flex flex-col md:flex-row items-center gap-8 p-6 md:p-10">
+            <div className="overflow-hidden rounded-[2.5rem] bg-white/[0.04] border border-white/10 shadow-[var(--shadow-lg)] backdrop-blur-sm flex flex-col md:flex-row items-center gap-8 p-6 md:p-10">
               {/* Photo - Stretched to be big */}
               <div className="relative aspect-square w-full max-w-[300px] shrink-0 overflow-hidden rounded-2xl border border-white/10 shadow-xl">
                  <Image
@@ -56,25 +68,25 @@ export default function TeamPage() {
                     sizes="300px"
                  />
               </div>
-              
+
               {/* Content */}
               <div className="flex-1 text-center md:text-left">
-                <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.4em] text-[var(--ieee-blue)] underline underline-offset-8 decoration-[var(--ieee-blue)]/30">
+                <p className="mb-2 text-[10px] font-bold uppercase tracking-[0.4em] text-ieee-light underline underline-offset-8 decoration-ieee-light/30">
                   {FACULTY_ADVISOR.role}
                 </p>
-                <h2 className="font-display text-3xl font-black tracking-wider text-[var(--text-primary)] md:text-5xl lg:text-5xl mb-4">
+                <h2 className="font-display text-3xl font-black tracking-wider text-white md:text-5xl lg:text-5xl mb-4">
                   {FACULTY_ADVISOR.name}
                 </h2>
-                <p className="text-sm leading-relaxed text-[var(--text-secondary)] mb-6 max-w-2xl">
+                <p className="text-sm leading-relaxed text-white/60 mb-6 max-w-2xl">
                   Providing visionary leadership and academic guidance to the IEEE SGBIT Student Branch, steering our members towards technical excellence and professional growth.
                 </p>
-                
+
                 {/* Socials */}
                 <div className="flex items-center justify-center md:justify-start gap-4">
-                  <a href={FACULTY_ADVISOR.social.linkedin} className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--ieee-blue)]/10 text-[var(--ieee-blue)] transition-colors hover:bg-[var(--ieee-blue)] hover:text-white">
+                  <a href={FACULTY_ADVISOR.social.linkedin} className="flex h-10 w-10 items-center justify-center rounded-full bg-ieee-light/10 text-ieee-light transition-colors hover:bg-ieee-light hover:text-gray-950">
                     <LinkedinIcon />
                   </a>
-                  <a href={FACULTY_ADVISOR.social.email} className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--ieee-blue)]/10 text-[var(--ieee-blue)] transition-colors hover:bg-[var(--ieee-blue)] hover:text-white">
+                  <a href={FACULTY_ADVISOR.social.email} className="flex h-10 w-10 items-center justify-center rounded-full bg-ieee-light/10 text-ieee-light transition-colors hover:bg-ieee-light hover:text-gray-950">
                     <EmailIcon />
                   </a>
                 </div>
@@ -85,7 +97,7 @@ export default function TeamPage() {
 
         {/* ── Unified Grid (3 columns, all same size) ── */}
         <div className="mb-8">
-           <p className="mb-6 text-center text-[9px] font-bold uppercase tracking-[0.4em] text-[var(--text-muted)]">
+           <p className="mb-6 text-center text-[9px] font-bold uppercase tracking-[0.4em] text-white/40">
             Executive Committee
           </p>
           <div className="grid gap-6 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3">
@@ -132,15 +144,15 @@ function MemberCard({
   return (
     <div className="h-full">
       <div
-        className={`member-card group relative h-full cursor-pointer overflow-hidden rounded-2xl border transition-all duration-300
+        className={`member-card group relative h-full cursor-pointer overflow-hidden rounded-2xl border backdrop-blur-sm transition-all duration-300
           ${isActive
-            ? "active border-[rgba(0,163,224,0.5)] shadow-[0_10px_20px_rgba(0,0,0,0.2)]"
-            : "border-[var(--border)] hover:border-[rgba(0,163,224,0.3)] hover:shadow-[0_4px_12px_rgba(0,0,0,0.1)]"
+            ? "active border-[rgba(0,163,224,0.5)] shadow-[0_10px_20px_rgba(0,0,0,0.4)]"
+            : "border-white/10 hover:border-[rgba(0,163,224,0.4)] hover:shadow-[0_4px_20px_rgba(0,0,0,0.3)]"
           }`}
         onClick={() => onToggle(id)}
       >
         {/* Photo area - Fixed aspect for all */}
-        <div className="relative aspect-[3/4] overflow-hidden bg-[var(--bg-secondary)]">
+        <div className="relative aspect-[3/4] overflow-hidden bg-white/[0.03]">
 
           {hasImage ? (
             <Image
@@ -153,13 +165,13 @@ function MemberCard({
           ) : (
             /* ── Placeholder for missing image ── */
             <div className="flex h-full w-full flex-col items-center justify-center gap-3">
-               <div className="h-16 w-16 rounded-full bg-black/5 flex items-center justify-center border border-dashed border-[var(--border)]">
-                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="text-[var(--text-muted)]">
+               <div className="h-16 w-16 rounded-full bg-white/5 flex items-center justify-center border border-dashed border-white/15">
+                  <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1" className="text-white/30">
                     <path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" />
                     <circle cx="12" cy="7" r="4" />
                   </svg>
                </div>
-               <p className="text-[7px] font-bold uppercase tracking-[0.3em] text-[var(--text-muted)]">Awaiting Photo</p>
+               <p className="text-[7px] font-bold uppercase tracking-[0.3em] text-white/30">Awaiting Photo</p>
             </div>
           )}
 
@@ -178,7 +190,7 @@ function MemberCard({
           {/* Role & Name Overlay */}
           {hasImage && (
             <div className="absolute bottom-0 left-0 right-0 p-5">
-              <p className="mb-0.5 text-[8px] font-bold uppercase tracking-[0.25em] text-[var(--ieee-light)]">
+              <p className="mb-0.5 text-[8px] font-bold uppercase tracking-[0.25em] text-ieee-light">
                 {role}
               </p>
               <h4 className="font-display font-bold leading-tight text-white text-lg">
@@ -191,8 +203,8 @@ function MemberCard({
         {/* Name footer for placeholder cards */}
         {!hasImage && (
           <div className="p-4 text-center">
-            <p className="mb-0.5 text-[8px] font-bold uppercase tracking-[0.2em] text-[var(--ieee-blue)]">{role}</p>
-            <h4 className="font-display text-base font-bold text-[var(--text-primary)]">{name}</h4>
+            <p className="mb-0.5 text-[8px] font-bold uppercase tracking-[0.2em] text-ieee-light">{role}</p>
+            <h4 className="font-display text-base font-bold text-white">{name}</h4>
           </div>
         )}
 
