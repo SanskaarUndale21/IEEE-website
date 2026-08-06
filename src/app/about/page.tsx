@@ -107,10 +107,13 @@ export default function AboutPage() {
                   inkColor="#00629B"
                   paperColor="#0b1220"
                   mode="mono"
-                  dotDensity={110}
+                  dotSize={0.7}
+                  dotDensity={90}
                   angle={28}
-                  revealRadius={0.32}
-                  edge={0.75}
+                  contrast={0.9}
+                  revealRadius={0.28}
+                  edge={0.6}
+                  idleReveal={0.2}
                   follow={0.3}
                   borderRadius="0px"
                   className="absolute inset-0"
