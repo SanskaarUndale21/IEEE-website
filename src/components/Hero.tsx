@@ -12,10 +12,14 @@ import {
 } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
+import dynamic from "next/dynamic";
 import gsap from "gsap";
 import { useTheme } from "next-themes";
-import LightTunnel from "@/components/three/LightTunnel";
 import { IMAGES, STATS } from "@/constants";
+
+const LightTunnel = dynamic(() => import("@/components/three/LightTunnel"), {
+  ssr: false,
+});
 
 const SLIDES = [
   { src: IMAGES.collegeTopView, alt: "SGBIT Campus Aerial View" },
