@@ -21,12 +21,6 @@ const LightTunnel = dynamic(() => import("@/components/three/LightTunnel"), {
   ssr: false,
 });
 
-const SLIDES = [
-  { src: IMAGES.collegeTopView, alt: "SGBIT Campus Aerial View" },
-  { src: IMAGES.event1, alt: "IEEE SGBIT Event" },
-];
-const SLIDE_INTERVAL = 6000;
-
 const TAGLINES = [
   "Advancing Technology for the Benefit of Humanity",
   "Where curiosity turns into engineering",
@@ -123,7 +117,6 @@ export default function Hero() {
   const contentRef = useRef<HTMLDivElement>(null);
   const cursorGlow = useRef<HTMLDivElement>(null);
 
-  const [slide, setSlide] = useState(0);
   const [tagline, setTagline] = useState(0);
   const [introReady, setIntroReady] = useState(false);
   const [lowPower, setLowPower] = useState(true);
@@ -163,12 +156,7 @@ export default function Hero() {
     };
   }, []);
 
-  /* ── background stills + rotating tagline ── */
-  useEffect(() => {
-    const id = setInterval(() => setSlide((p) => (p + 1) % SLIDES.length), SLIDE_INTERVAL);
-    return () => clearInterval(id);
-  }, []);
-
+  /* ── rotating tagline ── */
   useEffect(() => {
     if (reduced) return;
     const id = setInterval(() => setTagline((p) => (p + 1) % TAGLINES.length), TAGLINE_INTERVAL);
@@ -270,34 +258,6 @@ export default function Hero() {
     >
       {/* ── Ambient wash ─────────────────────────────────────── */}
       <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(120%_85%_at_50%_44%,rgba(0,98,155,0.10),rgba(0,0,0,0)_62%)] dark:bg-[radial-gradient(120%_85%_at_50%_44%,rgba(14,165,233,0.18),rgba(0,0,0,0)_64%)]" />
-
-      {/* ── Campus horizon (crossfading stills, masked to the floor) ── */}
-      <div className="pointer-events-none absolute inset-x-0 bottom-0 z-0 h-[55%]">
-        <AnimatePresence mode="sync">
-          {SLIDES.map((s, i) =>
-            i === slide ? (
-              <motion.div
-                key={s.src}
-                className="hero-photo-mask absolute inset-0"
-                initial={{ opacity: 0, scale: 1.06 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0 }}
-                transition={{ opacity: { duration: 2 }, scale: { duration: 8, ease: "linear" } }}
-              >
-                <Image
-                  src={s.src}
-                  alt={s.alt}
-                  fill
-                  className="object-cover opacity-[0.08] dark:opacity-[0.12]"
-                  priority={i === 0}
-                  quality={80}
-                  sizes="100vw"
-                />
-              </motion.div>
-            ) : null
-          )}
-        </AnimatePresence>
-      </div>
 
       {/* ── Fibre-optic light tunnel ─────────────────────────── */}
       {showTunnel && (
