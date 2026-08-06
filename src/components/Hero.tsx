@@ -262,7 +262,7 @@ export default function Hero() {
     <section
       ref={sectionRef}
       id="home"
-      className="noise relative isolate flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-[var(--bg)] pb-28 pt-20 sm:pb-32"
+      className="noise relative isolate flex min-h-[100svh] w-full items-center justify-center overflow-hidden bg-[var(--bg)] pb-16 pt-16 sm:pb-32 sm:pt-20"
     >
       {/* ── Ambient wash ─────────────────────────────────────── */}
       <div className="pointer-events-none absolute inset-0 z-0 bg-[radial-gradient(120%_85%_at_50%_44%,rgba(0,98,155,0.10),rgba(0,0,0,0)_62%)] dark:bg-[radial-gradient(120%_85%_at_50%_44%,rgba(14,165,233,0.18),rgba(0,0,0,0)_64%)]" />
@@ -384,16 +384,16 @@ export default function Hero() {
             className="flex w-full flex-col items-center [transform-style:preserve-3d]"
           >
             {/* Badge */}
-            <div className="hero-badge mb-7 inline-flex items-center gap-2.5 rounded-full border border-gray-900/10 bg-white/60 py-1.5 pl-1.5 pr-4 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.04] sm:mb-9">
+            <div className="hero-badge mb-5 inline-flex items-center gap-2 rounded-full border border-gray-900/10 bg-white/60 py-1.5 pl-1.5 pr-3.5 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.04] sm:mb-9 sm:gap-2.5 sm:pr-4">
               <span className="relative flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm dark:bg-white/90">
                 <Image src={IMAGES.logo} alt="IEEE" width={18} height={18} className="object-contain" priority />
               </span>
-              <span className="flex items-center gap-2 text-[9px] font-semibold uppercase tracking-[0.28em] text-gray-600 dark:text-white/60 sm:text-[10px]">
+              <span className="flex items-center gap-1.5 text-[8px] font-semibold uppercase tracking-[0.2em] text-gray-600 dark:text-white/60 sm:gap-2 sm:text-[10px] sm:tracking-[0.28em]">
                 Student Branch
                 <span className="h-2.5 w-px bg-gray-900/15 dark:bg-white/15" />
                 Belagavi
               </span>
-              <span className="relative flex h-1.5 w-1.5">
+              <span className="relative flex h-1.5 w-1.5 shrink-0">
                 <span className="absolute inline-flex h-full w-full animate-ping rounded-full bg-ieee-light opacity-70" />
                 <span className="relative inline-flex h-1.5 w-1.5 rounded-full bg-ieee-light" />
               </span>
@@ -415,19 +415,19 @@ export default function Hero() {
 
             {/* Sub-wordmark */}
             <h2
-              className="hero-sub mt-3 font-display text-[clamp(1.15rem,4.4vw,3.1rem)] font-light leading-none tracking-[0.5em] sm:mt-4"
+              className="hero-sub mt-2 font-display text-[clamp(1.15rem,4.4vw,3.1rem)] font-light leading-none tracking-[0.42em] sm:mt-4 sm:tracking-[0.5em]"
               style={{ paddingLeft: "0.5em" }}
             >
               <span className="hero-outline">SGBIT</span>
             </h2>
 
             {/* Rule */}
-            <div className="hero-rule relative my-7 h-px w-28 origin-center bg-gradient-to-r from-transparent via-ieee-blue to-transparent dark:via-ieee-light sm:my-8 sm:w-40">
+            <div className="hero-rule relative my-5 h-px w-24 origin-center bg-gradient-to-r from-transparent via-ieee-blue to-transparent dark:via-ieee-light sm:my-8 sm:w-40">
               <span className="absolute left-1/2 top-1/2 h-1.5 w-1.5 -translate-x-1/2 -translate-y-1/2 rotate-45 bg-ieee-light" />
             </div>
 
             {/* Rotating tagline */}
-            <div className="hero-tagline flex min-h-[3.25rem] items-center justify-center px-2 sm:min-h-0 sm:h-7 sm:overflow-hidden">
+            <div className="hero-tagline flex min-h-[2.5rem] items-center justify-center px-2 sm:min-h-0 sm:h-7 sm:overflow-hidden">
               <AnimatePresence mode="wait">
                 <motion.p
                   key={tagline}
@@ -443,11 +443,11 @@ export default function Hero() {
             </div>
 
             {/* CTAs */}
-            <div className="mt-9 flex flex-col items-center gap-4 sm:mt-11 sm:flex-row sm:gap-6">
+            <div className="mt-7 flex w-full max-w-xs flex-col items-stretch gap-3 sm:mt-11 sm:w-auto sm:max-w-none sm:flex-row sm:items-center sm:gap-6">
               <Magnetic className="hero-cta">
                 <Link
                   href="/join"
-                  className="group relative inline-flex items-center gap-3 overflow-hidden rounded-full bg-[var(--ieee-blue)] px-9 py-4 text-[11px] font-bold uppercase tracking-[0.22em] text-white shadow-[0_10px_40px_-12px_rgba(0,98,155,0.8)] transition-shadow duration-300 hover:shadow-[0_16px_50px_-10px_rgba(0,98,155,0.9)]"
+                  className="group relative flex items-center justify-center gap-3 overflow-hidden rounded-full bg-[var(--ieee-blue)] px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.22em] text-white shadow-[0_10px_40px_-12px_rgba(0,98,155,0.8)] transition-shadow duration-300 hover:shadow-[0_16px_50px_-10px_rgba(0,98,155,0.9)] sm:px-9 sm:py-4"
                 >
                   <span className="relative z-10">Join IEEE</span>
                   <svg
@@ -468,7 +468,7 @@ export default function Hero() {
               <Magnetic className="hero-cta" strength={0.22}>
                 <Link
                   href="/events/upcoming"
-                  className="group inline-flex items-center gap-2.5 rounded-full border border-gray-900/15 px-7 py-3.5 text-[11px] font-bold uppercase tracking-[0.22em] text-gray-700 transition-colors duration-300 hover:border-ieee-light hover:text-ieee-light dark:border-white/15 dark:text-white/70 dark:hover:border-ieee-light dark:hover:text-ieee-light"
+                  className="group flex items-center justify-center gap-2.5 rounded-full border border-gray-900/15 px-7 py-3 text-[11px] font-bold uppercase tracking-[0.22em] text-gray-700 transition-colors duration-300 hover:border-ieee-light hover:text-ieee-light dark:border-white/15 dark:text-white/70 dark:hover:border-ieee-light dark:hover:text-ieee-light sm:py-3.5"
                 >
                   Upcoming Events
                   <svg
@@ -487,7 +487,7 @@ export default function Hero() {
             </div>
 
             {/* Compact stats — phones only, the rail carries them on desktop */}
-            <div className="hero-meta mt-10 flex items-center gap-6 md:hidden">
+            <div className="hero-meta mt-7 flex items-center gap-6 md:hidden">
               {HERO_STATS.map((s, i) => (
                 <div key={s.label} className="flex flex-col items-center">
                   <span className="font-display text-lg font-bold text-gray-900 dark:text-white">
