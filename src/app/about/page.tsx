@@ -45,7 +45,7 @@ export default function AboutPage() {
     <main className="bg-[var(--bg)]">
 
       {/* ── Hero ──────────────────────────────────────────────── */}
-      <section className="noise relative isolate flex min-h-[85vh] w-full items-center overflow-hidden bg-gray-950 px-5 py-24 md:px-8">
+      <section className="noise relative isolate flex min-h-[85vh] w-full items-center overflow-hidden bg-gray-950 px-5 pb-24 pt-32 md:px-8 md:pt-36">
         {/* Full-bleed crossfading campus + event photos, lightly halftoned */}
         <div className="absolute inset-0 z-0">
           <AnimatePresence mode="sync">
@@ -68,11 +68,11 @@ export default function AboutPage() {
                     dotDensity={64}
                     angle={28}
                     contrast={0.75}
-                    revealRadius={0.42}
+                    revealRadius={0.52}
                     edge={0.55}
                     idleReveal={0.55}
                     follow={0.3}
-                    distortion={0.35}
+                    distortion={0.45}
                     borderRadius="0px"
                     className="absolute inset-0"
                   />
@@ -85,22 +85,6 @@ export default function AboutPage() {
         </div>
 
         <div className="relative z-10 mx-auto w-full max-w-5xl text-center">
-          <motion.div
-            initial={{ opacity: 0, y: -12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-          >
-            <Link
-              href="/"
-              className="mb-8 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-white/50 transition-colors hover:text-ieee-light"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M19 12H5M12 5l-7 7 7 7" />
-              </svg>
-              Home
-            </Link>
-          </motion.div>
-
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}

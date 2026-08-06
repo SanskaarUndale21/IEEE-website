@@ -3,7 +3,6 @@
 import { useState, useCallback } from "react";
 import { motion } from "framer-motion";
 import Image from "next/image";
-import Link from "next/link";
 import { FACULTY_ADVISOR, BOY_MEMBERS, GIRL_MEMBERS } from "@/constants";
 
 type Social = { email: string; linkedin: string; instagram: string; github: string; phone: string };
@@ -19,26 +18,8 @@ export default function TeamPage() {
   const allMembers = [...BOY_MEMBERS, ...GIRL_MEMBERS];
 
   return (
-    <main className="relative min-h-screen bg-[var(--bg)] px-5 pb-12 pt-12 md:px-8 md:pt-16">
+    <main className="relative min-h-screen bg-[var(--bg)] px-5 pb-12 pt-28 md:px-8 md:pt-32">
       <div className="mx-auto max-w-7xl">
-
-        {/* Back */}
-        <motion.div
-          initial={{ opacity: 0, x: -12 }}
-          animate={{ opacity: 1, x: 0 }}
-          transition={{ duration: 0.4 }}
-          className="mb-4"
-        >
-          <Link
-            href="/"
-            className="inline-flex items-center gap-2 text-[10px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)] transition-colors hover:text-[var(--ieee-blue)] dark:hover:text-[var(--ieee-light)]"
-          >
-            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-              <path d="M19 12H5M12 5l-7 7 7 7" />
-            </svg>
-            Back to Home
-          </Link>
-        </motion.div>
 
         {/* Header - Compact */}
         <motion.div

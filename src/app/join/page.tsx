@@ -97,24 +97,13 @@ export default function JoinPage() {
       <div className="flex min-h-screen flex-col lg:flex-row">
 
         {/* ── LEFT: Form ────────────────────────────────────── */}
-        <div className="flex w-full flex-col justify-center px-6 pb-16 pt-24 md:px-10 lg:max-w-[52%] lg:px-14 lg:pt-28 xl:px-20">
+        <div className="flex w-full flex-col justify-center px-6 pb-16 pt-28 md:px-10 md:pt-28 lg:max-w-[52%] lg:px-14 lg:pt-32 xl:px-20">
           <motion.div
             initial={{ opacity: 0, x: -30 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ duration: 0.7, ease: [0.22, 1, 0.36, 1] }}
             className="w-full max-w-lg"
           >
-            {/* Back link */}
-            <Link
-              href="/"
-              className="mb-8 inline-flex items-center gap-2 text-[11px] font-bold uppercase tracking-[0.2em] text-[var(--text-muted)] transition-colors hover:text-[var(--ieee-blue)] dark:hover:text-[var(--ieee-light)]"
-            >
-              <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                <path d="M19 12H5M12 5l-7 7 7 7" />
-              </svg>
-              Home
-            </Link>
-
             {/* Header */}
             <div className="mb-8 flex items-center gap-4">
               <div className="relative h-10 w-10 flex-shrink-0">
