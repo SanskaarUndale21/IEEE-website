@@ -1,7 +1,7 @@
 "use client";
 
-import { useRef } from "react";
-import { useFrame } from "@react-three/fiber";
+import { useRef, useEffect } from "react";
+import { useFrame, useThree } from "@react-three/fiber";
 import * as THREE from "three";
 
 function smoothstep(x: number) {
@@ -9,29 +9,54 @@ function smoothstep(x: number) {
   return c * c * (3 - 2 * c);
 }
 
-/** small overshoot as the globe settles into place, peaks ~0.03 past full scale */
+/** small overshoot as the globe settles into place, peaks ~0.05 past full scale */
 function settleBump(x: number) {
   return Math.sin(Math.PI * THREE.MathUtils.clamp((x - 0.7) / 0.3, 0, 1)) * 0.05;
 }
 
 const START_SCALE = 0.08;
+/** widest feature is the outer torus at r=2.6, so the object spans ~5.2 units */
+const EXTENT = 5.9;
 
-/**
- * progressRef: 0..1 mutable ref driven by the Preloader's rAF loop.
- * Reading a ref here (not props/state) keeps this out of React's render
- * cycle entirely, so progress updates never trigger a re-render.
- */
-export default function LoaderGlobe({ progressRef }: { progressRef: React.MutableRefObject<number> }) {
+export default function LoaderGlobe({
+  progressRef,
+  onReady,
+  reducedMotion = false,
+}: {
+  progressRef: React.MutableRefObject<number>;
+  onReady?: () => void;
+  reducedMotion?: boolean;
+}) {
   const group = useRef<THREE.Group>(null!);
   const core = useRef<THREE.Mesh>(null!);
   const wire = useRef<THREE.Mesh>(null!);
+  const announced = useRef(false);
+  const { viewport } = useThree();
+
+  /** scale that keeps the whole object on screen in any aspect ratio */
+  const fit = THREE.MathUtils.clamp(
+    Math.min(viewport.width, viewport.height) / EXTENT,
+    0.3,
+    1.25
+  );
+
+  useEffect(() => {
+    if (announced.current) return;
+    announced.current = true;
+    onReady?.();
+  }, [onReady]);
 
   useFrame((_, delta) => {
     const p = progressRef.current;
     if (!group.current) return;
 
-    const s = START_SCALE + (1 - START_SCALE) * smoothstep(p) + settleBump(p);
-    group.current.scale.setScalar(s);
+    if (reducedMotion) {
+      group.current.scale.setScalar(fit);
+      return;
+    }
+
+    const grow = START_SCALE + (1 - START_SCALE) * smoothstep(p) + settleBump(p);
+    group.current.scale.setScalar(grow * fit);
     group.current.rotation.y += delta * (2.2 * (1 - p) + 0.15);
     group.current.rotation.x = Math.sin(p * Math.PI) * 0.15;
 
@@ -45,7 +70,11 @@ export default function LoaderGlobe({ progressRef }: { progressRef: React.Mutabl
   });
 
   return (
-    <group ref={group}>
+    <group ref={group} scale={START_SCALE * fit}>
+      {/* lights travel with the loader so it never depends on the hero's dim rig */}
+      <pointLight position={[3, 2, 4]} intensity={2.2} color="#7DD3FC" />
+      <pointLight position={[-4, -2, 2]} intensity={1.4} color="#00629B" />
+
       <mesh ref={core}>
         <sphereGeometry args={[1.6, 64, 64]} />
         <meshStandardMaterial
