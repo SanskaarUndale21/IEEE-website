@@ -1,34 +1,29 @@
 import { NextRequest, NextResponse } from "next/server";
-import { appendFile, mkdir } from "fs/promises";
-import { existsSync } from "fs";
-import path from "path";
+import { appendRow } from "@/lib/sheets";
+
+export const dynamic = "force-dynamic";
+
+const TAB = process.env.GOOGLE_SHEETS_QUERIES_TAB || "Queries";
+const HEADERS = ["Timestamp", "Email", "Phone", "Topic"];
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const dataDir = path.join(process.cwd(), "data");
 
-    if (!existsSync(dataDir)) {
-      await mkdir(dataDir, { recursive: true });
+    if (!body.email && !body.phone) {
+      return NextResponse.json({ success: false, error: "Missing contact details" }, { status: 400 });
     }
 
-    const filePath = path.join(dataDir, "queries.txt");
-    const timestamp = new Date().toISOString();
+    const row = [
+      new Date().toISOString(),
+      body.email ?? "",
+      body.phone ?? "",
+      body.topic ?? "",
+    ];
 
-    const entry = [
-      "",
-      "=== QUERY SUBMISSION ===",
-      `Timestamp : ${timestamp}`,
-      `Email     : ${body.email ?? ""}`,
-      `Phone     : ${body.phone ?? ""}`,
-      `Topic     : ${body.topic ?? ""}`,
-      "========================",
-      "",
-    ].join("\n");
+    const result = await appendRow(TAB, HEADERS, row, "queries.txt");
 
-    await appendFile(filePath, entry, "utf8");
-
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, target: result.target });
   } catch (error) {
     console.error("Error saving query:", error);
     return NextResponse.json({ success: false, error: "Failed to save" }, { status: 500 });

@@ -1,39 +1,44 @@
 import { NextRequest, NextResponse } from "next/server";
-import { appendFile, mkdir } from "fs/promises";
-import { existsSync } from "fs";
-import path from "path";
+import { appendRow } from "@/lib/sheets";
+
+export const dynamic = "force-dynamic";
+
+const TAB = process.env.GOOGLE_SHEETS_MEMBERS_TAB || "Memberships";
+const HEADERS = [
+  "Timestamp",
+  "Name",
+  "Email",
+  "Semester",
+  "Branch",
+  "Date of Birth",
+  "Contact",
+  "Security Question",
+  "Security Answer",
+];
 
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
-    const dataDir = path.join(process.cwd(), "data");
 
-    if (!existsSync(dataDir)) {
-      await mkdir(dataDir, { recursive: true });
+    if (!body.name || !body.email) {
+      return NextResponse.json({ success: false, error: "Name and email are required" }, { status: 400 });
     }
 
-    const filePath = path.join(dataDir, "memberships.txt");
-    const timestamp = new Date().toISOString();
+    const row = [
+      new Date().toISOString(),
+      body.name ?? "",
+      body.email ?? "",
+      body.semester ?? "",
+      body.branch ?? "",
+      body.dob ?? "",
+      body.contact ?? "",
+      body.securityQuestion ?? "",
+      body.securityAnswer ?? "",
+    ];
 
-    const entry = [
-      "",
-      "=== MEMBERSHIP APPLICATION ===",
-      `Timestamp      : ${timestamp}`,
-      `Name           : ${body.name ?? ""}`,
-      `Email          : ${body.email ?? ""}`,
-      `Semester       : ${body.semester ?? ""}`,
-      `Branch         : ${body.branch ?? ""}`,
-      `Date of Birth  : ${body.dob ?? ""}`,
-      `Contact        : ${body.contact ?? ""}`,
-      `Sec. Question  : ${body.securityQuestion ?? ""}`,
-      `Sec. Answer    : ${body.securityAnswer ?? ""}`,
-      "==============================",
-      "",
-    ].join("\n");
+    const result = await appendRow(TAB, HEADERS, row, "memberships.txt");
 
-    await appendFile(filePath, entry, "utf8");
-
-    return NextResponse.json({ success: true });
+    return NextResponse.json({ success: true, target: result.target });
   } catch (error) {
     console.error("Error saving membership:", error);
     return NextResponse.json({ success: false, error: "Failed to save" }, { status: 500 });

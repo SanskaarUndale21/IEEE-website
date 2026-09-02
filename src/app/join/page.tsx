@@ -15,6 +15,7 @@ const benefitStats = [
 export default function JoinPage() {
   const [submitted, setSubmitted] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
   const [formData, setFormData] = useState({
     name: "", email: "", semester: "", branch: "",
     password: "", dob: "", contact: "",
@@ -28,8 +29,9 @@ export default function JoinPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    setError("");
     try {
-      await fetch("/api/join", {
+      const res = await fetch("/api/join", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -38,9 +40,12 @@ export default function JoinPage() {
           securityQuestion: formData.securityQuestion, securityAnswer: formData.securityAnswer,
         }),
       });
-    } catch (_) {}
+      if (!res.ok) throw new Error("request failed");
+      setSubmitted(true);
+    } catch (_) {
+      setError("Something went wrong. Please try again in a moment.");
+    }
     setLoading(false);
-    setSubmitted(true);
   };
 
   if (submitted) {
@@ -219,6 +224,10 @@ export default function JoinPage() {
                   )}
                 </AnimatePresence>
               </button>
+
+              {error && (
+                <p className="text-center text-xs text-red-500 dark:text-red-400">{error}</p>
+              )}
             </form>
           </motion.div>
         </div>
