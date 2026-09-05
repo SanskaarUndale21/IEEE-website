@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { AnimatePresence, motion, useInView } from "framer-motion";
+import { motion, useInView } from "framer-motion";
 import Image from "next/image";
 import Link from "next/link";
 import dynamic from "next/dynamic";
@@ -46,45 +46,34 @@ export default function AboutPage() {
 
       {/* ── Hero ──────────────────────────────────────────────── */}
       <section className="noise relative isolate flex min-h-[85vh] w-full items-center overflow-hidden bg-gray-950 px-5 pb-24 pt-32 md:px-8 md:pt-36">
-        {/* Full-bleed crossfading campus + event photos, lightly halftoned */}
+        {/* Full-bleed campus + event photo, lightly halftoned. A single
+            persistent canvas so the hover loupe never resets — only the
+            underlying image swaps when the slide rotates. */}
         <div className="absolute inset-0 z-0">
-          <AnimatePresence mode="sync">
-            {HERO_SLIDES.map((s, i) =>
-              i === slide ? (
-                <motion.div
-                  key={s.src}
-                  className="absolute inset-0"
-                  initial={{ opacity: 0 }}
-                  animate={{ opacity: 1 }}
-                  exit={{ opacity: 0 }}
-                  transition={{ duration: 1.4 }}
-                >
-                  <HalftoneReveal
-                    src={s.src}
-                    inkColor="#0EA5E9"
-                    paperColor="#0b1220"
-                    mode="mono"
-                    dotSize={0.55}
-                    dotDensity={64}
-                    angle={28}
-                    contrast={0.75}
-                    revealRadius={0.52}
-                    edge={0.55}
-                    idleReveal={0.55}
-                    follow={0.3}
-                    distortion={0.45}
-                    borderRadius="0px"
-                    className="absolute inset-0"
-                  />
-                </motion.div>
-              ) : null
-            )}
-          </AnimatePresence>
+          <HalftoneReveal
+            src={HERO_SLIDES[slide].src}
+            inkColor="#0EA5E9"
+            paperColor="#0b1220"
+            mode="mono"
+            dotSize={0.55}
+            dotDensity={64}
+            angle={28}
+            contrast={0.75}
+            revealRadius={0.52}
+            edge={0.55}
+            idleReveal={0.55}
+            follow={0.3}
+            distortion={0.45}
+            borderRadius="0px"
+            className="absolute inset-0"
+          />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-gray-950 via-gray-950/70 to-gray-950/30" />
           <div className="pointer-events-none absolute inset-0 bg-gradient-to-r from-gray-950/70 via-transparent to-gray-950/40" />
         </div>
 
-        <div className="relative z-10 mx-auto w-full max-w-5xl text-center">
+        {/* pointer-events-none so hovering over the copy still reaches the
+            halftone canvas beneath; only the actual links opt back in */}
+        <div className="pointer-events-none relative z-10 mx-auto w-full max-w-5xl text-center">
           <motion.div
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
@@ -101,8 +90,8 @@ export default function AboutPage() {
             </p>
 
             <div className="mt-9 flex flex-wrap items-center justify-center gap-4">
-              <Link href="/join" className="btn-primary-sq">Join IEEE</Link>
-              <Link href="/team" className="btn-outline-sq !border-white/25 !text-white hover:!border-ieee-light hover:!text-ieee-light">Meet the Team</Link>
+              <Link href="/join" className="btn-primary-sq pointer-events-auto">Join IEEE</Link>
+              <Link href="/team" className="btn-outline-sq pointer-events-auto !border-white/25 !text-white hover:!border-ieee-light hover:!text-ieee-light">Meet the Team</Link>
             </div>
           </motion.div>
 

@@ -39,7 +39,7 @@ export const IMAGES = {
     mdcCoChair: "/images/execoms/MDC%20Co-Chair.jpg",
     mdcChair: "/images/execoms/MDC%20Chair.jpg",
     publicityHead: "/images/execoms/Publicity%20Head.jpg",
-    publicityHead2: "", // user will upload later
+    eventLead: "", // photo pending upload
   },
 };
 
@@ -74,74 +74,160 @@ export const FACULTY_ADVISOR = {
   },
 };
 
+// ── Executive Committee ──────────────────────────────────────
+// Details straight from the exec-com submission sheet.
+// Empty social strings are hidden by the team page card.
+
+export type ExecomMember = {
+  name: string;
+  role: string;
+  usn: string;
+  department: string;
+  image: string;
+  featured: boolean;
+  social: { email: string; linkedin: string; instagram: string; github: string; phone: string };
+};
+
 // Boys — top row (Secretary is featured = 3rd card, slightly larger)
-export const BOY_MEMBERS = [
+export const BOY_MEMBERS: ExecomMember[] = [
   {
-    name: "Chairperson",
-    role: "Chair",
+    name: "Samarth Dharappanavar",
+    role: "SB Chair",
+    usn: "2BU23AD079",
+    department: "Artificial Intelligence and Data Science",
     image: IMAGES.execoms.chair,
     featured: false,
-    social: { email: "#", linkedin: "#", instagram: "#", github: "#", phone: "#" },
+    social: {
+      email: "mailto:samarthd852005@gmail.com",
+      linkedin: "https://www.linkedin.com/in/samarth-d/",
+      instagram: "https://www.instagram.com/samarth_d_08/",
+      github: "https://github.com/sam-init",
+      phone: "",
+    },
   },
   {
-    name: "Co-Chairperson",
-    role: "Co-Chair",
+    name: "Suyog Hanamar",
+    role: "Vice-Chair",
+    usn: "2BU23CS156",
+    department: "Computer Science and Engineering",
     image: IMAGES.execoms.coChair,
     featured: false,
-    social: { email: "#", linkedin: "#", instagram: "#", github: "#", phone: "#" },
+    social: {
+      email: "mailto:suyoghanamar21@gmail.com",
+      linkedin: "https://www.linkedin.com/in/suyog-hanamar-57211b300/",
+      instagram: "https://www.instagram.com/suyog_hanamar_21",
+      github: "https://github.com/SUYOGhanamar",
+      phone: "",
+    },
   },
   {
-    name: "Secretary",
+    name: "Shubham Hiremath",
     role: "Secretary",
+    usn: "2BU23CS140",
+    department: "Computer Science and Engineering",
     image: IMAGES.execoms.secretary,
     featured: true, // 3rd card — permanently larger
-    social: { email: "#", linkedin: "#", instagram: "#", github: "#", phone: "#" },
+    social: {
+      email: "mailto:shubhamhiremath87@gmail.com",
+      linkedin: "https://www.linkedin.com/in/shubham-hiremath-470271300",
+      instagram: "https://www.instagram.com/shubham_8_7_",
+      github: "https://github.com/ShUbHaMHiReMaT",
+      phone: "",
+    },
   },
   {
-    name: "Webmaster",
+    name: "Sanskaar Sateesh Undale",
     role: "Webmaster",
+    usn: "2BU24EC089",
+    department: "Electronics and Communication",
     image: IMAGES.execoms.webmaster,
     featured: false,
-    social: { email: "#", linkedin: "#", instagram: "#", github: "#", phone: "#" },
+    social: {
+      email: "mailto:sanskaarundale@gmail.com",
+      linkedin: "https://www.linkedin.com/in/sanskaar-sateesh-undale-aa90122ba",
+      instagram: "https://www.instagram.com/sansss.2186",
+      github: "https://github.com/SanskaarUndale21",
+      phone: "",
+    },
+  },
+  {
+    name: "Prithvi Hiremath",
+    role: "MDC Chair",
+    usn: "2BU24CS094",
+    department: "Computer Science and Engineering",
+    image: IMAGES.execoms.mdcChair,
+    featured: false,
+    social: {
+      email: "mailto:prithvihiremath645@gmail.com",
+      linkedin: "https://www.linkedin.com/in/prithvi-k-hiremath-214bb8331",
+      instagram: "",
+      github: "https://github.com/prithvi2645",
+      phone: "",
+    },
   },
 ];
 
 // Girls — bottom row
-export const GIRL_MEMBERS = [
+export const GIRL_MEMBERS: ExecomMember[] = [
   {
-    name: "Treasurer",
+    name: "Srushti Mutalikdesai",
     role: "Treasurer",
+    usn: "2BU24AD106",
+    department: "Artificial Intelligence and Data Science",
     image: IMAGES.execoms.treasurer,
     featured: false,
-    social: { email: "#", linkedin: "#", instagram: "#", github: "#", phone: "#" },
+    social: {
+      email: "mailto:mutalikdesaisrushti@gmail.com",
+      linkedin: "https://www.linkedin.com/in/srushti-mutalikdesai-807bb832b",
+      instagram: "https://www.instagram.com/srushti_mutalikdesai",
+      github: "",
+      phone: "",
+    },
   },
   {
-    name: "MDC Co-Chairperson",
+    name: "Rabiya Hirekoppa",
     role: "MDC Co-Chair",
+    usn: "2BU24EC072",
+    department: "Electronics and Communication",
     image: IMAGES.execoms.mdcCoChair,
     featured: false,
-    social: { email: "#", linkedin: "#", instagram: "#", github: "#", phone: "#" },
+    social: {
+      email: "mailto:rabiyahirekoppa99@gmail.com",
+      linkedin: "https://www.linkedin.com/in/rabiya-h-5b6529325",
+      instagram: "https://www.instagram.com/rabiya_hirekoppa",
+      github: "",
+      phone: "",
+    },
   },
   {
-    name: "MDC Chairperson",
-    role: "MDC Chair",
-    image: IMAGES.execoms.mdcChair,
-    featured: false,
-    social: { email: "#", linkedin: "#", instagram: "#", github: "#", phone: "#" },
-  },
-  {
-    name: "Publicity Head",
-    role: "Publicity Head",
+    name: "Vaishnavi Santosh Dhabu",
+    role: "Publicity Lead",
+    usn: "2BU24CS036",
+    department: "Computer Science and Engineering",
     image: IMAGES.execoms.publicityHead,
     featured: false,
-    social: { email: "#", linkedin: "#", instagram: "#", github: "#", phone: "#" },
+    social: {
+      email: "mailto:dhabuvaishnavi@gmail.com",
+      linkedin: "https://www.linkedin.com/in/vaishnavi-dhabu-2a9745319",
+      instagram: "https://www.instagram.com/_vaish.23_",
+      github: "",
+      phone: "",
+    },
   },
   {
-    name: "Publicity Head",
-    role: "Publicity Head 2", // unique id; user will upload photo
-    image: IMAGES.execoms.publicityHead2,
+    name: "Tanushree Kavalapure",
+    role: "Event Lead",
+    usn: "2BU23AD114",
+    department: "Artificial Intelligence and Data Science",
+    image: IMAGES.execoms.eventLead,
     featured: false,
-    social: { email: "#", linkedin: "#", instagram: "#", github: "#", phone: "#" },
+    social: {
+      email: "mailto:tanushreekavalpure@gmail.com",
+      linkedin: "https://www.linkedin.com/in/tanushree-kavalapure",
+      instagram: "https://www.instagram.com/tann.hazey",
+      github: "https://github.com/Tanushree-kavalapure",
+      phone: "",
+    },
   },
 ];
 

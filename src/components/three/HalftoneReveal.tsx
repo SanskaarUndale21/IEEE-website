@@ -226,6 +226,7 @@ export default function HalftoneReveal({
 }: HalftoneRevealProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const uniformsRef = useRef<Record<string, { value: unknown }> | null>(null);
+  const textureRef = useRef<Texture | null>(null);
   const rafRef = useRef<number | null>(null);
   const followRef = useRef(follow);
   const mouseRef = useRef({ x: 0.5, y: 0.5, sx: 0.5, sy: 0.5, active: 0, target: 0 });
@@ -256,6 +257,7 @@ export default function HalftoneReveal({
     container.appendChild(gl.canvas);
 
     const texture = new Texture(gl, { generateMipmaps: false });
+    textureRef.current = texture;
 
     const uniforms = {
       tMap: { value: texture },
@@ -282,14 +284,6 @@ export default function HalftoneReveal({
 
     const program = new Program(gl, { vertex, fragment, uniforms });
     const mesh = new Mesh(gl, { geometry: new Triangle(gl), program });
-
-    const img = new Image();
-    img.crossOrigin = "anonymous";
-    img.src = src;
-    img.onload = () => {
-      texture.image = img;
-      uniforms.uImageSize.value = [img.naturalWidth, img.naturalHeight];
-    };
 
     const resize = () => {
       const w = container.clientWidth || 1;
@@ -345,8 +339,24 @@ export default function HalftoneReveal({
       if (ext) ext.loseContext();
       if (gl.canvas.parentNode) gl.canvas.parentNode.removeChild(gl.canvas);
       uniformsRef.current = null;
+      textureRef.current = null;
     };
+    // mounts the GL context once; src changes are handled by the effect below
+    // so the canvas, mouse state, and animation loop survive image swaps
     // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  useEffect(() => {
+    const texture = textureRef.current;
+    const uniforms = uniformsRef.current;
+    if (!texture || !uniforms) return;
+    const img = new Image();
+    img.crossOrigin = "anonymous";
+    img.src = src;
+    img.onload = () => {
+      texture.image = img;
+      uniforms.uImageSize.value = [img.naturalWidth, img.naturalHeight];
+    };
   }, [src]);
 
   useEffect(() => {
