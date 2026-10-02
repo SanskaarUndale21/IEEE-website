@@ -101,6 +101,7 @@ export default function TeamPage() {
                   id={member.role}
                   name={member.name}
                   role={member.role}
+                  department={member.department}
                   image={member.image}
                   social={member.social}
                   index={i + 1}
@@ -122,9 +123,9 @@ export default function TeamPage() {
    - Fixed size, no scale on hover.
 ───────────────────────────────────────────────────────────── */
 function MemberCard({
-  id, name, role, image, social, index, isActive, onToggle,
+  id, name, role, department, image, social, index, isActive, onToggle,
 }: {
-  id: string; name: string; role: string; image: string; social: Social;
+  id: string; name: string; role: string; department: string; image: string; social: Social;
   index: number; isActive: boolean; onToggle: (id: string) => void;
 }) {
   const hasImage = Boolean(image);
@@ -184,6 +185,7 @@ function MemberCard({
               <h4 className="font-display font-bold leading-tight text-white text-lg">
                 {name}
               </h4>
+              <p className="mt-0.5 text-[10px] text-white/60">{department}</p>
             </div>
           )}
         </div>
@@ -193,6 +195,13 @@ function MemberCard({
           <div className="p-4 text-center">
             <p className="mb-0.5 text-[8px] font-bold uppercase tracking-[0.2em] text-[var(--ieee-blue)]">{role}</p>
             <h4 className="font-display text-base font-bold text-[var(--text-primary)]">{name}</h4>
+            <p className="mt-0.5 text-[10px] text-[var(--text-muted)]">{department}</p>
+            <div className="mt-3 flex items-center justify-center gap-2">
+              <SocialLink className="text-[var(--text-muted)] hover:bg-[var(--ieee-blue)]/10 hover:text-[var(--ieee-blue)]" href={social.instagram} label={`${name} on Instagram`}><InstagramIcon /></SocialLink>
+              <SocialLink className="text-[var(--text-muted)] hover:bg-[var(--ieee-blue)]/10 hover:text-[var(--ieee-blue)]" href={social.linkedin} label={`${name} on LinkedIn`}><LinkedinIcon /></SocialLink>
+              <SocialLink className="text-[var(--text-muted)] hover:bg-[var(--ieee-blue)]/10 hover:text-[var(--ieee-blue)]" href={social.github} label={`${name} on GitHub`}><GithubIcon /></SocialLink>
+              <SocialLink className="text-[var(--text-muted)] hover:bg-[var(--ieee-blue)]/10 hover:text-[var(--ieee-blue)]" href={social.email} label={`Email ${name}`}><EmailIcon /></SocialLink>
+            </div>
           </div>
         )}
 
@@ -216,7 +225,7 @@ function LinkedinIcon() { return <svg width="18" height="18" viewBox="0 0 24 24"
 function GithubIcon() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12 .5C5.37.5 0 5.87 0 12.5c0 5.3 3.44 9.8 8.21 11.39.6.11.82-.26.82-.58l-.01-2.05c-3.34.73-4.04-1.61-4.04-1.61-.55-1.39-1.34-1.76-1.34-1.76-1.09-.75.08-.73.08-.73 1.21.08 1.84 1.24 1.84 1.24 1.07 1.83 2.81 1.3 3.5.99.11-.78.42-1.3.76-1.6-2.67-.3-5.47-1.34-5.47-5.96 0-1.32.47-2.39 1.24-3.23-.13-.3-.54-1.53.12-3.18 0 0 1.01-.32 3.3 1.23a11.5 11.5 0 016.01 0c2.29-1.55 3.3-1.23 3.3-1.23.66 1.65.25 2.88.12 3.18.77.84 1.24 1.91 1.24 3.23 0 4.63-2.81 5.65-5.49 5.95.43.37.81 1.1.81 2.22l-.01 3.29c0 .32.22.7.83.58A12.01 12.01 0 0024 12.5C24 5.87 18.63.5 12 .5z"/></svg>; }
 function EmailIcon() { return <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M4 4h16c1.1 0 2 .9 2 2v12c0 1.1-.9 2-2 2H4c-1.1 0-2-.9-2-2V6c0-1.1.9-2 2-2z"/><polyline points="22,6 12,13 2,6"/></svg>; }
 
-function SocialLink({ href, label, children }: { href: string; label: string; children: React.ReactNode }) {
+function SocialLink({ href, label, children, className = "text-white/40 hover:bg-white/10 hover:text-[var(--ieee-light)]" }: { href: string; label: string; children: React.ReactNode; className?: string }) {
   // Members who did not share a given profile simply get no icon.
   if (!href || href === "#") return null;
 
@@ -229,7 +238,7 @@ function SocialLink({ href, label, children }: { href: string; label: string; ch
       target={isExternal ? "_blank" : undefined}
       rel={isExternal ? "noopener noreferrer" : undefined}
       onClick={(e) => e.stopPropagation()}
-      className="flex h-9 w-9 items-center justify-center rounded-full text-white/40 transition-all duration-300 hover:bg-white/10 hover:text-[var(--ieee-light)]"
+      className={`flex h-9 w-9 items-center justify-center rounded-full transition-all duration-300 ${className}`}
     >
       {children}
     </a>
