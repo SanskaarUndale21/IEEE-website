@@ -1,5 +1,6 @@
 "use client";
 
+import Logo from "@/components/ui/Logo";
 import { useCallback, useEffect, useRef, useState } from "react";
 import {
   AnimatePresence,
@@ -15,7 +16,7 @@ import Link from "next/link";
 import dynamic from "next/dynamic";
 import gsap from "gsap";
 import { useTheme } from "next-themes";
-import { IMAGES, STATS } from "@/constants";
+import { STATS } from "@/constants";
 
 const LightTunnel = dynamic(() => import("@/components/three/LightTunnel"), {
   ssr: false,
@@ -29,7 +30,6 @@ const TAGLINES = [
 const TAGLINE_INTERVAL = 5000;
 
 const HERO_STATS = [
-  { value: STATS.members, label: "Members" },
   { value: STATS.events, label: "Events" },
   { value: STATS.yearsActive, label: "Years" },
 ];
@@ -350,7 +350,7 @@ export default function Hero() {
             {/* Badge */}
             <div className="hero-badge mb-5 inline-flex items-center gap-2 rounded-full border border-gray-900/10 bg-white/60 py-1.5 pl-1.5 pr-3.5 backdrop-blur-md dark:border-white/10 dark:bg-white/[0.04] sm:mb-9 sm:gap-2.5 sm:pr-4">
               <span className="relative flex h-6 w-6 items-center justify-center rounded-full bg-white shadow-sm dark:bg-white/90">
-                <Image src={IMAGES.logo} alt="IEEE" width={18} height={18} className="object-contain" priority />
+                <Logo width={18} height={18} className="object-contain" priority />
               </span>
               <span className="flex items-center gap-1.5 text-[8px] font-semibold uppercase tracking-[0.2em] text-gray-600 dark:text-white/60 sm:gap-2 sm:text-[10px] sm:tracking-[0.28em]">
                 Student Branch

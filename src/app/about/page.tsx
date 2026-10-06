@@ -100,7 +100,7 @@ export default function AboutPage() {
             initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.7, delay: 0.25 }}
-            className="mx-auto mt-14 grid max-w-2xl grid-cols-2 gap-3 sm:grid-cols-4"
+            className="mx-auto mt-14 grid max-w-md grid-cols-2 gap-3"
           >
             {ABOUT_STATS.map((stat, i) => (
               <motion.div

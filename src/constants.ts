@@ -21,6 +21,8 @@ export const SOCIAL = {
 
 export const IMAGES = {
   logo: "/images/ieee_new_logo.png",
+  logoLight: "/images/ieee_logo_light.png",
+  logoDark: "/images/ieee_logo_dark.png",
   collegeTopView: "/images/sgbit topview.jpg",
   event1: "/images/5.JPG",
   campusAerial: "/images/DJI_0135.JPG",
@@ -31,24 +33,21 @@ export const IMAGES = {
   linkedin: "/images/linkedin.svg",
   excom: "/images/execoms/excom.jpg",
   execoms: {
-    chair: "/images/execoms/chair.jpg",
-    coChair: "/images/execoms/Co-Chair.jpg",
-    secretary: "/images/execoms/Secretary.jpg",
-    webmaster: "/images/execoms/Webmaster.jpg",
-    treasurer: "/images/execoms/Treasurer.jpg",
-    mdcCoChair: "/images/execoms/MDC%20Co-Chair.jpg",
-    mdcChair: "/images/execoms/MDC%20Chair.jpg",
-    publicityHead: "/images/execoms/Publicity%20Head.jpg",
+    chair: "/images/execoms/web/chair.jpg",
+    coChair: "/images/execoms/web/vice-chair.jpg",
+    secretary: "/images/execoms/web/secretary.jpg",
+    webmaster: "/images/execoms/web/webmaster.jpg",
+    treasurer: "/images/execoms/web/treasurer.jpg",
+    mdcCoChair: "/images/execoms/web/mdc-co-chair.jpg",
+    mdcChair: "", // supplied photo is not this member, awaiting correct one
+    publicityHead: "/images/execoms/web/publicity-lead.jpg",
     eventLead: "", // photo pending upload
   },
 };
 
 export const STATS = {
-  members: "200+",
-  events: "50+",
-  awards: "10+",
+  events: "30+",
   yearFounded: "2014",
-  eventsAnnually: "20+",
   yearsActive: "10+",
   ieeeGlobalMembers: "400K+",
   ieeeCountries: "160+",
@@ -65,13 +64,7 @@ export const FACULTY_ADVISOR = {
   name: "Dr. Shankargoud Patil",
   role: "Faculty Advisor",
   image: IMAGES.facultyAdvisor,
-  social: {
-    email: `mailto:${SITE.email}`,
-    linkedin: SOCIAL.linkedin,
-    instagram: SOCIAL.instagram,
-    github: "#",
-    phone: "tel:+910000000000",
-  },
+  social: { email: "", linkedin: "", instagram: "", github: "", phone: "" },
 };
 
 // ── Executive Committee ──────────────────────────────────────
@@ -295,9 +288,7 @@ export const QUERY_TOPICS = [
 ];
 
 export const ABOUT_STATS = [
-  { value: STATS.members, label: "Active Members" },
   { value: STATS.events,  label: "Events Hosted" },
-  { value: STATS.awards,  label: "Awards Won" },
   { value: STATS.yearFounded, label: "Established" },
 ];
 
@@ -330,9 +321,5 @@ export const ABOUT_VALUES = [
 
 export const TIMELINE = [
   { year: "2014", title: "Founded", description: "IEEE SGBIT Student Branch officially established at S.G. Balekundri Institute of Technology." },
-  { year: "2017", title: "First Hackathon", description: "Hosted Hack-n-Hunt — our flagship hackathon that now draws 500+ participants annually." },
-  { year: "2019", title: "Best Branch Award", description: "Recognized as Best IEEE Student Branch in Karnataka Section for outstanding activities." },
-  { year: "2021", title: "Digital Pivot", description: "Hosted 15+ virtual events during the pandemic, keeping the community connected and active." },
-  { year: "2023", title: "200 Members", description: "Crossed 200 active members — the largest technical student community in SGBIT." },
-  { year: "2025", title: "Today", description: "Continuing to innovate with new initiatives in AI, embedded systems, and industry partnerships." },
+  { year: "2025", title: "Today", description: "Continuing to run workshops, hackathons, conferences and community events for engineering students." },
 ];

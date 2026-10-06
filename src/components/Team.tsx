@@ -7,6 +7,7 @@ import Link from "next/link";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { useTheme } from "next-themes";
+import { BOY_MEMBERS, GIRL_MEMBERS } from "@/constants";
 import CursorGrid from "@/components/ui/CursorGrid";
 
 gsap.registerPlugin(ScrollTrigger);
@@ -17,17 +18,19 @@ const facultyAdvisor = {
   image: "/images/execoms/Dr.%20Shankargoud%20Patil.JPG",
 };
 
+const nameOf = (role: string) => [...BOY_MEMBERS, ...GIRL_MEMBERS].find((m) => m.role === role)?.name ?? role;
+
 const execomMembers = [
-  { name: "MDC Co-Chairperson", role: "MDC Co-Chair",   x: 6,  y: 35 },
-  { name: "MDC Chairperson",    role: "MDC Chair",       x: 16, y: 35 },
-  { name: "Webmaster",          role: "Webmaster",       x: 27, y: 35 },
-  { name: "Co-Chairperson",     role: "Co-Chair",        x: 37, y: 35 },
-  { name: "Chairperson",        role: "Chair",           x: 49, y: 35 },
-  { name: "Secretary",          role: "Secretary",       x: 59, y: 35 },
-  { name: "Publicity Head",     role: "Publicity Head",  x: 67, y: 35 },
-  { name: "Treasurer",          role: "Treasurer",       x: 77, y: 35 },
-  { name: "Publicity Head",     role: "Publicity",       x: 87, y: 35 },
-];
+  { role: "MDC Co-Chair",   x: 6  },
+  { role: "MDC Chair",      x: 16 },
+  { role: "Webmaster",      x: 27 },
+  { role: "Vice-Chair",     x: 37 },
+  { role: "SB Chair",       x: 49 },
+  { role: "Secretary",      x: 59 },
+  { role: "Publicity Lead", x: 67 },
+  { role: "Treasurer",      x: 77 },
+  { role: "Event Lead",     x: 87 },
+].map((m) => ({ ...m, name: nameOf(m.role), y: 35 }));
 
 export default function Team() {
   const sectionRef = useRef<HTMLElement>(null);

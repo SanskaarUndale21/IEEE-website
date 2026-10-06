@@ -114,11 +114,9 @@ export default function About() {
             </p>
 
             {/* Stats */}
-            <div ref={statsRef} className="about-text-reveal grid grid-cols-3 gap-6">
+            <div ref={statsRef} className="about-text-reveal grid grid-cols-2 gap-6">
               {[
-                { target: 100, suffix: "+", label: "Members" },
                 { target: 30, suffix: "+", label: "Events" },
-                { target: 10, suffix: "+", label: "Awards" },
               ].map((stat) => (
                 <div key={stat.label} className="text-center">
                   <p className="font-display text-4xl font-bold gradient-text-blue">

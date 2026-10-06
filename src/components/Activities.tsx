@@ -8,7 +8,6 @@ const activities = [
     num: "01",
     title: "Technical Workshops",
     description: "Hands-on sessions on emerging tech — IoT, AI, embedded systems, cloud computing, and more. Learn by building, not just watching.",
-    stat: "20+ per year",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5" />
@@ -18,8 +17,7 @@ const activities = [
   {
     num: "02",
     title: "Hackathons",
-    description: "Intense competitions solving real-world problems with engineering ingenuity. Build, iterate, present — under 36 hours.",
-    stat: "500+ participants",
+    description: "Intense competitions solving real-world problems with engineering ingenuity. Build, iterate, present.",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M8 9l3 3-3 3m5 0h3M5 20h14a2 2 0 002-2V6a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
@@ -30,7 +28,6 @@ const activities = [
     num: "03",
     title: "Guest Lectures",
     description: "Insights from IEEE Distinguished Speakers, industry leaders, and research pioneers shaping modern technology.",
-    stat: "30+ speakers",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0z" />
@@ -41,7 +38,6 @@ const activities = [
     num: "04",
     title: "Paper Presentations",
     description: "A platform for students to present original research, fostering academic rigour and a culture of scientific inquiry.",
-    stat: "150+ papers",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z" />
@@ -52,7 +48,6 @@ const activities = [
     num: "05",
     title: "Project Showcases",
     description: "Annual exhibitions where teams demo hardware, software, and interdisciplinary builds to judges and industry visitors.",
-    stat: "80+ projects",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M9.663 17h4.673M12 3v1m6.364 1.636l-.707.707M21 12h-1M4 12H3m3.343-5.657l-.707-.707m2.828 9.9a5 5 0 117.072 0l-.548.547A3.374 3.374 0 0014 18.469V19a2 2 0 11-4 0v-.531c0-.895-.356-1.754-.988-2.386l-.548-.547z" />
@@ -63,7 +58,6 @@ const activities = [
     num: "06",
     title: "Industry Connect",
     description: "Networking events, industrial visits, and mentorship programs that bridge the gap between campus and career.",
-    stat: "40+ companies",
     icon: (
       <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
@@ -131,10 +125,6 @@ export default function Activities() {
                     {act.description}
                   </p>
                 </div>
-                <div className="mt-6 flex items-center gap-2 border-t border-[var(--border)] pt-4">
-                  <div className="h-1 w-1 rounded-full bg-[var(--ieee-blue)] dark:bg-[var(--ieee-light)]" />
-                  <span className="text-xs font-semibold tracking-wide text-[var(--text-muted)]">{act.stat}</span>
-                </div>
               </motion.div>
             ))}
 
@@ -173,17 +163,14 @@ export default function Activities() {
                 </p>
                 <p className="mt-3 text-xs text-[var(--text-muted)]">— IEEE SGBIT Mission</p>
               </div>
-              <div className="grid grid-cols-2 gap-3 mt-6">
+              <div className="mt-6">
                 <div className="rounded-lg bg-[var(--bg-secondary)] p-3 text-center">
-                  <p className="font-display text-2xl font-black text-[var(--ieee-blue)] dark:text-[var(--ieee-light)]">200+</p>
-                  <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">Members</p>
-                </div>
-                <div className="rounded-lg bg-[var(--bg-secondary)] p-3 text-center">
-                  <p className="font-display text-2xl font-black text-[var(--ieee-blue)] dark:text-[var(--ieee-light)]">50+</p>
+                  <p className="font-display text-2xl font-black text-[var(--ieee-blue)] dark:text-[var(--ieee-light)]">30+</p>
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">Events</p>
                 </div>
               </div>
             </motion.div>
+
 
             {activities.slice(2, 4).map((act, i) => (
               <motion.div
@@ -208,10 +195,6 @@ export default function Activities() {
                   <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
                     {act.description}
                   </p>
-                </div>
-                <div className="mt-6 flex items-center gap-2 border-t border-[var(--border)] pt-4">
-                  <div className="h-1 w-1 rounded-full bg-[var(--ieee-blue)] dark:bg-[var(--ieee-light)]" />
-                  <span className="text-xs font-semibold tracking-wide text-[var(--text-muted)]">{act.stat}</span>
                 </div>
               </motion.div>
             ))}
@@ -242,10 +225,6 @@ export default function Activities() {
                   <p className="text-sm leading-relaxed text-[var(--text-secondary)]">
                     {act.description}
                   </p>
-                </div>
-                <div className="mt-6 flex items-center gap-2 border-t border-[var(--border)] pt-4">
-                  <div className="h-1 w-1 rounded-full bg-[var(--ieee-blue)] dark:bg-[var(--ieee-light)]" />
-                  <span className="text-xs font-semibold tracking-wide text-[var(--text-muted)]">{act.stat}</span>
                 </div>
               </motion.div>
             ))}

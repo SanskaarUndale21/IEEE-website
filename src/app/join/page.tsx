@@ -1,15 +1,15 @@
 "use client";
 
+import Logo from "@/components/ui/Logo";
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import Image from "next/image";
-import { MEMBERSHIP_BENEFITS, STATS, IMAGES, SITE } from "@/constants";
+import { MEMBERSHIP_BENEFITS, STATS, SITE } from "@/constants";
 
 const benefitStats = [
   { value: STATS.ieeeGlobalMembers, label: "IEEE Members" },
-  { value: STATS.members, label: "SGBIT Members" },
-  { value: STATS.eventsAnnually, label: "Events / Year" },
+  { value: STATS.ieeeCountries, label: "Countries" },
 ];
 
 export default function JoinPage() {
@@ -112,7 +112,7 @@ export default function JoinPage() {
             {/* Header */}
             <div className="mb-8 flex items-center gap-4">
               <div className="relative h-10 w-10 flex-shrink-0">
-                <Image src={IMAGES.logo} alt="IEEE" fill className="object-contain" />
+                <Logo fill className="object-contain" />
               </div>
               <div>
                 <p className="section-label">Membership Application</p>

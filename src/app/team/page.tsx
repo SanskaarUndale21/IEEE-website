@@ -69,15 +69,6 @@ export default function TeamPage() {
                   Providing visionary leadership and academic guidance to the IEEE SGBIT Student Branch, steering our members towards technical excellence and professional growth.
                 </p>
                 
-                {/* Socials */}
-                <div className="flex items-center justify-center md:justify-start gap-4">
-                  <a href={FACULTY_ADVISOR.social.linkedin} className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--ieee-blue)]/10 text-[var(--ieee-blue)] transition-colors hover:bg-[var(--ieee-blue)] hover:text-white">
-                    <LinkedinIcon />
-                  </a>
-                  <a href={FACULTY_ADVISOR.social.email} className="flex h-10 w-10 items-center justify-center rounded-full bg-[var(--ieee-blue)]/10 text-[var(--ieee-blue)] transition-colors hover:bg-[var(--ieee-blue)] hover:text-white">
-                    <EmailIcon />
-                  </a>
-                </div>
               </div>
             </div>
           </div>

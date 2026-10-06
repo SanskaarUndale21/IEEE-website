@@ -1,11 +1,12 @@
 "use client";
 
+import Logo from "@/components/ui/Logo";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { useTheme } from "next-themes";
 import Image from "next/image";
 import Link from "next/link";
-import { NAV_LINKS, IMAGES } from "@/constants";
+import { NAV_LINKS } from "@/constants";
 
 function ThemeToggle() {
   const { theme, setTheme } = useTheme();
@@ -69,7 +70,7 @@ export default function Navbar() {
           {/* Logo */}
           <Link href="/" className="flex items-center gap-3 group">
             <div className="relative h-9 w-9 transition-transform duration-300 group-hover:scale-110">
-              <Image src={IMAGES.logo} alt="IEEE" fill className="object-contain" priority />
+              <Logo fill className="object-contain" priority />
             </div>
             <div className="flex flex-col">
               <span className="font-display text-sm font-bold tracking-[0.15em] text-gray-900 dark:text-white">IEEE</span>

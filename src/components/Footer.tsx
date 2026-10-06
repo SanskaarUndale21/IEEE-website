@@ -1,5 +1,6 @@
 "use client";
 
+import Logo from "@/components/ui/Logo";
 import Image from "next/image";
 import Link from "next/link";
 import { SOCIAL, IMAGES, SITE } from "@/constants";
@@ -28,7 +29,7 @@ export default function Footer() {
           {/* Brand */}
           <div className="sm:col-span-2 md:col-span-1">
             <div className="mb-5 flex items-center gap-3">
-              <Image src={IMAGES.logo} alt="IEEE" width={34} height={34} className="object-contain" />
+              <Logo width={34} height={34} className="object-contain" />
               <div>
                 <p className="font-display text-sm font-bold tracking-[0.15em] text-gray-900 dark:text-white">IEEE</p>
                 <p className="text-[9px] tracking-[0.25em] text-gray-500 dark:text-white/40">SGBIT BELAGAVI</p>
@@ -97,7 +98,7 @@ export default function Footer() {
           </p>
           <div className="flex items-center gap-5">
             <div className="flex items-center gap-2">
-              <Image src={IMAGES.logo} alt="IEEE" width={18} height={18} className="opacity-40" />
+              <Logo width={18} height={18} className="opacity-40" />
               <span className="text-[9px] tracking-[0.2em] text-gray-400 dark:text-white/20">A unit of IEEE</span>
             </div>
             <div className="flex items-center gap-2">
