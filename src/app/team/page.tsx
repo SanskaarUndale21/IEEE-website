@@ -132,7 +132,7 @@ function MemberCard({
         onClick={() => onToggle(id)}
       >
         {/* Photo area - Fixed aspect for all */}
-        <div className="relative aspect-[3/4] overflow-hidden bg-[var(--bg-secondary)]">
+        <div className="relative aspect-[3/4] overflow-hidden bg-slate-800">
 
           {hasImage ? (
             <Image
@@ -151,12 +151,12 @@ function MemberCard({
                     <circle cx="12" cy="7" r="4" />
                   </svg>
                </div>
-               <p className="text-[7px] font-bold uppercase tracking-[0.3em] text-[var(--text-muted)]">Awaiting Photo</p>
+               <p className="text-[7px] font-bold uppercase tracking-[0.3em] text-white/40">Awaiting Photo</p>
             </div>
           )}
 
           {/* Static Gradient (No hover scale to keep constant feel) */}
-          <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent ${!hasImage ? 'opacity-0' : 'opacity-100'}`} />
+          <div className={`absolute inset-0 bg-gradient-to-t from-black/90 via-black/10 to-transparent opacity-100`} />
 
           {/* Badge */}
           {index > 0 && (
@@ -168,7 +168,7 @@ function MemberCard({
           )}
 
           {/* Role & Name Overlay */}
-          {hasImage && (
+          {(
             <div className="absolute bottom-0 left-0 right-0 p-5">
               <p className="mb-0.5 text-[8px] font-bold uppercase tracking-[0.25em] text-[var(--ieee-light)]">
                 {role}
@@ -179,25 +179,9 @@ function MemberCard({
               <p className="mt-0.5 text-[10px] text-white/60">{department}</p>
             </div>
           )}
-        </div>
-
-        {/* Name footer for placeholder cards */}
-        {!hasImage && (
-          <div className="p-4 text-center">
-            <p className="mb-0.5 text-[8px] font-bold uppercase tracking-[0.2em] text-[var(--ieee-blue)]">{role}</p>
-            <h4 className="font-display text-base font-bold text-[var(--text-primary)]">{name}</h4>
-            <p className="mt-0.5 text-[10px] text-[var(--text-muted)]">{department}</p>
-            <div className="mt-3 flex items-center justify-center gap-2">
-              <SocialLink className="text-[var(--text-muted)] hover:bg-[var(--ieee-blue)]/10 hover:text-[var(--ieee-blue)]" href={social.instagram} label={`${name} on Instagram`}><InstagramIcon /></SocialLink>
-              <SocialLink className="text-[var(--text-muted)] hover:bg-[var(--ieee-blue)]/10 hover:text-[var(--ieee-blue)]" href={social.linkedin} label={`${name} on LinkedIn`}><LinkedinIcon /></SocialLink>
-              <SocialLink className="text-[var(--text-muted)] hover:bg-[var(--ieee-blue)]/10 hover:text-[var(--ieee-blue)]" href={social.github} label={`${name} on GitHub`}><GithubIcon /></SocialLink>
-              <SocialLink className="text-[var(--text-muted)] hover:bg-[var(--ieee-blue)]/10 hover:text-[var(--ieee-blue)]" href={social.email} label={`Email ${name}`}><EmailIcon /></SocialLink>
-            </div>
-          </div>
-        )}
 
         {/* Social interactions - sliding overlay */}
-        {hasImage && (
+        {(
           <div className="member-social absolute bottom-0 left-0 right-0 flex items-center justify-around bg-black/95 border-t border-white/10 px-4 py-3 backdrop-blur-xl transition-all duration-500 translate-y-full group-hover:translate-y-0 active:translate-y-0">
             <SocialLink href={social.instagram} label={`${name} on Instagram`}><InstagramIcon /></SocialLink>
             <SocialLink href={social.linkedin} label={`${name} on LinkedIn`}><LinkedinIcon /></SocialLink>
@@ -205,6 +189,8 @@ function MemberCard({
             <SocialLink href={social.email} label={`Email ${name}`}><EmailIcon /></SocialLink>
           </div>
         )}
+        </div>
+
       </div>
     </div>
   );
