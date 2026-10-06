@@ -40,8 +40,8 @@ export const IMAGES = {
     treasurer: "/images/execoms/web/treasurer.jpg",
     mdcCoChair: "/images/execoms/web/mdc-co-chair.jpg",
     mdcChair: "", // supplied photo is not this member, awaiting correct one
-    publicityHead: "", // photo pending upload
-    eventLead: "/images/execoms/web/publicity-lead.jpg", // file was named Publicity Head but shows the Event Lead
+    publicityHead: "/images/execoms/web/publicity-lead.jpg",
+    eventLead: "/images/execoms/web/event-lead.jpg",
   },
 };
 
