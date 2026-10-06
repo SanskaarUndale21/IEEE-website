@@ -6,9 +6,11 @@ import Link from "next/link";
 import { useTheme } from "next-themes";
 import Embers from "@/components/ieee-week/Embers";
 import Sigil from "@/components/ieee-week/Sigil";
+import Timeline from "@/components/ieee-week/Timeline";
+import Doom from "@/components/ieee-week/Doom";
 import Countdown from "@/components/ieee-week/Countdown";
 import Footer from "@/components/Footer";
-import { IEEE_WEEK, WEEK_DAYS, ARCHIVE } from "@/data/ieeeWeek";
+import { IEEE_WEEK, ARCHIVE } from "@/data/ieeeWeek";
 import { SOCIAL } from "@/constants";
 
 export default function IeeeWeekPage() {
@@ -24,18 +26,13 @@ export default function IeeeWeekPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  const trackPointer = (e: React.PointerEvent<HTMLElement>) => {
-    const r = e.currentTarget.getBoundingClientRect();
-    e.currentTarget.style.setProperty("--mx", `${e.clientX - r.left}px`);
-    e.currentTarget.style.setProperty("--my", `${e.clientY - r.top}px`);
-  };
-
   return (
     <main>
       {/* Hero */}
-      <section className="relative isolate flex min-h-[100svh] flex-col justify-end overflow-hidden px-5 pb-14 pt-32 md:px-10">
+      <section className="relative isolate flex min-h-[min(100svh,960px)] flex-col justify-end overflow-hidden px-5 pb-14 pt-32 md:px-10">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_35%,rgba(13,74,51,0.55),transparent_62%)]" />
         <Sigil className="absolute left-1/2 top-[44%] -z-10 w-[150vmin] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-60" />
+        <Doom className="dd-doom absolute -right-[1vw] top-16 -z-10 h-[min(44svh,400px)] w-auto max-w-none md:bottom-0 md:top-auto md:h-[min(88svh,840px)]" />
         <div className="absolute inset-0 -z-10">
           <Embers />
         </div>
@@ -84,41 +81,17 @@ export default function IeeeWeekPage() {
         </div>
       </section>
 
-      {/* Schedule */}
-      <section className="relative px-5 pb-28 md:px-10 md:pb-40" aria-labelledby="schedule">
+      {/* Schedule: the timeline Loki is holding */}
+      <section className="relative px-5 pb-10 md:px-10" aria-labelledby="schedule">
         <div className="mx-auto max-w-6xl">
           <h2 id="schedule" className="dd-display mb-4 text-5xl text-[var(--dd-iron)] sm:text-7xl">
-            The schedule
+            Follow the thread
           </h2>
-          <p className="mb-12 max-w-[56ch] text-lg">
-            Six events across three days. Event names, timings and venues are announced soon.
+          <p className="mb-16 max-w-[56ch] text-lg">
+            Loki pulled one timeline out of the many. It runs three days and forks into six events. Names, timings and
+            venues are announced soon.
           </p>
-
-          <div className="grid gap-6 lg:grid-cols-3">
-            {WEEK_DAYS.map((d, i) => (
-              <article
-                key={d.day}
-                onPointerMove={trackPointer}
-                className="dd-slab flex flex-col p-7 sm:p-9"
-                style={{ marginTop: `${i * 28}px` }}
-              >
-                <p className="dd-display dd-outline text-[9rem] leading-[0.75]">{d.day}</p>
-                <p className="mt-6 text-sm text-[var(--dd-gold)]">
-                  {d.name}, {IEEE_WEEK.monthLabel}
-                </p>
-                <p className="mt-1 font-serif text-xl italic">{d.blurb}</p>
-
-                <ul className="mt-8 space-y-7 border-t border-[var(--dd-iron)]/15 pt-7">
-                  {d.events.map((e) => (
-                    <li key={e.title}>
-                      <h3 className="dd-display text-3xl text-[var(--dd-glow)]">{e.title}</h3>
-                      <p className="mt-1 max-w-[40ch] leading-relaxed">{e.line}</p>
-                    </li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
+          <Timeline />
         </div>
       </section>
 
@@ -143,6 +116,7 @@ export default function IeeeWeekPage() {
       {/* Close */}
       <section className="relative isolate overflow-hidden px-5 py-28 md:px-10 md:py-40">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_100%,rgba(13,74,51,0.6),transparent_65%)]" />
+        <Doom className="dd-doom absolute -right-10 bottom-0 -z-10 hidden h-[78%] w-auto max-w-none opacity-40 md:block" />
         <div className="mx-auto max-w-4xl">
           <h2 className="dd-display text-[clamp(3.5rem,11vw,9rem)] leading-[0.85] text-[var(--dd-iron)]">Be in the room.</h2>
           <p className="mt-6 max-w-[54ch] text-lg leading-relaxed">
