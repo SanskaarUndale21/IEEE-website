@@ -49,7 +49,6 @@ function fromStatic(): SiteEvent[] {
   }));
 }
 
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
 function fromRow(row: any, index: number, approvedCount = 0): SiteEvent {
   return {
     id: row.id,

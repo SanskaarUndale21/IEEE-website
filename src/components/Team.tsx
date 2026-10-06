@@ -27,9 +27,9 @@ const execomMembers = [
   { role: "Vice-Chair",     x: 37 },
   { role: "SB Chair",       x: 49 },
   { role: "Secretary",      x: 59 },
-  { role: "Publicity Lead", x: 67 },
+  { role: "Event Lead",     x: 67 },
   { role: "Treasurer",      x: 77 },
-  { role: "Event Lead",     x: 87 },
+  { role: "Publicity Lead", x: 87 },
 ].map((m) => ({ ...m, name: nameOf(m.role), y: 35 }));
 
 export default function Team() {

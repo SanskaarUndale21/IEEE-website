@@ -175,7 +175,7 @@ function Login({ api }: { api: string }) {
 
 /* ─────────────────────────── Dashboard ─────────────────────────── */
 
-type Call = (path: string, method?: string, body?: unknown) => Promise<any>; // eslint-disable-line @typescript-eslint/no-explicit-any
+type Call = (path: string, method?: string, body?: unknown) => Promise<any>;
 
 const TABS: { id: Tab; label: string }[] = [
   { id: "overview", label: "Overview" },
@@ -258,7 +258,7 @@ function StatusBadge({ s }: { s: string }) {
 }
 
 function Overview({ call, go }: { call: Call; go: (t: Tab) => void }) {
-  const [d, setD] = useState<any>(null); // eslint-disable-line @typescript-eslint/no-explicit-any
+  const [d, setD] = useState<any>(null);
   const [err, setErr] = useState("");
   useEffect(() => { call("overview").then(setD).catch((e) => setErr(e.message)); }, [call]);
   if (err) return <p className="text-red-500">{err}</p>;
@@ -283,7 +283,7 @@ function Overview({ call, go }: { call: Call; go: (t: Tab) => void }) {
       <div className={card}>
         <p className="mb-3 text-xs font-bold uppercase tracking-wider text-[var(--text-muted)]">Recent admin activity</p>
         <ul className="divide-y divide-[var(--border)] text-xs">
-          {d.audit.map((a: any) => ( // eslint-disable-line @typescript-eslint/no-explicit-any
+          {d.audit.map((a: any) => (
             <li key={a.id} className="flex justify-between gap-3 py-2">
               <span>{a.action}{a.target ? <span className="text-[var(--text-muted)]"> · {String(a.target).slice(0, 36)}</span> : null}</span>
               <span className="text-[var(--text-muted)]">{fmt(a.created_at)}</span>

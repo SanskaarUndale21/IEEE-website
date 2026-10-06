@@ -1,11 +1,11 @@
 import "server-only";
 import { NextResponse, type NextRequest } from "next/server";
-import type { ZodSchema } from "zod";
+import type { ZodType, ZodTypeDef } from "zod";
 import { firstIssue } from "@/lib/validation";
 import { jsonError } from "./auth";
 
 /** Parse a small JSON body against a schema. Returns data or an error response. */
-export async function parseJson<T>(req: NextRequest, schema: ZodSchema<T>, maxBytes = 32_000): Promise<T | NextResponse> {
+export async function parseJson<T>(req: NextRequest, schema: ZodType<T, ZodTypeDef, unknown>, maxBytes = 32_000): Promise<T | NextResponse> {
   if (Number(req.headers.get("content-length") ?? 0) > maxBytes) return jsonError("Payload too large", 413);
   if (!(req.headers.get("content-type") ?? "").startsWith("application/json")) return jsonError("Bad request", 400);
 
