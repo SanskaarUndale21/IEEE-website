@@ -69,7 +69,6 @@
 
 /* Day slabs: edge light follows the pointer. */
 .dd-slab {
-  position: relative;
   background: linear-gradient(180deg, rgba(13, 74, 51, 0.28), rgba(4, 7, 10, 0.9));
   border: 1px solid rgba(169, 179, 186, 0.16);
   clip-path: polygon(0 0, calc(100% - 28px) 0, 100% 28px, 100% 100%, 0 100%);
@@ -104,7 +103,9 @@
   .dd-spin-slow, .dd-spin-rev { animation: none; }
 }
 
-.dd-doom { mask-image: linear-gradient(180deg, #000 55%, transparent 100%); -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%); opacity: 0.9; }
-.dd-eye { animation: dd-flicker 5s steps(1) infinite; }
-@keyframes dd-flicker { 0%, 100% { opacity: 1; } 46% { opacity: 1; } 47% { opacity: 0.35; } 49% { opacity: 1; } 71% { opacity: 0.6; } 72% { opacity: 1; } }
-@media (prefers-reduced-motion: reduce) { .dd-eye { animation: none; } }
+.dd-photo { -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 38%); mask-image: linear-gradient(90deg, transparent 0%, #000 38%); }
+figure.dd-photo { -webkit-mask-image: none; mask-image: none; border: 1px solid rgba(169, 179, 186, 0.16); }
+.dd-photo img { filter: grayscale(1) contrast(1.15) brightness(0.95); }
+.dd-tone { background: linear-gradient(180deg, rgba(20, 114, 76, 0.55), rgba(4, 7, 10, 0.55)); mix-blend-mode: color; }
+.dd-tone::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, #04070a 0%, transparent 38%); }
+@media (max-width: 767px) { .dd-photo:not(figure) { -webkit-mask-image: linear-gradient(180deg, #000 30%, transparent 92%); mask-image: linear-gradient(180deg, #000 30%, transparent 92%); opacity: 0.55; } }

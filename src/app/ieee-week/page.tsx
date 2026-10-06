@@ -7,10 +7,9 @@ import { useTheme } from "next-themes";
 import Embers from "@/components/ieee-week/Embers";
 import Sigil from "@/components/ieee-week/Sigil";
 import Timeline from "@/components/ieee-week/Timeline";
-import Doom from "@/components/ieee-week/Doom";
 import Countdown from "@/components/ieee-week/Countdown";
 import Footer from "@/components/Footer";
-import { IEEE_WEEK, ARCHIVE } from "@/data/ieeeWeek";
+import { IEEE_WEEK, ARCHIVE, PHOTO_CREDITS } from "@/data/ieeeWeek";
 import { SOCIAL } from "@/constants";
 
 export default function IeeeWeekPage() {
@@ -32,7 +31,10 @@ export default function IeeeWeekPage() {
       <section className="relative isolate flex min-h-[min(100svh,960px)] flex-col justify-end overflow-hidden px-5 pb-14 pt-32 md:px-10">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_35%,rgba(13,74,51,0.55),transparent_62%)]" />
         <Sigil className="absolute left-1/2 top-[44%] -z-10 w-[150vmin] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-60" />
-        <Doom className="dd-doom absolute -right-[1vw] top-16 -z-10 h-[min(44svh,400px)] w-auto max-w-none md:bottom-0 md:top-auto md:h-[min(88svh,840px)]" />
+        <div className="dd-photo absolute inset-y-0 right-0 -z-10 w-full md:w-[52%]">
+          <Image src="/images/ieee-week/doom-hero.jpg" alt="Doctor Doom costume portrait" fill priority sizes="(max-width: 768px) 100vw, 52vw" className="object-cover object-[50%_18%]" />
+          <div className="dd-tone absolute inset-0" />
+        </div>
         <div className="absolute inset-0 -z-10">
           <Embers />
         </div>
@@ -81,17 +83,42 @@ export default function IeeeWeekPage() {
         </div>
       </section>
 
-      {/* Schedule: the timeline Loki is holding */}
-      <section className="relative px-5 pb-10 md:px-10" aria-labelledby="schedule">
+      {/* Schedule: the timeline tree */}
+      <section className="relative px-5 pb-28 md:px-10" aria-labelledby="schedule">
         <div className="mx-auto max-w-6xl">
           <h2 id="schedule" className="dd-display mb-4 text-5xl text-[var(--dd-iron)] sm:text-7xl">
-            Follow the thread
+            Follow the branches
           </h2>
           <p className="mb-16 max-w-[56ch] text-lg">
-            Loki pulled one timeline out of the many. It runs three days and forks into six events. Names, timings and
+            One timeline, three days. It forks at each day and the six events hang from its branches. Names, timings and
             venues are announced soon.
           </p>
           <Timeline />
+        </div>
+      </section>
+
+      {/* Assemble */}
+      <section className="relative px-5 pb-28 md:px-10 md:pb-40" aria-labelledby="assemble">
+        <div className="mx-auto max-w-6xl">
+          <h2 id="assemble" className="dd-display mb-10 max-w-[18ch] text-4xl text-[var(--dd-iron)] sm:text-6xl">
+            Every hero needs a deadline.
+          </h2>
+          <div className="grid gap-3 md:grid-cols-[1.5fr_1fr]">
+            <figure className="dd-photo relative aspect-[3/2] overflow-hidden">
+              <Image src="/images/ieee-week/avengers-assemble.jpg" alt="A large group of Avengers cosplayers on steps" fill sizes="(max-width: 768px) 100vw, 60vw" className="object-cover" />
+              <div className="dd-tone absolute inset-0" />
+            </figure>
+            <div className="grid gap-3">
+              <figure className="dd-photo relative aspect-[3/2] overflow-hidden">
+                <Image src="/images/ieee-week/avengers-endgame.jpg" alt="Avengers cosplayers posing together" fill sizes="(max-width: 768px) 100vw, 40vw" className="object-cover" />
+                <div className="dd-tone absolute inset-0" />
+              </figure>
+              <figure className="dd-photo relative aspect-[3/2] overflow-hidden">
+                <Image src="/images/ieee-week/ironman.jpg" alt="Iron Man cosplayer raising a gauntlet" fill sizes="(max-width: 768px) 100vw, 40vw" className="object-cover" />
+                <div className="dd-tone absolute inset-0" />
+              </figure>
+            </div>
+          </div>
         </div>
       </section>
 
@@ -116,9 +143,12 @@ export default function IeeeWeekPage() {
       {/* Close */}
       <section className="relative isolate overflow-hidden px-5 py-28 md:px-10 md:py-40">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_100%,rgba(13,74,51,0.6),transparent_65%)]" />
-        <Doom className="dd-doom absolute -right-10 bottom-0 -z-10 hidden h-[78%] w-auto max-w-none opacity-40 md:block" />
+        <div className="dd-photo absolute inset-y-0 right-0 -z-10 hidden w-[38%] md:block">
+          <Image src="/images/ieee-week/doom-street.jpg" alt="Doctor Doom costume on a city street" fill sizes="38vw" className="object-cover object-[50%_10%]" />
+          <div className="dd-tone absolute inset-0" />
+        </div>
         <div className="mx-auto max-w-4xl">
-          <h2 className="dd-display text-[clamp(3.5rem,11vw,9rem)] leading-[0.85] text-[var(--dd-iron)]">Be in the room.</h2>
+          <h2 className="dd-display relative z-10 text-[clamp(3.5rem,11vw,9rem)] leading-[0.85] text-[var(--dd-iron)]">Be in the room.</h2>
           <p className="mt-6 max-w-[54ch] text-lg leading-relaxed">
             Registration opens soon. Follow IEEE SGBIT for the announcement, or join the branch now so you hear first.
           </p>
@@ -138,6 +168,23 @@ export default function IeeeWeekPage() {
               Follow {SOCIAL.instagramHandle}
             </a>
           </div>
+        </div>
+      </section>
+
+      <section className="px-5 pb-12 md:px-10" aria-labelledby="credits">
+        <div className="mx-auto max-w-6xl border-t border-[var(--dd-iron)]/15 pt-6 text-sm leading-relaxed text-[var(--dd-iron)]/70">
+          <h2 id="credits" className="dd-display mb-2 text-xl text-[var(--dd-iron)]">Photo credits</h2>
+          <p className="mb-2">Cosplay photographs from Wikimedia Commons. Costumes depict characters owned by their respective rights holders; this page is a fan themed student event.</p>
+          <ul className="space-y-1">
+            {PHOTO_CREDITS.map((c) => (
+              <li key={c.file}>
+                {c.label}: {c.author},{" "}
+                <a href={c.page} target="_blank" rel="noopener noreferrer" className="dd-link underline underline-offset-2 hover:text-[var(--dd-glow)]">
+                  {c.license}
+                </a>
+              </li>
+            ))}
+          </ul>
         </div>
       </section>
 
