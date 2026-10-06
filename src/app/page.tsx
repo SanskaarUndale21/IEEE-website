@@ -7,15 +7,19 @@ import Activities from "@/components/Activities";
 import Team from "@/components/Team";
 import Contact from "@/components/Contact";
 import Footer from "@/components/Footer";
+import { getEvents } from "@/lib/events";
 
-export default function Home() {
+export const revalidate = 60;
+
+export default async function Home() {
+  const events = await getEvents("past");
   return (
     <main className="relative">
       <Preloader />
       <Hero />
       <Marquee />
       <About />
-      <EventsPreview />
+      <EventsPreview events={events} />
       <Activities />
       <Team />
       <Contact />

@@ -6,9 +6,9 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import CursorGrid from "@/components/ui/CursorGrid";
-import { events } from "@/data/events";
+import type { SiteEvent } from "@/lib/events";
 
-export default function EventsPreview() {
+export default function EventsPreview({ events }: { events: SiteEvent[] }) {
   const sectionRef = useRef<HTMLElement>(null);
   const isInView = useInView(sectionRef, { once: true, margin: "-80px" });
   const [active, setActive] = useState(0);
@@ -18,7 +18,8 @@ export default function EventsPreview() {
   useEffect(() => setMounted(true), []);
   const isDark = resolvedTheme !== "light";
 
-  const current = events[active];
+  if (events.length === 0) return null;
+  const current = events[Math.min(active, events.length - 1)];
   const total = String(events.length).padStart(2, "0");
 
   return (

@@ -1,0 +1,124 @@
+import { z } from "zod";
+
+// Strip control chars, collapse surrounding whitespace.
+const clean = (max: number) =>
+  z
+    .string()
+    .transform((s) => s.replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u007F]/g, "").trim())
+    .pipe(z.string().max(max));
+
+const required = (max: number) => clean(max).pipe(z.string().min(1, "Required"));
+const optional = (max: number) => clean(max).optional().default("");
+
+const email = clean(200).pipe(z.string().email("Invalid email"));
+const phone = clean(30).pipe(z.string().regex(/^\+?[0-9 ()-]{7,20}$/, "Invalid phone number"));
+const uuid = z.string().uuid();
+
+export const membershipSchema = z.object({
+  name: required(120),
+  email,
+  semester: clean(10).pipe(z.string().regex(/^[1-8]$/, "Invalid semester")),
+  branch: required(80),
+  dob: clean(10)
+    .pipe(z.string().regex(/^\d{4}-\d{2}-\d{2}$/, "Invalid date"))
+    .refine((d) => !Number.isNaN(Date.parse(d)), "Invalid date"),
+  contact: phone,
+  securityQuestion: optional(200),
+  securityAnswer: optional(200),
+  website: z.string().max(0).optional(), // honeypot, humans leave it empty
+});
+
+export const querySchema = z
+  .object({
+    email: clean(200).pipe(z.union([z.literal(""), z.string().email()])).optional().default(""),
+    phone: clean(30)
+      .pipe(z.union([z.literal(""), z.string().regex(/^\+?[0-9 ()-]{7,20}$/)]))
+      .optional()
+      .default(""),
+    topic: optional(2000),
+    website: z.string().max(0).optional(),
+  })
+  .refine((q) => q.email || q.phone, "Email or phone is required");
+
+export const registrationSchema = z.object({
+  eventId: uuid,
+  name: required(120),
+  email,
+  phone,
+  usn: optional(30),
+  college: optional(160),
+  branch: optional(80),
+  semester: clean(10).pipe(z.union([z.literal(""), z.string().regex(/^[1-8]$/)])).optional().default(""),
+  teamName: optional(120),
+  transactionId: clean(80)
+    .pipe(z.union([z.literal(""), z.string().regex(/^[A-Za-z0-9 _./-]{4,80}$/, "Invalid transaction id")]))
+    .optional()
+    .default(""),
+  website: z.string().max(0).optional(),
+});
+
+// Images may be local (/images/...) or uploaded to our Supabase public bucket.
+function isAllowedImageUrl(url: string) {
+  if (url === "") return true;
+  if (/^\/images\/[A-Za-z0-9 _().,/-]+\.(jpe?g|png|webp|jfif|gif)$/i.test(url) && !url.includes("..")) return true;
+  const base = process.env.SUPABASE_URL;
+  if (!base) return false;
+  try {
+    const u = new URL(url);
+    const b = new URL(base);
+    return (
+      u.protocol === "https:" &&
+      u.host === b.host &&
+      u.pathname.startsWith("/storage/v1/object/public/event-images/") &&
+      !u.search
+    );
+  } catch {
+    return false;
+  }
+}
+
+const imageUrl = clean(500).refine(isAllowedImageUrl, "Image must be a /images/ path or an uploaded image");
+
+export const eventSchema = z.object({
+  slug: clean(80).pipe(z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Slug: lowercase letters, numbers, dashes")),
+  title: required(160),
+  date_label: optional(80),
+  event_date: clean(10)
+    .pipe(z.union([z.literal(""), z.string().regex(/^\d{4}-\d{2}-\d{2}$/)]))
+    .optional()
+    .default("")
+    .transform((d) => (d === "" ? null : d)),
+  venue: optional(200),
+  description: optional(600),
+  long_description: optional(8000),
+  tags: z.array(required(40)).max(10).default([]),
+  image_url: imageUrl.optional().default(""),
+  gallery: z.array(imageUrl.pipe(z.string().min(1))).max(20).default([]),
+  status: z.enum(["upcoming", "past"]),
+  published: z.boolean(),
+  registration_open: z.boolean(),
+  fee_amount: z.number().int().min(0).max(100000),
+  payment_instructions: optional(1000),
+  max_registrations: z.number().int().positive().max(100000).nullable().default(null),
+  sort_order: z.number().int().min(-10000).max(10000).default(0),
+});
+
+export const eventUpdateSchema = eventSchema.extend({ id: uuid });
+
+export const reviewSchema = z.object({
+  id: uuid,
+  status: z.enum(["pending", "approved", "rejected"]),
+  note: optional(1000),
+});
+
+export const queryStatusSchema = z.object({
+  id: uuid,
+  status: z.enum(["open", "resolved"]),
+});
+
+export const idSchema = z.object({ id: uuid });
+
+export function firstIssue(err: z.ZodError) {
+  const i = err.issues[0];
+  return i ? `${i.path.join(".") || "input"}: ${i.message}` : "Invalid input";
+}
