@@ -46,6 +46,7 @@ export const IMAGES = {
 };
 
 export const STATS = {
+  members: "100+",
   events: "30+",
   yearFounded: "2014",
   yearsActive: "10+",
@@ -288,6 +289,7 @@ export const QUERY_TOPICS = [
 ];
 
 export const ABOUT_STATS = [
+  { value: STATS.members, label: "Active Members" },
   { value: STATS.events,  label: "Events Hosted" },
   { value: STATS.yearFounded, label: "Established" },
 ];

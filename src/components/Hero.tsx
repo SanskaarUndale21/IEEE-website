@@ -30,6 +30,7 @@ const TAGLINES = [
 const TAGLINE_INTERVAL = 5000;
 
 const HERO_STATS = [
+  { value: STATS.members, label: "Members" },
   { value: STATS.events, label: "Events" },
   { value: STATS.yearsActive, label: "Years" },
 ];

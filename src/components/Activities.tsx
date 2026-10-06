@@ -163,7 +163,11 @@ export default function Activities() {
                 </p>
                 <p className="mt-3 text-xs text-[var(--text-muted)]">— IEEE SGBIT Mission</p>
               </div>
-              <div className="mt-6">
+              <div className="mt-6 grid grid-cols-2 gap-3">
+                <div className="rounded-lg bg-[var(--bg-secondary)] p-3 text-center">
+                  <p className="font-display text-2xl font-black text-[var(--ieee-blue)] dark:text-[var(--ieee-light)]">100+</p>
+                  <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">Members</p>
+                </div>
                 <div className="rounded-lg bg-[var(--bg-secondary)] p-3 text-center">
                   <p className="font-display text-2xl font-black text-[var(--ieee-blue)] dark:text-[var(--ieee-light)]">30+</p>
                   <p className="text-[10px] font-semibold uppercase tracking-wide text-[var(--text-muted)]">Events</p>

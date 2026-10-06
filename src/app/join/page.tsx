@@ -9,6 +9,7 @@ import { MEMBERSHIP_BENEFITS, STATS, SITE } from "@/constants";
 
 const benefitStats = [
   { value: STATS.ieeeGlobalMembers, label: "IEEE Members" },
+  { value: STATS.members, label: "SGBIT Members" },
   { value: STATS.ieeeCountries, label: "Countries" },
 ];
 
