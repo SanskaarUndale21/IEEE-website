@@ -94,7 +94,7 @@ export default function Navbar() {
             <div className="ml-2 flex items-center gap-3">
               {/* Events CTA */}
               <Link
-                href="/events/upcoming"
+                href="/ieee-week"
                 className="group relative overflow-hidden rounded-full border border-ieee-light/40 bg-ieee-light/5 px-5 py-2 text-[10px] font-bold uppercase tracking-[0.2em] text-ieee-light transition-all duration-300 hover:border-ieee-light/80 hover:bg-ieee-light/15 hover:shadow-[0_0_20px_rgba(14,165,233,0.25)]"
               >
                 <span className="relative z-10 flex items-center gap-1.5">
@@ -148,7 +148,7 @@ export default function Navbar() {
               ))}
               <motion.div initial={{ opacity: 0, y: 30 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.1 + NAV_LINKS.length * 0.07 }} className="flex flex-col items-center gap-4">
                 <Link
-                  href="/events/upcoming"
+                  href="/ieee-week"
                   onClick={() => setMobileOpen(false)}
                   className="inline-flex items-center gap-2 rounded-full border border-ieee-light/40 bg-ieee-light/5 px-8 py-3 text-sm font-bold uppercase tracking-[0.2em] text-ieee-light"
                 >

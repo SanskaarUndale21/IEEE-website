@@ -73,7 +73,7 @@ export default function EventsPreview({ events }: { events: SiteEvent[] }) {
               <span className="text-[var(--ieee-blue)] dark:text-[var(--ieee-light)]">Highlights</span>
             </h2>
             <Link
-              href="/events"
+              href="/ieee-week"
               className="group inline-flex w-fit items-center gap-2 rounded-full border border-[var(--border-strong)] px-5 py-2.5 text-[11px] font-bold uppercase tracking-[0.18em] text-[var(--text-primary)] transition-all duration-300 hover:border-[var(--ieee-blue)] hover:text-[var(--ieee-blue)] dark:hover:border-[var(--ieee-light)] dark:hover:text-[var(--ieee-light)]"
             >
               View all events

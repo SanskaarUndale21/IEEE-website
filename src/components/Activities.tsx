@@ -254,7 +254,7 @@ export default function Activities() {
                   Join Now
                 </a>
                 <a
-                  href="/events"
+                  href="/ieee-week"
                   className="btn-outline-sq text-xs"
                 >
                   See Events

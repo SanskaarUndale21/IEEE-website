@@ -5,7 +5,7 @@ const SITE_URL = process.env.NEXT_PUBLIC_SITE_URL || "https://ieee-sgbit.vercel.
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const now = new Date();
-  const pages = ["", "/about", "/team", "/events", "/events/upcoming", "/join"].map((p) => ({
+  const pages = ["", "/about", "/team", "/ieee-week", "/join"].map((p) => ({
     url: `${SITE_URL}${p}`,
     lastModified: now,
     changeFrequency: "monthly" as const,

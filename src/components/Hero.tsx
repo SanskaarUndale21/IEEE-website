@@ -432,7 +432,7 @@ export default function Hero() {
 
               <Magnetic className="hero-cta" strength={0.22}>
                 <Link
-                  href="/events/upcoming"
+                  href="/ieee-week"
                   className="group flex items-center justify-center gap-2.5 rounded-full border border-gray-900/15 px-7 py-3 text-[11px] font-bold uppercase tracking-[0.22em] text-gray-700 transition-colors duration-300 hover:border-ieee-light hover:text-ieee-light dark:border-white/15 dark:text-white/70 dark:hover:border-ieee-light dark:hover:text-ieee-light sm:py-3.5"
                 >
                   Upcoming Events

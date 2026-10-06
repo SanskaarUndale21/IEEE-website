@@ -140,7 +140,7 @@ export default function AboutPage() {
             </p>
             <div className="mt-8 flex gap-4">
               <Link href="/join" className="btn-primary-sq">Join IEEE</Link>
-              <Link href="/events" className="btn-outline-sq">View Events</Link>
+              <Link href="/ieee-week" className="btn-outline-sq">View Events</Link>
             </div>
           </motion.div>
 
@@ -283,7 +283,7 @@ export default function AboutPage() {
           </p>
           <div className="flex flex-wrap items-center justify-center gap-4">
             <Link href="/join" className="btn-primary-sq px-8 py-3">Join IEEE SGBIT</Link>
-            <Link href="/events" className="btn-outline-sq px-8 py-3">Explore Events</Link>
+            <Link href="/ieee-week" className="btn-outline-sq px-8 py-3">Explore Events</Link>
           </div>
         </div>
       </section>

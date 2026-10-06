@@ -8,7 +8,7 @@ import { SOCIAL, IMAGES, SITE } from "@/constants";
 const quickLinks = [
   { name: "Home",    href: "/" },
   { name: "About",   href: "/about" },
-  { name: "Events",  href: "/events" },
+  { name: "Events",  href: "/ieee-week" },
   { name: "Team",    href: "/team" },
   { name: "Contact", href: "#contact" },
 ];
