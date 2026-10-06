@@ -11,6 +11,12 @@ import { randomToken } from "@/lib/security/edge-crypto";
 
 const isDev = process.env.NODE_ENV !== "production";
 
+// next-themes injects one fixed inline script (theme flash prevention) from the
+// root layout, outside our nonce. Allow exactly that script by hash instead of
+// opening script-src to 'unsafe-inline'. If next-themes or its props in
+// ThemeProvider change, the browser console names the new hash to put here.
+const THEME_SCRIPT_HASH = "sha256-6ACtrAjU7pXJOVPqP1qJLHF2yPoKk2LMcCrqJG91Z6g=";
+
 function notFound() {
   return new NextResponse("Not Found", {
     status: 404,
@@ -30,7 +36,7 @@ function adminPageCsp(nonce: string) {
   const supa = supabaseOrigin();
   return [
     "default-src 'self'",
-    `script-src 'self' 'nonce-${nonce}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
+    `script-src 'self' 'nonce-${nonce}' '${THEME_SCRIPT_HASH}' 'strict-dynamic'${isDev ? " 'unsafe-eval'" : ""}`,
     "style-src 'self' 'unsafe-inline'",
     `img-src 'self' data: blob: ${supa}`.trim(),
     "font-src 'self' data:",
