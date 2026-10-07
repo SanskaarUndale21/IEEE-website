@@ -5,7 +5,8 @@ import Image from "next/image";
 import Link from "next/link";
 import { useTheme } from "next-themes";
 import Embers from "@/components/ieee-week/Embers";
-import Sigil from "@/components/ieee-week/Sigil";
+import Nebula from "@/components/ieee-week/Nebula";
+import Strands from "@/components/ieee-week/Strands";
 import Timeline from "@/components/ieee-week/Timeline";
 import Countdown from "@/components/ieee-week/Countdown";
 import Footer from "@/components/Footer";
@@ -26,38 +27,44 @@ export default function IeeeWeekPage() {
   }, []);
 
   return (
-    <main>
-      {/* Hero */}
-      <section className="relative isolate flex min-h-[min(100svh,960px)] flex-col justify-end overflow-hidden px-5 pb-14 pt-32 md:px-10">
-        <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_35%,rgba(13,74,51,0.55),transparent_62%)]" />
-        <Sigil className="absolute left-1/2 top-[44%] -z-10 w-[150vmin] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-60" />
-        <div className="dd-photo absolute inset-y-0 right-0 -z-10 w-full md:w-[52%]">
-          <Image src="/images/ieee-week/doom-hero.jpg" alt="Doctor Doom costume portrait" fill priority sizes="(max-width: 768px) 100vw, 52vw" className="object-cover object-[50%_18%]" />
-          <div className="dd-tone absolute inset-0" />
-        </div>
-        <div className="absolute inset-0 -z-10">
-          <Embers />
-        </div>
+    <>
+      <Nebula />
+    <main className="relative z-10">
+      {/* Hero: the title sits behind Doom, strands pull away from him */}
+      <section className="relative isolate flex min-h-[min(100svh,980px)] flex-col justify-end overflow-hidden">
+        <Strands className="absolute inset-0 -z-30 h-full w-full" />
 
-        <h1 className="dd-title dd-display self-start" aria-label="IEEE Week">
-          <span className="dd-half dd-half-a dd-metal" aria-hidden>
-            IEEE<br />WEEK
-          </span>
-          <span className="dd-half dd-half-b dd-metal" aria-hidden>
-            IEEE<br />WEEK
-          </span>
-          <span className="dd-crack" aria-hidden>
-            <i />
-          </span>
+        <h1
+          className="dd-title dd-display absolute inset-x-0 top-[13%] -z-20 text-center md:top-[11%]"
+          aria-label="IEEE Week"
+        >
+          <span aria-hidden className="justify-self-end">IEEE</span>
+          <span aria-hidden className="dd-gap" />
+          <span aria-hidden className="justify-self-start">WEEK</span>
         </h1>
 
-        <div className="mt-10 grid gap-10 md:grid-cols-[1fr_auto] md:items-end">
-          <div className="max-w-xl">
-            <p className="dd-display text-3xl text-[var(--dd-gold)] sm:text-4xl">
-              {IEEE_WEEK.days.join(" · ")} {IEEE_WEEK.monthLabel}
+        <Image
+          src="/images/ieee-week/doom-cutout.webp"
+          alt="Doctor Doom costume portrait"
+          width={1100}
+          height={1653}
+          priority
+          sizes="(max-width: 768px) 120vw, 60vw"
+          className="dd-figure pointer-events-none absolute bottom-0 left-1/2 -z-10 h-[72%] w-auto max-w-none -translate-x-1/2 translate-y-[3%] md:h-[104%] md:translate-y-0"
+        />
+        <Strands front className="pointer-events-none absolute inset-0 -z-[5] h-full w-full" />
+        <div className="absolute inset-0 -z-[4]">
+          <Embers />
+        </div>
+        <div className="absolute inset-x-0 bottom-0 -z-[3] h-1/3 bg-gradient-to-t from-[var(--dd-void)] via-[var(--dd-void)]/70 to-transparent" />
+
+        <div className="relative mx-auto grid w-full max-w-[1500px] gap-8 px-5 pb-12 md:grid-cols-[1fr_auto] md:items-end md:px-10 md:pb-14">
+          <div>
+            <p className="dd-display text-5xl text-[var(--dd-iron)] sm:text-7xl">
+              14<span className="text-[var(--dd-glow)]">/</span>15<span className="text-[var(--dd-glow)]">/</span>16 <span className="text-[var(--dd-glow)]">{IEEE_WEEK.monthLabel}</span>
             </p>
-            <p className="mt-3 text-lg leading-relaxed sm:text-xl">
-              Three days, six events, one campus. Build, compete and present with IEEE SGBIT before the week closes.
+            <p className="mt-3 max-w-[40ch] text-lg leading-relaxed sm:text-xl">
+              Three days and six events at IEEE SGBIT. Build, compete and present before the week closes.
             </p>
           </div>
           <Countdown target={IEEE_WEEK.start} />
@@ -190,5 +197,6 @@ export default function IeeeWeekPage() {
 
       <Footer />
     </main>
+    </>
   );
 }
