@@ -39,7 +39,7 @@ export const IMAGES = {
     webmaster: "/images/execoms/web/webmaster.jpg",
     treasurer: "/images/execoms/web/treasurer.jpg",
     mdcCoChair: "/images/execoms/web/mdc-co-chair.jpg",
-    mdcChair: "", // supplied photo is not this member, awaiting correct one
+    mdcChair: "/images/execoms/web/mdc-chair.jpg",
     publicityHead: "/images/execoms/web/publicity-lead.jpg",
     eventLead: "/images/execoms/web/event-lead.jpg",
   },
