@@ -8,7 +8,7 @@ export const IEEE_WEEK = {
   days: [14, 15, 16],
 };
 
-export type WeekEvent = { title: string; line: string };
+export type WeekEvent = { title: string; line: string; plate: string; plateAlt: string };
 export type WeekDay = { day: number; name: string; blurb: string; events: WeekEvent[] };
 
 export const WEEK_DAYS: WeekDay[] = [
@@ -17,8 +17,18 @@ export const WEEK_DAYS: WeekDay[] = [
     name: "Day one",
     blurb: "The week opens.",
     events: [
-      { title: "Convergence", line: "Opening ceremony and keynote that sets the week in motion." },
-      { title: "Forge", line: "A hands-on workshop where you build something before lunch." },
+      {
+        title: "Convergence",
+        line: "Opening ceremony and keynote that sets the week in motion.",
+        plate: "/images/ieee-week/plate-helm.webp",
+        plateAlt: "A 16th century armet helmet with a mask visor",
+      },
+      {
+        title: "Forge",
+        line: "A hands-on workshop where you build something before lunch.",
+        plate: "/images/ieee-week/plate-gauntlet.webp",
+        plateAlt: "A 16th century locking gauntlet",
+      },
     ],
   },
   {
@@ -26,8 +36,18 @@ export const WEEK_DAYS: WeekDay[] = [
     name: "Day two",
     blurb: "The middle of the war.",
     events: [
-      { title: "Rift", line: "A timed hackathon: one problem, one team, no spare hours." },
-      { title: "Sanctum", line: "Project and paper showcase judged by faculty and seniors." },
+      {
+        title: "Rift",
+        line: "A timed hackathon: one problem, one team, no spare hours.",
+        plate: "/images/ieee-week/plate-iron.webp",
+        plateAlt: "A 14th century iron war mask",
+      },
+      {
+        title: "Sanctum",
+        line: "Project and paper showcase judged by faculty and seniors.",
+        plate: "/images/ieee-week/plate-visor.webp",
+        plateAlt: "A 16th century visor shaped like a human face",
+      },
     ],
   },
   {
@@ -35,8 +55,18 @@ export const WEEK_DAYS: WeekDay[] = [
     name: "Day three",
     blurb: "The reckoning.",
     events: [
-      { title: "Doomsday Quiz", line: "A technical quiz for teams that survived the first two days." },
-      { title: "Final Hour", line: "Results, awards and the closing of IEEE Week." },
+      {
+        title: "Doomsday Quiz",
+        line: "A technical quiz for teams that survived the first two days.",
+        plate: "/images/ieee-week/plate-gold.webp",
+        plateAlt: "A medieval gilded war mask",
+      },
+      {
+        title: "Final Hour",
+        line: "Results, awards and the closing of IEEE Week.",
+        plate: "/images/ieee-week/plate-black.webp",
+        plateAlt: "A 17th century lacquered menpo face armour",
+      },
     ],
   },
 ];
@@ -48,11 +78,17 @@ export const ARCHIVE = [
   { src: "/images/hack-n-hunt.jpg", label: "Hack-n-Hunt" },
 ];
 
-// Photos are CC licensed cosplay photographs from Wikimedia Commons. Attribution is required, so keep this list shown on the page.
+// Image sources. Attribution is shown on the page. Armour: The Metropolitan Museum of Art
+// Open Access (CC0). Space imagery: NASA (public domain). Lightning: CC BY 4.0.
 export const PHOTO_CREDITS = [
-  { file: "/images/ieee-week/doom-hero.jpg", label: "Doom (hero)", author: "Super Festivals from Ft. Lauderdale, USA", license: "CC BY 2.0", page: "https://commons.wikimedia.org/wiki/File:Cosplay_of_Doctor_Doom_at_GalaxyCon_Richmond_2020_(49667247426).jpg" },
-  { file: "/images/ieee-week/doom-street.jpg", label: "Doom (street)", author: "LostplanetKD73", license: "CC BY-SA 4.0", page: "https://commons.wikimedia.org/wiki/File:New_York_Comic_Con_2022_-_Doctor_Doom_cosplay.jpg" },
-  { file: "/images/ieee-week/avengers-assemble.jpg", label: "Avengers group", author: "Pat Loika", license: "CC BY 2.0", page: "https://commons.wikimedia.org/wiki/File:Avengers_cosplays_Dragon_Con_2012.jpg" },
-  { file: "/images/ieee-week/avengers-endgame.jpg", label: "Avengers group", author: "LostplanetKD73", license: "CC BY-SA 4.0", page: "https://commons.wikimedia.org/wiki/File:NYCC_2019_Cosplay_of_the_Avengers_01.jpg" },
-  { file: "/images/ieee-week/ironman.jpg", label: "Iron Man", author: "Gage Skidmore", license: "CC BY-SA 2.0", page: "https://commons.wikimedia.org/wiki/File:Iron_Man_Cosplay_at_2013_Phoenix_Comicon.jpg" },
+  { label: "War Mask, 14th to 16th century (hero)", by: "The Metropolitan Museum of Art, Open Access", license: "CC0", page: "https://www.metmuseum.org/art/collection/search/39433" },
+  { label: "Armet with Mask Visor, ca. 1520 to 1525", by: "The Metropolitan Museum of Art, Open Access", license: "CC0", page: "https://www.metmuseum.org/art/collection/search/26504" },
+  { label: "Locking Gauntlet, ca. 1540", by: "The Metropolitan Museum of Art, Open Access", license: "CC0", page: "https://www.metmuseum.org/art/collection/search/24645" },
+  { label: "Mask (Somen), 14th century", by: "The Metropolitan Museum of Art, Open Access", license: "CC0", page: "https://www.metmuseum.org/art/collection/search/22512" },
+  { label: "Mask Visor in Form of a Human Face, ca. 1515", by: "The Metropolitan Museum of Art, Open Access", license: "CC0", page: "https://www.metmuseum.org/art/collection/search/35825" },
+  { label: "War Mask, 12th to 14th century", by: "The Metropolitan Museum of Art, Open Access", license: "CC0", page: "https://www.metmuseum.org/art/collection/search/35152" },
+  { label: "Mask (Menpo), 17th century", by: "The Metropolitan Museum of Art, Open Access", license: "CC0", page: "https://www.metmuseum.org/art/collection/search/22520" },
+  { label: "Helix Nebula", by: "NASA/JPL-Caltech/Univ. of Ariz.", license: "Public domain", page: "https://commons.wikimedia.org/wiki/File:Comets_Kick_up_Dust_in_Helix_Nebula_(PIA09178).jpg" },
+  { label: "Cygnus Loop Nebula, ultraviolet", by: "NASA / GALEX", license: "Public domain", page: "https://commons.wikimedia.org/wiki/File:Ultraviolet_image_of_the_Cygnus_Loop_Nebula_crop.jpg" },
+  { label: "A Vintage Lightning Storm at Kitt Peak", by: "Gary Ladd/KPNO/NOIRLab/NSF/AURA", license: "CC BY 4.0", page: "https://commons.wikimedia.org/wiki/File:A_Vintage_Lightning_Storm_at_Kitt_Peak.jpg" },
 ];
