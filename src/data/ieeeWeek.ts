@@ -45,16 +45,3 @@ export const WEEK_DAYS: WeekDay[] = [
 // { src: "/images/ieee-week/doom.jpg", alt: "Doctor Doom" }. Leave null to show no portrait.
 export const DOOM_IMAGE: { src: string; alt: string } | null = null;
 
-export const ARCHIVE = [
-  { src: "/images/ignition2025.jpeg", label: "Ignition 2025" },
-  { src: "/images/nkcon2024.jfif", label: "NKCon 2024" },
-  { src: "/images/wie24.jpg", label: "WiE 2024" },
-  { src: "/images/hack-n-hunt.jpg", label: "Hack-n-Hunt" },
-];
-
-// Photos are CC licensed cosplay photographs from Wikimedia Commons. Attribution is required, so keep this list shown on the page.
-export const PHOTO_CREDITS = [
-  { file: "/images/ieee-week/avengers-assemble.jpg", label: "Avengers group", author: "Pat Loika", license: "CC BY 2.0", page: "https://commons.wikimedia.org/wiki/File:Avengers_cosplays_Dragon_Con_2012.jpg" },
-  { file: "/images/ieee-week/avengers-endgame.jpg", label: "Avengers group", author: "LostplanetKD73", license: "CC BY-SA 4.0", page: "https://commons.wikimedia.org/wiki/File:NYCC_2019_Cosplay_of_the_Avengers_01.jpg" },
-  { file: "/images/ieee-week/ironman.jpg", label: "Iron Man", author: "Gage Skidmore", license: "CC BY-SA 2.0", page: "https://commons.wikimedia.org/wiki/File:Iron_Man_Cosplay_at_2013_Phoenix_Comicon.jpg" },
-];

@@ -9,7 +9,7 @@ import Sigil from "@/components/ieee-week/Sigil";
 import Timeline from "@/components/ieee-week/Timeline";
 import Countdown from "@/components/ieee-week/Countdown";
 import Footer from "@/components/Footer";
-import { IEEE_WEEK, ARCHIVE, PHOTO_CREDITS, DOOM_IMAGE } from "@/data/ieeeWeek";
+import { IEEE_WEEK, DOOM_IMAGE } from "@/data/ieeeWeek";
 import { SOCIAL } from "@/constants";
 
 export default function IeeeWeekPage() {
@@ -80,49 +80,6 @@ export default function IeeeWeekPage() {
         </div>
       </section>
 
-      {/* Assemble */}
-      <section className="relative px-5 pb-28 md:px-10 md:pb-40" aria-labelledby="assemble">
-        <div className="mx-auto max-w-6xl">
-          <h2 id="assemble" className="dd-display mb-10 max-w-[18ch] text-4xl text-[var(--dd-iron)] sm:text-6xl">
-            Every hero needs a deadline.
-          </h2>
-          <div className="grid gap-3 md:grid-cols-[1.5fr_1fr]">
-            <figure className="dd-photo relative aspect-[3/2] overflow-hidden">
-              <Image src="/images/ieee-week/avengers-assemble.jpg" alt="A large group of Avengers cosplayers on steps" fill sizes="(max-width: 768px) 100vw, 60vw" className="object-cover" />
-              <div className="dd-tone absolute inset-0" />
-            </figure>
-            <div className="grid gap-3">
-              <figure className="dd-photo relative aspect-[3/2] overflow-hidden">
-                <Image src="/images/ieee-week/avengers-endgame.jpg" alt="Avengers cosplayers posing together" fill sizes="(max-width: 768px) 100vw, 40vw" className="object-cover" />
-                <div className="dd-tone absolute inset-0" />
-              </figure>
-              <figure className="dd-photo relative aspect-[3/2] overflow-hidden">
-                <Image src="/images/ieee-week/ironman.jpg" alt="Iron Man cosplayer raising a gauntlet" fill sizes="(max-width: 768px) 100vw, 40vw" className="object-cover" />
-                <div className="dd-tone absolute inset-0" />
-              </figure>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* Archive */}
-      <section className="relative px-5 pb-28 md:px-10 md:pb-40" aria-labelledby="archive">
-        <div className="mx-auto max-w-6xl">
-          <h2 id="archive" className="dd-display mb-10 text-4xl text-[var(--dd-iron)] sm:text-6xl">
-            What we have already built
-          </h2>
-          <div className="grid grid-cols-2 gap-3 md:grid-cols-4">
-            {ARCHIVE.map((a, i) => (
-              <figure key={a.src} className="group relative aspect-[3/4] overflow-hidden" style={{ marginTop: i % 2 ? "2.5rem" : 0 }}>
-                <Image src={a.src} alt={a.label} fill sizes="(max-width: 768px) 50vw, 25vw" className="dd-duo object-cover transition-all duration-500 group-hover:scale-105 group-hover:[filter:none]" />
-                <div className="dd-tint absolute inset-0 transition-opacity duration-500 group-hover:opacity-0" />
-                <figcaption className="dd-display absolute bottom-3 left-4 text-2xl text-white">{a.label}</figcaption>
-              </figure>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* Close */}
       <section className="relative isolate overflow-hidden px-5 py-28 md:px-10 md:py-40">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_100%,rgba(13,74,51,0.6),transparent_65%)]" />
@@ -147,23 +104,6 @@ export default function IeeeWeekPage() {
               Follow {SOCIAL.instagramHandle}
             </a>
           </div>
-        </div>
-      </section>
-
-      <section className="px-5 pb-12 md:px-10" aria-labelledby="credits">
-        <div className="mx-auto max-w-6xl border-t border-[var(--dd-iron)]/15 pt-6 text-sm leading-relaxed text-[var(--dd-iron)]/70">
-          <h2 id="credits" className="dd-display mb-2 text-xl text-[var(--dd-iron)]">Photo credits</h2>
-          <p className="mb-2">Cosplay photographs from Wikimedia Commons. Costumes depict characters owned by their respective rights holders; this page is a fan themed student event.</p>
-          <ul className="space-y-1">
-            {PHOTO_CREDITS.map((c) => (
-              <li key={c.file}>
-                {c.label}: {c.author},{" "}
-                <a href={c.page} target="_blank" rel="noopener noreferrer" className="dd-link underline underline-offset-2 hover:text-[var(--dd-glow)]">
-                  {c.license}
-                </a>
-              </li>
-            ))}
-          </ul>
         </div>
       </section>
 
