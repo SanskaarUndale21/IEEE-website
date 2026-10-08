@@ -9,7 +9,7 @@ import Sigil from "@/components/ieee-week/Sigil";
 import Timeline from "@/components/ieee-week/Timeline";
 import Countdown from "@/components/ieee-week/Countdown";
 import Footer from "@/components/Footer";
-import { IEEE_WEEK, ARCHIVE, PHOTO_CREDITS } from "@/data/ieeeWeek";
+import { IEEE_WEEK, ARCHIVE, PHOTO_CREDITS, DOOM_IMAGE } from "@/data/ieeeWeek";
 import { SOCIAL } from "@/constants";
 
 export default function IeeeWeekPage() {
@@ -31,10 +31,12 @@ export default function IeeeWeekPage() {
       <section className="relative isolate flex min-h-[min(100svh,960px)] flex-col justify-end overflow-hidden px-5 pb-14 pt-32 md:px-10">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_35%,rgba(13,74,51,0.55),transparent_62%)]" />
         <Sigil className="absolute left-1/2 top-[44%] -z-10 w-[150vmin] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-60" />
-        <div className="dd-photo absolute inset-y-0 right-0 -z-10 w-full md:w-[52%]">
-          <Image src="/images/ieee-week/doom-hero.jpg" alt="Doctor Doom costume portrait" fill priority sizes="(max-width: 768px) 100vw, 52vw" className="object-cover object-[50%_18%]" />
-          <div className="dd-tone absolute inset-0" />
-        </div>
+        {DOOM_IMAGE && (
+          <div className="dd-photo absolute inset-y-0 right-0 -z-10 w-full md:w-[52%]">
+            <Image src={DOOM_IMAGE.src} alt={DOOM_IMAGE.alt} fill priority sizes="(max-width: 768px) 100vw, 52vw" className="object-cover object-[50%_18%]" />
+            <div className="dd-tone absolute inset-0" />
+          </div>
+        )}
         <div className="absolute inset-0 -z-10">
           <Embers />
         </div>
@@ -61,25 +63,6 @@ export default function IeeeWeekPage() {
             </p>
           </div>
           <Countdown target={IEEE_WEEK.start} />
-        </div>
-      </section>
-
-      {/* Why the week exists */}
-      <section className="relative px-5 py-24 md:px-10 md:py-36">
-        <div className="mx-auto grid max-w-6xl gap-10 md:grid-cols-[auto_1fr] md:gap-20">
-          <p className="dd-display dd-outline text-[clamp(6rem,20vw,15rem)] leading-[0.8]">1884</p>
-          <div className="max-w-[62ch] self-center">
-            <h2 className="dd-display text-4xl text-[var(--dd-iron)] sm:text-6xl">Engineers have always gathered like this.</h2>
-            <p className="mt-6 text-lg leading-[1.75]">
-              On 7 October 1884, the American Institute of Electrical Engineers held its first technical meeting at the
-              Franklin Institute in Philadelphia. That society merged with the Institute of Radio Engineers in 1963 to form IEEE, and since 2009 the first Tuesday of
-              October is celebrated as IEEE Day.
-            </p>
-            <p className="mt-4 text-lg leading-[1.75]">
-              At SGBIT we stretch one day into a week. Same idea as 1884: put people who build things in one room and see what
-              they make.
-            </p>
-          </div>
         </div>
       </section>
 
@@ -143,10 +126,6 @@ export default function IeeeWeekPage() {
       {/* Close */}
       <section className="relative isolate overflow-hidden px-5 py-28 md:px-10 md:py-40">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_100%,rgba(13,74,51,0.6),transparent_65%)]" />
-        <div className="dd-photo absolute inset-y-0 right-0 -z-10 hidden w-[38%] md:block">
-          <Image src="/images/ieee-week/doom-street.jpg" alt="Doctor Doom costume on a city street" fill sizes="38vw" className="object-cover object-[50%_10%]" />
-          <div className="dd-tone absolute inset-0" />
-        </div>
         <div className="mx-auto max-w-4xl">
           <h2 className="dd-display relative z-10 text-[clamp(3.5rem,11vw,9rem)] leading-[0.85] text-[var(--dd-iron)]">Be in the room.</h2>
           <p className="mt-6 max-w-[54ch] text-lg leading-relaxed">
