@@ -1,7 +1,6 @@
 "use client";
 
 import { useRef } from "react";
-import Image from "next/image";
 import { motion, useScroll, useSpring, useTransform, useInView, type MotionValue } from "framer-motion";
 import { IEEE_WEEK, WEEK_DAYS, type WeekDay } from "@/data/ieeeWeek";
 
@@ -85,7 +84,7 @@ function Tree() {
   const p = useSpring(scrollYProgress, { stiffness: 80, damping: 22, mass: 0.4 });
 
   return (
-    <div ref={wrap} className="relative mx-auto mb-[26%] w-full max-w-[1000px]" style={{ aspectRatio: `1000 / ${H}` }}>
+    <div ref={wrap} className="relative mx-auto w-full max-w-[1000px]" style={{ aspectRatio: `1000 / ${H}` }}>
       <svg viewBox={`0 0 1000 ${H}`} className="absolute inset-0 h-full w-full overflow-visible" aria-hidden>
         <defs>
           <filter id="tree-glow" x="-20%" y="-5%" width="140%" height="110%">
@@ -186,32 +185,18 @@ function ForkNode({ x, y, day, p }: { x: number; y: number; day: number; p: Moti
   );
 }
 
-type Ev = { title: string; line: string; day: number; plate: string; plateAlt: string };
-
-function Plate({ ev }: { ev: Ev }) {
-  return (
-    <div className="dd-plate relative aspect-[4/3] w-full overflow-hidden">
-      <Image src={ev.plate} alt={ev.plateAlt} fill sizes="(max-width: 1024px) 80vw, 300px" className="object-cover" />
-      <div className="dd-plate-tone absolute inset-0" />
-    </div>
-  );
-}
-
-function EventAtTip({ x, y, ev, p }: { x: number; y: number; ev: Ev; p: MotionValue<number> }) {
+function EventAtTip({ x, y, ev, p }: { x: number; y: number; ev: { title: string; line: string; day: number }; p: MotionValue<number> }) {
   const at = y / H;
   const show = useTransform(p, (v) => clamp01((v - at + 0.02) / 0.05));
   const lift = useTransform(show, (v) => (1 - v) * 18);
   return (
     <motion.article
-      className="dd-slab absolute w-[min(300px,31%)]"
+      className="dd-slab absolute w-[min(300px,31%)] p-5"
       style={{ x: "-50%", left: `${x / 10}%`, top: `calc(${(y / H) * 100}% + 18px)`, opacity: show, y: lift }}
     >
       <span className="absolute -top-[22px] left-1/2 h-4 w-4 -translate-x-1/2 rounded-full bg-[var(--dd-spark)] shadow-[0_0_16px_4px_rgba(214,91,255,0.85)]" aria-hidden />
-      <Plate ev={ev} />
-      <div className="p-5">
-        <h3 className="dd-display text-3xl text-[var(--dd-glow)]">{ev.title}</h3>
-        <p className="mt-1 text-base leading-relaxed">{ev.line}</p>
-      </div>
+      <h3 className="dd-display text-3xl text-[var(--dd-glow)]">{ev.title}</h3>
+      <p className="mt-1 text-base leading-relaxed">{ev.line}</p>
     </motion.article>
   );
 }
@@ -257,12 +242,9 @@ function MobileDay({ data }: { data: WeekDay }) {
         {data.name}, {IEEE_WEEK.monthLabel}. {data.blurb}
       </p>
       {data.events.map((e) => (
-        <article key={e.title} className="dd-slab relative">
-          <Plate ev={{ ...e, day: data.day }} />
-          <div className="p-5">
-            <h3 className="dd-display text-3xl text-[var(--dd-glow)]">{e.title}</h3>
-            <p className="mt-1 text-base leading-relaxed">{e.line}</p>
-          </div>
+        <article key={e.title} className="dd-slab relative p-5">
+          <h3 className="dd-display text-3xl text-[var(--dd-glow)]">{e.title}</h3>
+          <p className="mt-1 text-base leading-relaxed">{e.line}</p>
         </article>
       ))}
     </div>
