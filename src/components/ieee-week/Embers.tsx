@@ -26,7 +26,7 @@ export default function Embers({ count = 70 }: { count?: number }) {
       vy: 0.15 + Math.random() * 0.6,
       vx: (Math.random() - 0.5) * 0.25,
       a: 0.2 + Math.random() * 0.7,
-      hue: [152, 152, 152, 285, 225][Math.floor(Math.random() * 5)],
+      hue: Math.random() < 0.78 ? 152 : 42,
     });
 
     let ps: P[] = [];

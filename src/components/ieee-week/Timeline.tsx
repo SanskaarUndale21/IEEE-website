@@ -51,16 +51,6 @@ const BRANCHES: Branch[] = [
 
 const EVENTS = WEEK_DAYS.flatMap((d) => d.events.map((e) => ({ ...e, day: d.day })));
 
-/** Each branch is a cable of fibres, like the strands in the key art. */
-const FIBRES = [
-  { dx: 0, dy: 0, w: 1, o: 1, c: "url(#tree-grad)" },
-  { dx: -3, dy: 1, w: 0.3, o: 0.75, c: "#46f0a0" },
-  { dx: 3.5, dy: -1, w: 0.26, o: 0.65, c: "#12935e" },
-  { dx: -6.5, dy: 2, w: 0.22, o: 0.55, c: "#3b6bff" },
-  { dx: 6.5, dy: -2, w: 0.22, o: 0.5, c: "#d65bff" },
-  { dx: 1.5, dy: 4, w: 0.2, o: 0.5, c: "#46f0a0" },
-];
-
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
 
 export default function Timeline() {
@@ -95,8 +85,8 @@ function Tree() {
             </feMerge>
           </filter>
           <linearGradient id="tree-grad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0" stopColor="#46f0a0" />
-            <stop offset="1" stopColor="#8a6bff" />
+            <stop offset="0" stopColor="#3be39a" />
+            <stop offset="1" stopColor="#d9ac3f" />
           </linearGradient>
         </defs>
 
@@ -107,20 +97,7 @@ function Tree() {
         ))}
 
         {/* growing trunk */}
-        {FIBRES.map((f, i) => (
-          <motion.path
-            key={`t${i}`}
-            d={smooth(TRUNK)}
-            fill="none"
-            stroke={f.c}
-            strokeOpacity={f.o}
-            strokeWidth={9 * f.w}
-            strokeLinecap="round"
-            filter={i === 0 ? "url(#tree-glow)" : undefined}
-            transform={`translate(${f.dx} ${f.dy})`}
-            style={{ pathLength: p }}
-          />
-        ))}
+        <motion.path d={smooth(TRUNK)} fill="none" stroke="url(#tree-grad)" strokeWidth="9" strokeLinecap="round" filter="url(#tree-glow)" style={{ pathLength: p }} />
 
         {/* growing branches */}
         {BRANCHES.map((b, i) => (
@@ -147,24 +124,17 @@ function GrowBranch({ branch, p }: { branch: Branch; p: MotionValue<number> }) {
   const start = y0 / H - 0.01;
   const len = branch.dead ? 0.07 : 0.1;
   const grow = useTransform(p, (v) => clamp01((v - start) / len));
-  const fibres = branch.dead ? FIBRES.slice(0, 3) : FIBRES;
   return (
-    <g opacity={branch.dead ? 0.55 : 1}>
-      {fibres.map((f, i) => (
-        <motion.path
-          key={i}
-          d={smooth(branch.pts)}
-          fill="none"
-          stroke={f.c}
-          strokeOpacity={f.o}
-          strokeWidth={branch.width * f.w}
-          strokeLinecap="round"
-          filter={i === 0 ? "url(#tree-glow)" : undefined}
-          transform={`translate(${f.dx * 0.6} ${f.dy * 0.6})`}
-          style={{ pathLength: grow }}
-        />
-      ))}
-    </g>
+    <motion.path
+      d={smooth(branch.pts)}
+      fill="none"
+      stroke={branch.dead ? "#3be39a" : "url(#tree-grad)"}
+      strokeOpacity={branch.dead ? 0.45 : 1}
+      strokeWidth={branch.width}
+      strokeLinecap="round"
+      filter="url(#tree-glow)"
+      style={{ pathLength: grow }}
+    />
   );
 }
 
@@ -194,7 +164,7 @@ function EventAtTip({ x, y, ev, p }: { x: number; y: number; ev: { title: string
       className="dd-slab absolute w-[min(300px,31%)] p-5"
       style={{ x: "-50%", left: `${x / 10}%`, top: `calc(${(y / H) * 100}% + 18px)`, opacity: show, y: lift }}
     >
-      <span className="absolute -top-[22px] left-1/2 h-4 w-4 -translate-x-1/2 rounded-full bg-[var(--dd-spark)] shadow-[0_0_16px_4px_rgba(214,91,255,0.85)]" aria-hidden />
+      <span className="absolute -top-[22px] left-1/2 h-4 w-4 -translate-x-1/2 rounded-full bg-[var(--dd-gold)] shadow-[0_0_14px_3px_rgba(217,172,63,0.8)]" aria-hidden />
       <h3 className="dd-display text-3xl text-[var(--dd-glow)]">{ev.title}</h3>
       <p className="mt-1 text-base leading-relaxed">{ev.line}</p>
     </motion.article>

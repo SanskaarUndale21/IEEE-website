@@ -1,12 +1,10 @@
 .dd-root {
   --dd-void: #04070a;
   --dd-cloak: #0d4a33;
-  --dd-glow: #46f0a0;
-  --dd-blue: #3b6bff;
-  --dd-spark: #d65bff;
-  isolation: isolate;
+  --dd-glow: #3be39a;
   --dd-iron: #a9b3ba;
   --dd-gold: #d9ac3f;
+  background: var(--dd-void);
   color: var(--dd-iron);
   font-family: var(--font-spectral), Georgia, serif;
   overflow-x: clip;
@@ -24,36 +22,50 @@
   color: transparent;
 }
 
-/* Hero title: huge, metallic, tucked behind the figure. */
+/* Hero fracture: two clipped copies pull apart along a glowing diagonal. */
 .dd-title {
+  position: relative;
+  display: inline-block;
   margin: 0;
-  display: grid;
-  grid-template-columns: 1fr auto 1fr;
-  font-size: clamp(4rem, 16.5vw, 22rem);
-  line-height: 0.82;
-  font-weight: 900;
-  letter-spacing: 0.01em;
-  white-space: nowrap;
+  font-size: clamp(6.5rem, 27vw, 24rem);
+  line-height: 0.8;
   text-transform: uppercase;
-  background: linear-gradient(180deg, #eef5f1 0%, #9fb3ab 42%, #34524a 56%, #b9cfc5 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  color: transparent;
-  filter: drop-shadow(0 0 26px rgba(70, 240, 160, 0.28));
+  font-weight: 900;
 }
-.dd-gap { width: 1.28em; }
-
-.dd-figure {
-  filter: saturate(0.75) contrast(1.12) brightness(0.82) drop-shadow(0 0 46px rgba(70, 240, 160, 0.22));
-  -webkit-mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
-  mask-image: linear-gradient(180deg, #000 70%, transparent 100%);
+.dd-half { display: block; }
+.dd-half-b { position: absolute; inset: 0; }
+.dd-half-a {
+  clip-path: polygon(0 0, 100% 0, 100% 36%, 0 64%);
+  animation: dd-split-a 1.6s 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
 }
+.dd-half-b {
+  clip-path: polygon(0 64%, 100% 36%, 100% 100%, 0 100%);
+  animation: dd-split-b 1.6s 0.5s cubic-bezier(0.2, 0.8, 0.2, 1) both;
+}
+@keyframes dd-split-a { from { transform: translate(0, 0); } to { transform: translate(-0.6%, -2.2%); } }
+@keyframes dd-split-b { from { transform: translate(0, 0); } to { transform: translate(0.6%, 2.2%); } }
 
-.dd-sway { animation: dd-sway 16s ease-in-out infinite alternate; }
-@keyframes dd-sway { from { transform: rotate(-0.8deg); } to { transform: rotate(0.8deg); } }
-.dd-flow { animation: dd-flow 7s linear infinite; }
-@keyframes dd-flow { to { stroke-dashoffset: -146; } }
+.dd-crack {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  filter: drop-shadow(0 0 4px #3be39a) drop-shadow(0 0 14px #3be39a);
+  animation: dd-pulse 3.4s 1.6s ease-in-out infinite;
+}
+.dd-crack i {
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, #b8ffe0 18%, #3be39a 50%, #b8ffe0 82%, transparent);
+  clip-path: polygon(-5% 63.3%, 105% 35.3%, 105% 36.7%, -5% 64.7%);
+  transform-origin: 0 50%;
+  animation: dd-draw 0.9s 0.25s ease-out both;
+}
+@keyframes dd-draw { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+@keyframes dd-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
 
+.dd-spin-slow { transform-origin: 0 0; animation: dd-rot 140s linear infinite; }
+.dd-spin-rev { transform-origin: 0 0; animation: dd-rot 220s linear infinite reverse; }
+@keyframes dd-rot { to { transform: rotate(360deg); } }
 
 /* Day slabs: edge light follows the pointer. */
 .dd-slab {
@@ -85,7 +97,10 @@
 .dd-link:focus-visible, .dd-btn:focus-visible { outline: 2px solid var(--dd-gold); outline-offset: 4px; }
 
 @media (prefers-reduced-motion: reduce) {
-  .dd-sway, .dd-flow { animation: none; }
+  .dd-half-a { animation: none; transform: translate(-0.6%, -2.2%); }
+  .dd-half-b { animation: none; transform: translate(0.6%, 2.2%); }
+  .dd-crack, .dd-crack i { animation: none; }
+  .dd-spin-slow, .dd-spin-rev { animation: none; }
 }
 
 .dd-photo { -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 38%); mask-image: linear-gradient(90deg, transparent 0%, #000 38%); }
@@ -94,9 +109,3 @@ figure.dd-photo { -webkit-mask-image: none; mask-image: none; border: 1px solid 
 .dd-tone { background: linear-gradient(180deg, rgba(20, 114, 76, 0.55), rgba(4, 7, 10, 0.55)); mix-blend-mode: color; }
 .dd-tone::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, #04070a 0%, transparent 38%); }
 @media (max-width: 767px) { .dd-photo:not(figure) { -webkit-mask-image: linear-gradient(180deg, #000 30%, transparent 92%); mask-image: linear-gradient(180deg, #000 30%, transparent 92%); opacity: 0.55; } }
-
-@media (max-width: 767px) {
-  .dd-title { grid-template-columns: 1fr; font-size: 27vw; line-height: 0.8; }
-  .dd-title > span { justify-self: center !important; }
-  .dd-gap { display: none; }
-}
