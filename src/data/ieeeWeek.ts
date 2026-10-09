@@ -122,7 +122,7 @@ export const WEEK_DAYS: WeekDay[] = [
         teamCount: 2,
         teamLabel: "2 members",
         fee: { ieee: 79, nonIeee: 99, note: "per team" },
-        coordinators: [{ name: "Aditi L", phone: "6361636547" }, { name: "Pooja P" }],
+        coordinators: [{ name: "Aditi L" }, { name: "Pooja P", phone: "6361636547" }],
         overview:
           "A campus-based visual challenge. Teams get four blurred or modified photographs of the college campus, identify each location, reach the exact spot and recreate the photograph from approximately the same viewpoint. Accuracy of location, viewpoint and composition is scored by an AI image-comparison algorithm.",
       },
