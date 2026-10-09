@@ -87,7 +87,35 @@ export default function EventDetails() {
                           </ul>,
                         ],
                         ["Overview", e.overview],
+                        ["Format", e.format],
                         ["Rounds", e.rounds],
+                        [
+                          "Round details",
+                          e.roundsList ? (
+                            <div key="rl" className="space-y-4">
+                              {e.roundsList.map((r) => (
+                                <div key={r.name}>
+                                  <p className="font-semibold text-[var(--dd-gold)]">{r.name}</p>
+                                  <ul className="mt-1 list-disc space-y-1 pl-5">
+                                    {r.points.map((x) => (
+                                      <li key={x}>{x}</li>
+                                    ))}
+                                  </ul>
+                                </div>
+                              ))}
+                            </div>
+                          ) : null,
+                        ],
+                        [
+                          "Rules",
+                          e.rules ? (
+                            <ol key="ru" className="list-decimal space-y-1 pl-5">
+                              {e.rules.map((x) => (
+                                <li key={x}>{x}</li>
+                              ))}
+                            </ol>
+                          ) : null,
+                        ],
                         ["Bring", e.bring],
                       ])}
                     </dl>

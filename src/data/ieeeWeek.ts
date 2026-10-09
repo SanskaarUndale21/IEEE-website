@@ -34,6 +34,10 @@ export type WeekEvent = {
   coordinators: Coordinator[];
   overview: string;
   bring?: string;
+  /** Longer lists shown in the details section. */
+  format?: string;
+  roundsList?: { name: string; points: string[] }[];
+  rules?: string[];
   rounds?: string;
   /** WhatsApp group invite link for this event. Paste it here and it shows on the registration page. */
   whatsapp?: string;
@@ -122,7 +126,7 @@ export const WEEK_DAYS: WeekDay[] = [
         teamCount: 2,
         teamLabel: "2 members",
         fee: { ieee: 79, nonIeee: 99, note: "per team" },
-        coordinators: [{ name: "Aditi L" }, { name: "Pooja P", phone: "6361636547" }],
+        coordinators: [{ name: "Aditi L", phone: "7259403723" }, { name: "Pooja P", phone: "6361636547" }],
         overview:
           "A campus-based visual challenge. Teams get four blurred or modified photographs of the college campus, identify each location, reach the exact spot and recreate the photograph from approximately the same viewpoint. Accuracy of location, viewpoint and composition is scored by an AI image-comparison algorithm.",
       },
@@ -139,7 +143,7 @@ export const WEEK_DAYS: WeekDay[] = [
         whatsapp: "https://chat.whatsapp.com/DLBPhxfiqcELHdUpqQYEtO?s=qt&p=a&mlu=4&ilr=4",
         whatsappQr: "/images/ieee-week/wa/prompt-injection.png",
         title: "Code Relay",
-        tagline: "Blind coding relay in VS Code",
+        tagline: "3 Minds | 2 Rounds | 1 Goal",
         category: "Technical",
         venue: "CSE Dep-Sankalp Lab",
         time: TIME,
@@ -148,9 +152,46 @@ export const WEEK_DAYS: WeekDay[] = [
         fee: { ieee: 79, nonIeee: 99, note: "per team" },
         coordinators: [{ name: "Mobeen Jamadar", phone: "7892202865" }, { name: "Dhanashree Ragade", phone: "9019301902" }],
         overview:
-          "Code Relay is a team coding challenge with 3 members and 2 rounds, each having 2 problems. Teams get brief discussion time before each problem, then members code one at a time for equal time with no communication or code comments.",
-        rounds:
-          "Round 1: 60 minutes, with a mini-task and hint for each problem. Round 2: 75 minutes, with higher difficulty and a hint for only one problem. No internet, AI tools, or mobile phones are allowed. Phones must be switched off and submitted to coordinators.",
+          "Think fast. Code smart. Pass the challenge! A team coding challenge where every member gets a turn to code, but communication stops when the timer starts. Teams of three receive a problem statement and get designated discussion time to understand and plan their approach. Coding then follows in a relay format: one member codes at a time and the next takes over when the allocated turn ends.",
+        format: "Round 1: two easy-level problems with relay coding and a mini-task and hint in one problem. Round 2: one medium and one easy problem, testing strategy, speed and individual coding skills.",
+        roundsList: [
+          {
+            name: "Round 1",
+            points: [
+              "Two easy-level problem statements are given.",
+              "Problem 1: 5 minutes discussion and planning, then 15 minutes relay coding.",
+              "Problem 2: 5 minutes discussion and planning, then 15 minutes relay coding.",
+              "During coding, members take turns and get equal coding time.",
+              "Only one problem includes a mini-task and a hint.",
+            ],
+          },
+          {
+            name: "Round 2",
+            points: [
+              "One medium-level and one easy-level problem are given.",
+              "Medium problem: 8 minutes discussion and planning, then 30 minutes relay coding.",
+              "Easy problem: the team chooses one member to code for the final 15 minutes. The other two cannot communicate with the person coding.",
+              "Only one problem includes a mini-task and hint. The other must be solved without a hint.",
+              "During relay coding, members take turns and get equal coding time.",
+            ],
+          },
+        ],
+        rules: [
+          "Each team must have exactly 3 members.",
+          "No internet, AI tools or external assistance.",
+          "Switch off mobile phones and submit them to the coordinators before the event.",
+          "Use only the resources provided by the organizers.",
+          "Team members may discuss only during the designated discussion period before coding.",
+          "Only one member can code at a time.",
+          "No communication, discussion or explanation between team members once coding begins.",
+          "No comments in the code.",
+          "Copying code or solutions from other teams is prohibited.",
+          "Maintain fair and ethical conduct throughout the event.",
+          "Follow the instructions of organizers and volunteers.",
+          "Stop coding immediately when the allocated time ends.",
+          "Do not disturb or interfere with other teams.",
+          "The decision of the organizing committee is final.",
+        ],
       },
       {
         slug: "uncharted",
