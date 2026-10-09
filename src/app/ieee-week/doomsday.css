@@ -162,3 +162,10 @@ html { scroll-behavior: smooth; }
 @media (max-height: 740px) {
   .dd-hero-copy { display: none; }
 }
+
+/* Short screens (small laptops, phones in landscape): shrink the hero so nothing drops below the fold */
+@media (max-height: 740px) {
+  .dd-hero { padding-top: 5.25rem; padding-bottom: 1.25rem; }
+  .dd-title { font-size: min(clamp(4rem, 17vw, 19rem), 17svh); line-height: 1.1; }
+  .dd-hero .dd-display.text-3xl { font-size: 1.5rem; }
+}
