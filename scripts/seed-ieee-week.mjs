@@ -18,7 +18,7 @@ const base = env.SUPABASE_URL;
 const key = env.SUPABASE_SERVICE_ROLE_KEY;
 if (!base || !key) throw new Error("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are needed in .env.local");
 
-const PAY = "Payment details will be added here. Pay the fee for your membership type, then upload the screenshot and enter the transaction id.";
+const PAY = "Pay by PhonePe to Srushti Mutalikdesai. Scan the QR code on the payment page. Fee per team: Rs 79 if at least one member is an IEEE member (also if all are), Rs 99 only if no member is IEEE. After paying, enter the transaction ID twice and upload the payment screenshot.";
 const rows = [
   { slug: "retrace", title: "RETR?CE", day: 14, venue: "AIDS Seminar Hall", fee: 79, tag: "Technical", blurb: "A search for the forgotten" },
   { slug: "conquer-the-canvas", title: "Conquer the Canvas", day: 14, venue: "CSE Lab", fee: 79, tag: "Non-Technical", blurb: "Add. Adapt. Create." },
