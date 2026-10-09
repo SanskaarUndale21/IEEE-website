@@ -39,7 +39,8 @@
   position: relative;
   display: inline-block;
   margin: 0;
-  font-size: clamp(4rem, 17vw, 19rem);
+  /* never taller than the screen, so the dates and countdown stay in the first view */
+  font-size: min(clamp(4rem, 17vw, 19rem), 23svh);
   line-height: 1.22;
   text-transform: uppercase;
   filter: drop-shadow(0 0 28px rgba(70, 240, 160, 0.25));
@@ -147,4 +148,17 @@ html { scroll-behavior: smooth; }
 /* Hero artwork stays bright on phones, with a fade only at the bottom for the text */
 @media (max-width: 767px) {
   .dd-photo.dd-hero-art { opacity: 1; -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%); mask-image: linear-gradient(180deg, #000 55%, transparent 100%); }
+}
+
+/* Magic circle over the hero artwork */
+.dd-sigil { mix-blend-mode: screen; opacity: 0.95; filter: drop-shadow(0 0 14px rgba(70, 240, 160, 0.55)); }
+.dd-sigil circle, .dd-sigil line, .dd-sigil polygon { vector-effect: non-scaling-stroke; }
+
+/* Phones: compact hero so the title, dates and countdown all fit in the first screen */
+@media (max-width: 767px) {
+  .dd-title { font-size: min(24vw, 20svh); line-height: 1.12; }
+  .dd-hero-copy { font-size: 1rem; }
+}
+@media (max-height: 740px) {
+  .dd-hero-copy { display: none; }
 }

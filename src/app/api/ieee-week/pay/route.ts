@@ -30,7 +30,7 @@ export async function POST(req: NextRequest) {
     if (typeof v === "string") fields[k] = v;
   }
   const parsed = ieeePaySchema.safeParse(fields);
-  if (!parsed.success) return fail(firstIssue(parsed.error), 400);
+  if (!parsed.success) return fail(firstIssue(parsed.error).replace(/^[\w.]+: /, ""), 400);
   const body = parsed.data;
   if (body.website) return NextResponse.json({ success: true });
 
@@ -49,6 +49,16 @@ export async function POST(req: NextRequest) {
     if (error) throw error;
     if (!reg) return fail("Registration not found", 404);
     if (reg.transaction_id) return fail("Payment for this registration is already submitted", 409);
+
+    // The same transaction id cannot pay for two registrations.
+    const { data: used, error: usedErr } = await db
+      .from("event_registrations")
+      .select("id")
+      .ilike("transaction_id", body.transactionId.split("_").join("\\_"))
+      .neq("id", reg.id)
+      .limit(1);
+    if (usedErr) throw usedErr;
+    if (used && used.length > 0) return fail("This transaction ID is already used for another registration", 409);
 
     const slug = String((reg.events as unknown as { slug?: string } | null)?.slug ?? "").replace(/^ieee-week-/, "");
     const info = REGISTRABLE.find((e) => e.slug === slug);

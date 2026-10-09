@@ -5,6 +5,7 @@ import { tooManyRecent } from "@/lib/security/rate-limit";
 import { clientIp, sameOrigin } from "@/lib/admin/auth";
 import { hashIp } from "@/lib/admin/session";
 import { REGISTRABLE } from "@/data/ieeeWeek";
+import { eventsOnSameDay, peopleOnRegistration } from "@/lib/ieeeWeekRules";
 
 export const dynamic = "force-dynamic";
 
@@ -25,7 +26,7 @@ export async function POST(req: NextRequest) {
     return fail("Bad request", 400);
   }
   const parsed = ieeeRegisterSchema.safeParse(raw);
-  if (!parsed.success) return fail(firstIssue(parsed.error), 400);
+  if (!parsed.success) return fail(firstIssue(parsed.error).replace(/^[\w.]+: /, ""), 400);
   const body = parsed.data;
   if (body.website) return NextResponse.json({ success: true });
 
@@ -48,6 +49,38 @@ export async function POST(req: NextRequest) {
     if (evErr) throw evErr;
     if (!event || !event.published || event.status !== "upcoming" || !event.registration_open) {
       return fail("Registrations for this event are closed", 409);
+    }
+
+    // One person, one event per day: events on the same day run in parallel.
+    const sameDay = eventsOnSameDay(body.event);
+    const { data: dayEvents, error: dayErr } = await db
+      .from("events")
+      .select("id, slug")
+      .in("slug", sameDay.map((e) => `ieee-week-${e.slug}`));
+    if (dayErr) throw dayErr;
+    const slugById = new Map((dayEvents ?? []).map((e) => [e.id as string, String(e.slug).replace(/^ieee-week-/, "")]));
+    if (slugById.size > 0) {
+      const { data: regs, error: regErr } = await db
+        .from("event_registrations")
+        .select("event_id, name, usn, phone, admin_note")
+        .in("event_id", Array.from(slugById.keys()))
+        .neq("status", "rejected");
+      if (regErr) throw regErr;
+      for (const reg of regs ?? []) {
+        const people = peopleOnRegistration(reg);
+        for (const m of body.members) {
+          const hit = people.find((p) => (p.usn && p.usn === m.usn) || (p.phone && p.phone === m.phone));
+          if (!hit) continue;
+          const other = REGISTRABLE.find((e) => e.slug === slugById.get(reg.event_id as string));
+          if (other?.slug === body.event) {
+            return fail(`${m.name} (${m.usn}) is already in a team registered for ${other.title}.`, 409);
+          }
+          return fail(
+            `${m.name} (${m.usn}) is already registered for ${other?.title ?? "another event"} on ${info.day}-10-26. Events on the same day run at the same time, so a person can join only one of them.`,
+            409,
+          );
+        }
+      }
     }
 
     const lead = body.members[0];

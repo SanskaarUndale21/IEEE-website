@@ -1,9 +1,10 @@
 "use client";
 
-import { Suspense, useEffect, useMemo, useState } from "react";
+import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import RegisterShell from "@/components/ieee-week/RegisterShell";
 import { REGISTRABLE } from "@/data/ieeeWeek";
+import { memberFormatError, normalizePhone, normalizeUsn, teamDuplicateError } from "@/lib/ieeeWeekRules";
 
 type Member = { name: string; usn: string; dept: string; year: string; phone: string };
 const blank = (): Member => ({ name: "", usn: "", dept: "", year: "", phone: "" });
@@ -25,6 +26,7 @@ function Step1() {
   const [members, setMembers] = useState<Member[]>([]);
   const [error, setError] = useState("");
   const [sending, setSending] = useState(false);
+  const busy = useRef(false); // blocks a double tap from sending the team twice
 
   const event = useMemo(() => REGISTRABLE.find((e) => e.slug === slug), [slug]);
 
@@ -59,24 +61,38 @@ function Step1() {
 
   async function submit(e: React.FormEvent) {
     e.preventDefault();
-    if (!event) return;
+    if (!event || busy.current) return;
     setError("");
+    for (let i = 0; i < members.length; i++) {
+      const bad = memberFormatError(members[i], i);
+      if (bad) return setError(bad);
+    }
+    const dup = teamDuplicateError(members);
+    if (dup) return setError(dup);
+    busy.current = true;
     setSending(true);
     try {
       const res = await fetch("/api/ieee-week/register", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ event: event.slug, teamName, members, website: "" }),
+        body: JSON.stringify({
+          event: event.slug,
+          teamName,
+          members: members.map((m) => ({ ...m, usn: normalizeUsn(m.usn), phone: normalizePhone(m.phone) })),
+          website: "",
+        }),
       });
       const data = (await res.json().catch(() => ({}))) as { success?: boolean; error?: string; id?: string };
       if (!res.ok || !data.success || !data.id) {
         setError(data.error ?? "Could not save your registration. Try again.");
+        busy.current = false;
         setSending(false);
         return;
       }
       router.push(`/ieee-week/register/whatsapp?r=${data.id}`);
     } catch {
       setError("No connection. Check your internet and try again.");
+      busy.current = false;
       setSending(false);
     }
   }

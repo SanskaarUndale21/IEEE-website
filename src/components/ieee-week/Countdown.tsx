@@ -37,7 +37,7 @@ export default function Countdown({ target, end: endAt }: { target: string; end?
       <div className="flex gap-5 sm:gap-8" role="timer" aria-label="Time until IEEE Week begins on 14 October">
         {cells.map(([v, l]) => (
           <div key={l}>
-            <p className="dd-display text-5xl leading-none tabular-nums text-[var(--dd-iron)] sm:text-7xl">
+            <p className="dd-display text-4xl leading-none tabular-nums text-[var(--dd-iron)] sm:text-7xl">
               {now === null ? "--" : v}
             </p>
             <p className="mt-1 text-sm text-[var(--dd-iron)]/60">{l}</p>

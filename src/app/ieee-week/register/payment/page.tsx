@@ -1,6 +1,6 @@
 "use client";
 
-import { Suspense, useEffect, useState } from "react";
+import { Suspense, useEffect, useRef, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
@@ -25,6 +25,7 @@ function Step3() {
   const [confirm, setConfirm] = useState("");
   const [state, setState] = useState<"idle" | "sending" | "done">("idle");
   const [error, setError] = useState("");
+  const busy = useRef(false); // blocks a double tap from sending the payment twice
 
   useEffect(() => {
     if (!id) return setInfo(null);
@@ -39,6 +40,7 @@ function Step3() {
 
   async function submit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    if (busy.current) return;
     setError("");
     const proof = new FormData(e.currentTarget).get("paymentProof");
     if (!(proof instanceof File) || proof.size === 0) return setError("Upload your payment screenshot.");
@@ -53,18 +55,21 @@ function Step3() {
     body.set("website", "");
     body.set("paymentProof", proof);
 
+    busy.current = true;
     setState("sending");
     try {
       const res = await fetch("/api/ieee-week/pay", { method: "POST", body });
       const data = (await res.json().catch(() => ({}))) as { success?: boolean; error?: string };
       if (!res.ok || !data.success) {
         setError(data.error ?? "Could not save your payment. Try again.");
+        busy.current = false;
         setState("idle");
         return;
       }
       setState("done");
     } catch {
       setError("No connection. Check your internet and try again.");
+      busy.current = false;
       setState("idle");
     }
   }

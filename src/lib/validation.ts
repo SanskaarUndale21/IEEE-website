@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { NAME_RE, PHONE_RE, USN_RE, normalizePhone, normalizeUsn, teamDuplicateError } from "@/lib/ieeeWeekRules";
 
 // Strip control chars, collapse surrounding whitespace.
 const clean = (max: number) =>
@@ -41,12 +42,20 @@ export const querySchema = z
   .refine((q) => q.email || q.phone, "Email or phone is required");
 
 // ─── IEEE Week registration (three steps: details, WhatsApp, payment) ─────
+const ieeeName = clean(80).pipe(z.string().regex(NAME_RE, "Enter the name using letters only"));
+const ieeeUsn = clean(30)
+  .transform((s) => normalizeUsn(s))
+  .pipe(z.string().regex(USN_RE, "Enter a valid USN, for example 2BU24CS036"));
+const ieeePhone = clean(30)
+  .transform((s) => normalizePhone(s))
+  .pipe(z.string().regex(PHONE_RE, "Enter a 10 digit mobile number"));
+
 export const ieeeMemberSchema = z.object({
-  name: required(80),
-  usn: required(30),
+  name: ieeeName,
+  usn: ieeeUsn,
   dept: required(80),
   year: clean(1).pipe(z.string().regex(/^[1-4]$/, "Select the year")),
-  phone,
+  phone: ieeePhone,
 });
 
 export const ieeeRegisterSchema = z.object({
@@ -54,6 +63,9 @@ export const ieeeRegisterSchema = z.object({
   teamName: required(120),
   members: z.array(ieeeMemberSchema).min(1).max(5),
   website: z.string().max(0).optional(),
+}).superRefine((v, ctx) => {
+  const err = teamDuplicateError(v.members);
+  if (err) ctx.addIssue({ code: "custom", message: err, path: ["members"] });
 });
 
 const txId = clean(80).pipe(z.string().regex(/^[A-Za-z0-9 _./-]{4,80}$/, "Invalid transaction id"));

@@ -29,15 +29,16 @@ export default function IeeeWeekPage() {
   return (
     <main>
       {/* Hero */}
-      <section className="relative isolate flex min-h-[min(100svh,960px)] flex-col justify-end overflow-hidden px-5 pb-14 pt-32 md:px-10">
+      <section className="relative isolate flex min-h-[min(100svh,960px)] flex-col justify-end overflow-hidden px-5 pb-8 pt-24 md:px-10 md:pb-14 md:pt-32">
         <div className="absolute inset-0 -z-10 bg-[radial-gradient(ellipse_at_50%_35%,rgba(13,74,51,0.55),transparent_62%)]" />
-        <Sigil className="absolute left-1/2 top-[44%] -z-10 w-[150vmin] max-w-none -translate-x-1/2 -translate-y-1/2 opacity-60" />
         {DOOM_IMAGE && (
           <div className="dd-photo dd-hero-art absolute inset-y-0 right-0 -z-10 w-full md:w-[56%]">
             <Image src={DOOM_IMAGE.src} alt={DOOM_IMAGE.alt} fill priority sizes="(max-width: 768px) 100vw, 56vw" className="object-cover object-[78%_24%] md:object-[50%_30%]" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#02070a] via-transparent to-[#02070a]/30" />
           </div>
         )}
+        {/* The magic circle sits over the artwork, glowing and turning slowly */}
+        <Sigil className="dd-sigil pointer-events-none absolute left-1/2 top-[38%] -z-10 w-[132vw] max-w-none -translate-x-1/2 -translate-y-1/2 md:left-[68%] md:top-[46%] md:w-[min(96vmin,900px)]" />
         <div className="absolute inset-0 -z-10">
           <Embers />
         </div>
@@ -54,12 +55,12 @@ export default function IeeeWeekPage() {
           </span>
         </h1>
 
-        <div className="mt-10 grid gap-10 md:grid-cols-[1fr_auto] md:items-end">
+        <div className="mt-6 grid gap-6 md:mt-10 md:grid-cols-[1fr_auto] md:items-end md:gap-10">
           <div className="max-w-xl">
             <p className="dd-display text-3xl text-[var(--dd-gold)] sm:text-4xl">
               {IEEE_WEEK.days.join(" - ")} {IEEE_WEEK.monthLabel}
             </p>
-            <p className="mt-3 text-lg leading-relaxed sm:text-xl">
+            <p className="dd-hero-copy mt-3 text-lg leading-relaxed sm:text-xl">
               Four days, six events, one campus. Build, compete and present with IEEE SGBIT before the week closes.
             </p>
           </div>
