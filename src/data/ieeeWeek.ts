@@ -10,6 +10,10 @@ export const IEEE_WEEK = {
   timing: "All events start at 2:30 PM sharp at their venue.",
 };
 
+/** Team pricing rule, shown wherever a fee is shown. */
+export const FEE_RULE =
+  "The IEEE price applies if even one member of your team is an IEEE member, and also if every member is. The non-IEEE price applies only when every member of the team is non-IEEE.";
+
 export type Coordinator = { name: string; phone?: string };
 
 export type WeekEvent = {
@@ -172,6 +176,15 @@ export const WEEK_DAYS: WeekDay[] = [
 
 /** Events people can register for. */
 export const REGISTRABLE = WEEK_DAYS.flatMap((d) => d.events.map((e) => ({ ...e, day: d.day }))).filter((e) => e.teamCount > 0);
+
+// Loki at the end of the timeline, a cutout of a costume photograph (CC BY-SA 2.0).
+// Swap the file or this entry to change it.
+export const LOKI_IMAGE = {
+  src: "/images/ieee-week/loki.webp",
+  alt: "A Loki costume with a golden horned helmet and sceptre",
+  credit: "Loki costume photo: William Tung, CC BY-SA 2.0, via Wikimedia Commons",
+  creditUrl: "https://commons.wikimedia.org/wiki/File:WonderCon_2015_-_Loki_cosplay_-_without_background.jpg",
+};
 
 // Hero image of Doctor Doom. Set this to a file you have the rights to use, for example
 // { src: "/images/ieee-week/doom.jpg", alt: "Doctor Doom" }. Leave null to show no portrait.

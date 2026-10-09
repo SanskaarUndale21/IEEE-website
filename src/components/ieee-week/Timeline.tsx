@@ -2,7 +2,8 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useSpring, useTransform, useInView, type MotionValue } from "framer-motion";
-import { IEEE_WEEK, WEEK_DAYS, type WeekDay, type WeekEvent } from "@/data/ieeeWeek";
+import Image from "next/image";
+import { IEEE_WEEK, LOKI_IMAGE, WEEK_DAYS, type WeekDay, type WeekEvent } from "@/data/ieeeWeek";
 import { selectEvent } from "./registerBus";
 
 /* ───────────────────────────────────────────────────────────────
@@ -28,8 +29,12 @@ function smooth(pts: Pt[]): string {
   return d;
 }
 
-const H = 2150;
-const TRUNK: Pt[] = [[500, 0], [490, 260], [512, 520], [498, 800], [508, 1060], [496, 1330], [505, 1560], [502, 1740], [500, H]];
+const H = 2750;
+// The trunk ends on Loki: his helmet sits at LOKI_TOP and the Valedictory card stands in front of him.
+const LOKI_TOP = 1960;
+const LOKI_H = 560;
+const FINALE_TOP = 2400;
+const TRUNK: Pt[] = [[500, 0], [490, 260], [512, 520], [498, 800], [508, 1060], [496, 1330], [505, 1560], [502, 1790], [500, LOKI_TOP + 40]];
 const FORKS: Pt[] = [TRUNK[1], TRUNK[3], TRUNK[5], TRUNK[7]]; // days 14, 15, 16, 17
 
 type Branch = { pts: Pt[]; event?: number; dead?: boolean; width: number };
@@ -48,8 +53,8 @@ const BRANCHES: Branch[] = [
   { pts: [[496, 1330], [402, 1304], [292, 1342], [244, 1440]], event: 4, width: 5 },
   { pts: [[496, 1330], [610, 1380], [710, 1440], [800, 1500]], event: 5, width: 5 },
   // day 17
-  { pts: [[502, 1740], [400, 1790], [320, 1870], [250, 1960]], event: 6, width: 5 },
-  { pts: [[560, 1900], [610, 1990], [680, 2060]], dead: true, width: 3 },
+  { pts: [[502, 1790], [420, 1830], [330, 1880], [250, 1930]], dead: true, width: 3 },
+  { pts: [[502, 1790], [590, 1840], [690, 1880], [770, 1930]], dead: true, width: 3 },
 ];
 
 type Ev = WeekEvent & { day: number };
@@ -113,6 +118,9 @@ function Tree() {
       {FORKS.map(([x, y], i) => (
         <ForkNode key={i} x={x} y={y} day={WEEK_DAYS[i].day} p={p} />
       ))}
+
+      {/* the end of the timeline */}
+      <Finale ev={EVENTS[EVENTS.length - 1]} p={p} />
 
       {/* events at the tips */}
       {BRANCHES.filter((b) => b.event !== undefined).map((b) => {
@@ -210,6 +218,47 @@ function EventAtTip({ x, y, ev, p }: { x: number; y: number; ev: Ev; p: MotionVa
   );
 }
 
+/** Loki stands at the end of the tree. The Valedictory card is the centrepiece in front of him. */
+function Finale({ ev, p }: { ev: Ev; p: MotionValue<number> }) {
+  const show = useTransform(p, (v) => clamp01((v - (LOKI_TOP - 120) / H) / 0.05));
+  const rise = useTransform(show, (v) => (1 - v) * 40);
+  return (
+    <>
+      <motion.div
+        className="pointer-events-none absolute"
+        style={{
+          left: "50%",
+          x: "-50%",
+          top: `${(LOKI_TOP / H) * 100}%`,
+          height: `${(LOKI_H / H) * 100}%`,
+          aspectRatio: "889 / 1070",
+          opacity: show,
+          y: rise,
+        }}
+      >
+        <div className="absolute -inset-[30%] -z-10 bg-[radial-gradient(closest-side,rgba(59,227,154,0.28),transparent)]" aria-hidden />
+        <Image
+          src={LOKI_IMAGE.src}
+          alt={LOKI_IMAGE.alt}
+          fill
+          sizes="(max-width: 1024px) 80vw, 460px"
+          className="object-contain drop-shadow-[0_0_40px_rgba(59,227,154,0.35)]"
+        />
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[var(--dd-void)] to-transparent" aria-hidden />
+      </motion.div>
+
+      <motion.article
+        className="dd-slab absolute w-[min(620px,64%)] border-[var(--dd-glow)]/60 p-8 text-center shadow-[0_0_60px_rgba(59,227,154,0.18)]"
+        style={{ left: "50%", x: "-50%", top: `${(FINALE_TOP / H) * 100}%`, opacity: show }}
+      >
+        <p className="text-base text-[var(--dd-gold)]">Day four, {ev.day}-10-26</p>
+        <h3 className="dd-display mt-2 text-6xl leading-none text-[var(--dd-glow)]">{ev.title}</h3>
+        <p className="mx-auto mt-3 max-w-[34ch] text-xl leading-relaxed">{ev.tagline}</p>
+      </motion.article>
+    </>
+  );
+}
+
 /* ───────────── mobile: a single branch ───────────── */
 
 function MobileList() {
@@ -224,9 +273,10 @@ function MobileList() {
         <motion.div className="absolute inset-0 origin-top bg-gradient-to-b from-[var(--dd-glow)] to-[var(--dd-gold)] shadow-[0_0_12px_2px_rgba(59,227,154,0.7)]" style={{ scaleY: fill }} />
       </div>
       <div className="space-y-16 pb-10">
-        {WEEK_DAYS.map((d) => (
+        {WEEK_DAYS.filter((d) => d.events.some((e) => e.teamCount > 0)).map((d) => (
           <MobileDay key={d.day} data={d} />
         ))}
+        <MobileFinale ev={EVENTS[EVENTS.length - 1]} />
       </div>
     </div>
   );
@@ -255,6 +305,31 @@ function MobileDay({ data }: { data: WeekDay }) {
           <EventCardBody ev={{ ...e, day: data.day }} />
         </article>
       ))}
+    </div>
+  );
+}
+
+function MobileFinale({ ev }: { ev: Ev }) {
+  return (
+    <div className="grid grid-cols-[56px_1fr] gap-y-3">
+      <div className="relative row-span-2">
+        <div
+          className="dd-display absolute left-1/2 top-0 flex h-12 w-12 -translate-x-1/2 items-center justify-center bg-[var(--dd-glow)] text-2xl text-[#06281b]"
+          style={{ clipPath: "polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)" }}
+        >
+          {ev.day}
+        </div>
+      </div>
+      <div className="relative mx-auto aspect-[889/1070] w-[78%] max-w-[320px]">
+        <div className="absolute -inset-[20%] -z-10 bg-[radial-gradient(closest-side,rgba(59,227,154,0.28),transparent)]" aria-hidden />
+        <Image src={LOKI_IMAGE.src} alt={LOKI_IMAGE.alt} fill sizes="80vw" className="object-contain drop-shadow-[0_0_30px_rgba(59,227,154,0.35)]" />
+        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[var(--dd-void)] to-transparent" aria-hidden />
+      </div>
+      <article className="dd-slab relative col-start-2 -mt-14 border-[var(--dd-glow)]/60 p-6 text-center shadow-[0_0_50px_rgba(59,227,154,0.18)]">
+        <p className="text-sm text-[var(--dd-gold)]">Day four, {ev.day}-10-26</p>
+        <h3 className="dd-display mt-1 text-5xl leading-none text-[var(--dd-glow)]">{ev.title}</h3>
+        <p className="mt-2 text-lg leading-relaxed">{ev.tagline}</p>
+      </article>
     </div>
   );
 }

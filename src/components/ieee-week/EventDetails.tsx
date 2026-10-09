@@ -1,6 +1,6 @@
 "use client";
 
-import { IEEE_WEEK, WEEK_DAYS } from "@/data/ieeeWeek";
+import { FEE_RULE, IEEE_WEEK, WEEK_DAYS } from "@/data/ieeeWeek";
 import { selectEventLink } from "./registerLink";
 
 const rows = (items: [string, React.ReactNode][]) =>
@@ -22,7 +22,8 @@ export default function EventDetails() {
         <h2 id="details-title" className="dd-display mb-4 text-5xl text-[var(--dd-iron)] sm:text-7xl">
           Event details
         </h2>
-        <p className="mb-14 max-w-[56ch] text-lg">{IEEE_WEEK.timing}</p>
+        <p className="mb-4 max-w-[56ch] text-lg">{IEEE_WEEK.timing}</p>
+        <p className="mb-14 max-w-[62ch] border-l-2 border-[var(--dd-glow)] pl-4 text-lg">{FEE_RULE}</p>
 
         <div className="space-y-20">
           {days.map((d) => (
@@ -49,10 +50,15 @@ export default function EventDetails() {
                           "Registration fee",
                           e.fee ? (
                             <>
-                              IEEE members: ₹{e.fee.ieee}
-                              <br />
-                              Non-IEEE: ₹{e.fee.nonIeee}
-                              {e.fee.note ? ` ${e.fee.note}` : ""}
+                              <span className="block">
+                                ₹{e.fee.ieee} if at least one team member is an IEEE member
+                                {e.fee.note ? ` (${e.fee.note})` : ""}
+                              </span>
+                              <span className="block">
+                                ₹{e.fee.nonIeee} only if every member is non-IEEE
+                                {e.fee.note ? ` (${e.fee.note})` : ""}
+                              </span>
+                              <span className="mt-1 block text-sm text-[var(--dd-iron)]/70">Even if all members are IEEE, the price stays ₹{e.fee.ieee}.</span>
                             </>
                           ) : null,
                         ],

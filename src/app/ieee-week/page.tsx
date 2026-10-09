@@ -11,7 +11,7 @@ import Countdown from "@/components/ieee-week/Countdown";
 import EventDetails from "@/components/ieee-week/EventDetails";
 import RegisterForm from "@/components/ieee-week/RegisterForm";
 import Footer from "@/components/Footer";
-import { IEEE_WEEK, DOOM_IMAGE } from "@/data/ieeeWeek";
+import { IEEE_WEEK, DOOM_IMAGE, LOKI_IMAGE } from "@/data/ieeeWeek";
 import { SOCIAL } from "@/constants";
 
 export default function IeeeWeekPage() {
@@ -110,6 +110,12 @@ export default function IeeeWeekPage() {
           </div>
         </div>
       </section>
+
+      <p className="px-5 pb-10 text-center text-sm text-[var(--dd-iron)]/60 md:px-10">
+        <a href={LOKI_IMAGE.creditUrl} target="_blank" rel="noopener noreferrer" className="dd-link underline underline-offset-2 hover:text-[var(--dd-glow)]">
+          {LOKI_IMAGE.credit}
+        </a>
+      </p>
 
       <Footer />
     </main>

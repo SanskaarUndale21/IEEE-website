@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
-import { REGISTRABLE } from "@/data/ieeeWeek";
+import { FEE_RULE, REGISTRABLE } from "@/data/ieeeWeek";
 import { SELECT_EVENT } from "./registerBus";
 
 type OpenEvent = { id: string; feeAmount: number; paymentInstructions: string };
@@ -62,7 +62,9 @@ export default function RegisterForm() {
     }
     const num = get("ieeeNumber");
     const membershipNote =
-      membership === "ieee" ? `IEEE member${num ? `, membership no. ${num}` : ""}, fee Rs ${fee}` : `Not an IEEE member, fee Rs ${fee}`;
+      membership === "ieee"
+        ? `Team has at least one IEEE member${num ? ` (membership no. ${num})` : ""}, IEEE price Rs ${fee}`
+        : `No IEEE member in the team, non-IEEE price Rs ${fee}`;
 
     const body = new FormData();
     body.set("eventId", live.id);
@@ -151,12 +153,13 @@ export default function RegisterForm() {
             <fieldset disabled={!live || state === "sending"} className="space-y-10 disabled:opacity-60">
               {/* 2. membership */}
               <div>
-                <p className="dd-display mb-4 text-3xl text-[var(--dd-gold)]">2. Membership and fee</p>
+                <p className="dd-display mb-4 text-3xl text-[var(--dd-gold)]">2. Team fee</p>
+                <p className="mb-4 border-l-2 border-[var(--dd-glow)] pl-4 text-base leading-relaxed">{FEE_RULE}</p>
                 <div className="grid gap-2 sm:grid-cols-2">
                   {(
                     [
-                      ["ieee", "IEEE member", event.fee?.ieee],
-                      ["non", "Not an IEEE member", event.fee?.nonIeee],
+                      ["ieee", "At least one member is IEEE", event.fee?.ieee],
+                      ["non", "Every member is non-IEEE", event.fee?.nonIeee],
                     ] as const
                   ).map(([v, label, price]) => (
                     <label
@@ -176,7 +179,7 @@ export default function RegisterForm() {
                 {membership === "ieee" && (
                   <div className="mt-4">
                     <label htmlFor="ieeeNumber" className="dd-label">
-                      IEEE membership number (if you have it)
+                      IEEE membership number of the member(s)
                     </label>
                     <input id="ieeeNumber" name="ieeeNumber" inputMode="numeric" maxLength={20} className="dd-field" />
                   </div>
