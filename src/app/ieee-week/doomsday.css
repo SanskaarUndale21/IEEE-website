@@ -39,8 +39,8 @@
   position: relative;
   display: inline-block;
   margin: 0;
-  font-size: clamp(4.2rem, 19vw, 21rem);
-  line-height: 1.02;
+  font-size: clamp(4rem, 17vw, 19rem);
+  line-height: 1.22;
   text-transform: uppercase;
   filter: drop-shadow(0 0 28px rgba(70, 240, 160, 0.25));
 }

@@ -42,8 +42,14 @@ export default function IeeeWeekPage() {
         </div>
 
         <h1 className="dd-title dd-display self-start" aria-label="IEEE Week">
-          <span className="dd-metal" aria-hidden>
+          <span className="dd-half dd-half-a dd-metal" aria-hidden>
             IEEE<br />WEEK
+          </span>
+          <span className="dd-half dd-half-b dd-metal" aria-hidden>
+            IEEE<br />WEEK
+          </span>
+          <span className="dd-crack" aria-hidden>
+            <i />
           </span>
         </h1>
 
