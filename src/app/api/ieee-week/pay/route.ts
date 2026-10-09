@@ -29,7 +29,12 @@ export async function POST(req: NextRequest) {
     const v = form.get(k);
     if (typeof v === "string") fields[k] = v;
   }
-  const parsed = ieeePaySchema.safeParse(fields);
+  const ieeeIds: string[] = [];
+  for (let i = 1; i <= 5; i++) {
+    const v = form.get(`ieeeId${i}`);
+    ieeeIds.push(typeof v === "string" ? v : "");
+  }
+  const parsed = ieeePaySchema.safeParse({ ...fields, ieeeIds });
   if (!parsed.success) return fail(firstIssue(parsed.error).replace(/^[\w.]+: /, ""), 400);
   const body = parsed.data;
   if (body.website) return NextResponse.json({ success: true });
@@ -73,6 +78,10 @@ export async function POST(req: NextRequest) {
 
     const lines = String(reg.admin_note ?? "").split("\n");
     lines[0] = `[Payment submitted] ${body.plan === "ieee" ? "Team has an IEEE member" : "No IEEE member"}, Rs ${fee}`;
+    if (body.plan === "ieee") {
+      const ids = body.ieeeIds.slice(0, info.teamCount).map((id, i) => (id ? `member ${i + 1}: ${id}` : "")).filter(Boolean);
+      lines.splice(1, 0, `IEEE IDs (to verify): ${ids.join(", ")}`);
+    }
 
     const { error: updErr } = await db
       .from("event_registrations")

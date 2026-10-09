@@ -6,6 +6,10 @@ export const USN_RE = /^[0-9][A-Z]{2}[0-9]{2}[A-Z]{2,3}[0-9]{3}$/;
 export const PHONE_RE = /^[6-9][0-9]{9}$/;
 export const NAME_RE = /^[A-Za-z][A-Za-z .'-]{1,79}$/;
 
+/** IEEE membership numbers are digits only. */
+export const IEEE_ID_RE = /^[0-9]{6,12}$/;
+export const normalizeIeeeId = (s: string) => s.replace(/[\s-]+/g, "");
+
 export const normalizeUsn = (s: string) => s.replace(/\s+/g, "").toUpperCase();
 
 export const normalizePhone = (s: string) => {

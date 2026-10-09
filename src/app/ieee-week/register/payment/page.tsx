@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import RegisterShell from "@/components/ieee-week/RegisterShell";
 import { FEE_RULE, PAYMENT, REGISTRABLE } from "@/data/ieeeWeek";
+import { IEEE_ID_RE, normalizeIeeeId } from "@/lib/ieeeWeekRules";
 
 const MAX_BYTES = 4 * 1024 * 1024;
 
@@ -23,6 +24,7 @@ function Step3() {
   const [plan, setPlan] = useState<"ieee" | "non">("ieee");
   const [tx, setTx] = useState("");
   const [confirm, setConfirm] = useState("");
+  const [ieeeIds, setIeeeIds] = useState<string[]>(["", "", "", "", ""]);
   const [state, setState] = useState<"idle" | "sending" | "done">("idle");
   const [error, setError] = useState("");
   const busy = useRef(false); // blocks a double tap from sending the payment twice
@@ -53,6 +55,13 @@ function Step3() {
     body.set("transactionId", tx.trim());
     body.set("confirmId", confirm.trim());
     body.set("website", "");
+    if (plan === "ieee" && event) {
+      const given = ieeeIds.slice(0, event.teamCount).map(normalizeIeeeId);
+      if (!given[0]) return setError("Enter the IEEE ID of member 1. It is needed to verify your IEEE membership.");
+      if (given.some((v) => v && !IEEE_ID_RE.test(v))) return setError("An IEEE ID must be digits only, 6 to 12 digits.");
+      if (new Set(given.filter(Boolean)).size !== given.filter(Boolean).length) return setError("Each member needs a different IEEE ID.");
+      given.forEach((v, i) => body.set(`ieeeId${i + 1}`, v));
+    }
     body.set("paymentProof", proof);
 
     busy.current = true;
@@ -130,6 +139,34 @@ function Step3() {
               ))}
             </div>
           </fieldset>
+
+          {plan === "ieee" && (
+            <fieldset className="space-y-4">
+              <legend className="dd-display mb-1 text-3xl text-[var(--dd-gold)]">IEEE membership</legend>
+              <p className="max-w-[60ch] text-base leading-relaxed text-[var(--dd-iron)]/85">
+                We check these numbers to confirm the IEEE price. Member 1 is required. Add the others if they are IEEE members too.
+              </p>
+              <div className="grid gap-4 sm:grid-cols-2">
+                {Array.from({ length: event.teamCount }, (_, i) => (
+                  <div key={i}>
+                    <label htmlFor={`ieee-${i}`} className="dd-label">
+                      {i === 0 ? "Member 1 IEEE ID (required)" : `Member ${i + 1} IEEE ID (optional)`}
+                    </label>
+                    <input
+                      id={`ieee-${i}`}
+                      value={ieeeIds[i]}
+                      onChange={(e) => setIeeeIds((ids) => ids.map((v, j) => (j === i ? e.target.value : v)))}
+                      required={i === 0}
+                      inputMode="numeric"
+                      maxLength={20}
+                      autoComplete="off"
+                      className="dd-field"
+                    />
+                  </div>
+                ))}
+              </div>
+            </fieldset>
+          )}
 
           <div>
             <p className="dd-display mb-4 text-3xl text-[var(--dd-gold)]">Scan and pay</p>

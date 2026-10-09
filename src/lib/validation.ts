@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { NAME_RE, PHONE_RE, USN_RE, normalizePhone, normalizeUsn, teamDuplicateError } from "@/lib/ieeeWeekRules";
+import { IEEE_ID_RE, normalizeIeeeId, NAME_RE, PHONE_RE, USN_RE, normalizePhone, normalizeUsn, teamDuplicateError } from "@/lib/ieeeWeekRules";
 
 // Strip control chars, collapse surrounding whitespace.
 const clean = (max: number) =>
@@ -76,7 +76,14 @@ export const ieeePaySchema = z
     plan: z.enum(["ieee", "non"]),
     transactionId: txId,
     confirmId: txId,
+    // One entry per team member, in order. Empty means not given.
+    ieeeIds: z.array(clean(30).transform((s) => normalizeIeeeId(s)).pipe(z.union([z.literal(""), z.string().regex(IEEE_ID_RE, "Enter the IEEE number using digits only (6 to 12 digits)")]))).max(5).default([]),
     website: z.string().max(0).optional(),
+  })
+  .superRefine((v, ctx) => {
+    const given = v.ieeeIds.filter(Boolean);
+    if (v.plan === "ieee" && given.length === 0) ctx.addIssue({ code: "custom", message: "Enter the IEEE ID of at least one team member", path: ["ieeeIds"] });
+    if (new Set(given).size !== given.length) ctx.addIssue({ code: "custom", message: "Each member needs a different IEEE ID", path: ["ieeeIds"] });
   })
   .refine((v) => v.transactionId.toLowerCase() === v.confirmId.toLowerCase(), {
     message: "The two transaction ids do not match",
