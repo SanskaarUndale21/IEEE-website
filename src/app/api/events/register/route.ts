@@ -31,7 +31,7 @@ export async function POST(req: NextRequest) {
   }
 
   const fields: Record<string, string> = {};
-  for (const key of ["eventId", "name", "email", "phone", "usn", "college", "branch", "semester", "teamName", "transactionId", "website"]) {
+  for (const key of ["eventId", "name", "email", "phone", "usn", "college", "branch", "semester", "teamName", "transactionId", "members", "membership", "website"]) {
     const v = form.get(key);
     if (typeof v === "string") fields[key] = v;
   }
@@ -104,6 +104,10 @@ export async function POST(req: NextRequest) {
       branch: body.branch,
       semester: body.semester,
       team_name: body.teamName,
+      admin_note: [body.membership && `Membership: ${body.membership}`, body.members && `Team members: ${body.members}`]
+        .filter(Boolean)
+        .join("\n")
+        .slice(0, 1000),
       transaction_id: body.transactionId,
       payment_proof_path: proofPath,
       ip_hash: ipHash,

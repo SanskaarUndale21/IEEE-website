@@ -422,3 +422,16 @@ button, a { -webkit-tap-highlight-color: transparent; }
 @media (max-width: 640px) {
   .input-field { font-size: 1rem; } /* prevent iOS zoom on focus */
 }
+
+/* ===== MOBILE POLISH ===== */
+html { -webkit-tap-highlight-color: transparent; overflow-x: clip; }
+a, button, summary, [role="button"], input, select, textarea { touch-action: manipulation; }
+
+@media (max-width: 639px) {
+  /* Micro labels were 7 to 11px. Keep them readable on a phone. */
+  .text-\[7px\], .text-\[8px\], .text-\[9px\] { font-size: 11px !important; line-height: 1.35; }
+  .text-\[10px\], .text-\[11px\] { font-size: 12px !important; }
+  /* Never let long words or wide tracking cause sideways scroll */
+  body { overflow-wrap: anywhere; }
+  button, [role="button"], .btn-primary, .btn-outline, .btn-primary-sq, .btn-outline-sq { min-height: 44px; }
+}

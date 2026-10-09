@@ -46,7 +46,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {quickLinks.map((item) => (
                 <li key={item.name}>
-                  <Link href={item.href} className="text-sm text-gray-500 transition-colors hover:text-ieee-light dark:text-white/40 dark:hover:text-ieee-light">
+                  <Link href={item.href} className="inline-block py-2 text-sm text-gray-500 transition-colors hover:text-ieee-light dark:text-white/40 dark:hover:text-ieee-light">
                     {item.name}
                   </Link>
                 </li>
@@ -60,7 +60,7 @@ export default function Footer() {
             <ul className="space-y-3">
               {ieeeResources.map((link) => (
                 <li key={link.name}>
-                  <a href={link.url} target="_blank" rel="noopener noreferrer" className="text-sm text-gray-500 transition-colors hover:text-ieee-light dark:text-white/40 dark:hover:text-ieee-light">
+                  <a href={link.url} target="_blank" rel="noopener noreferrer" className="inline-block py-2 text-sm text-gray-500 transition-colors hover:text-ieee-light dark:text-white/40 dark:hover:text-ieee-light">
                     {link.name} ↗
                   </a>
                 </li>

@@ -8,6 +8,8 @@ import Embers from "@/components/ieee-week/Embers";
 import Sigil from "@/components/ieee-week/Sigil";
 import Timeline from "@/components/ieee-week/Timeline";
 import Countdown from "@/components/ieee-week/Countdown";
+import EventDetails from "@/components/ieee-week/EventDetails";
+import RegisterForm from "@/components/ieee-week/RegisterForm";
 import Footer from "@/components/Footer";
 import { IEEE_WEEK, DOOM_IMAGE } from "@/data/ieeeWeek";
 import { SOCIAL } from "@/constants";
@@ -62,7 +64,7 @@ export default function IeeeWeekPage() {
               Four days, six events, one campus. Build, compete and present with IEEE SGBIT before the week closes.
             </p>
           </div>
-          <Countdown target={IEEE_WEEK.start} />
+          <Countdown target={IEEE_WEEK.start} end={IEEE_WEEK.end} />
         </div>
       </section>
 
@@ -73,12 +75,14 @@ export default function IeeeWeekPage() {
             Follow the branches
           </h2>
           <p className="mb-16 max-w-[56ch] text-lg">
-            One timeline, four days. It forks at each day and the six events hang from its branches. Names, timings and
-            venues are announced soon.
+            One timeline, four days. It forks at each day and the six events hang from its branches. All start at 2:30 PM.
           </p>
           <Timeline />
         </div>
       </section>
+
+      <EventDetails />
+      <RegisterForm />
 
       {/* Close */}
       <section className="relative isolate overflow-hidden px-5 py-28 md:px-10 md:py-40">
@@ -86,7 +90,7 @@ export default function IeeeWeekPage() {
         <div className="mx-auto max-w-4xl">
           <h2 className="dd-display relative z-10 text-[clamp(3.5rem,11vw,9rem)] leading-[0.85] text-[var(--dd-iron)]">Be in the room.</h2>
           <p className="mt-6 max-w-[54ch] text-lg leading-relaxed">
-            Registration opens soon. Follow IEEE SGBIT for the announcement, or join the branch now so you hear first.
+            Join the branch to hear about every event first, or follow IEEE SGBIT for updates during the week.
           </p>
           <div className="mt-10 flex flex-wrap gap-4">
             <Link

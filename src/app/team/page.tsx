@@ -215,7 +215,7 @@ function SocialLink({ href, label, children, className = "text-white/40 hover:bg
       target={isExternal ? "_blank" : undefined}
       rel={isExternal ? "noopener noreferrer" : undefined}
       onClick={(e) => e.stopPropagation()}
-      className={`flex h-9 w-9 items-center justify-center rounded-full transition-all duration-300 ${className}`}
+      className={`flex h-11 w-11 items-center justify-center rounded-full transition-all duration-300 md:h-9 md:w-9 ${className}`}
     >
       {children}
     </a>

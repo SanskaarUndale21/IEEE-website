@@ -19,6 +19,7 @@ export default function Embers({ count = 70 }: { count?: number }) {
     let raf = 0;
     const dpr = Math.min(window.devicePixelRatio || 1, 2);
 
+    const n = window.innerWidth < 768 ? Math.round(count * 0.45) : count;
     const make = (fromBottom: boolean): P => ({
       x: Math.random() * w,
       y: fromBottom ? h + Math.random() * 40 : Math.random() * h,
@@ -37,7 +38,7 @@ export default function Embers({ count = 70 }: { count?: number }) {
       canvas.width = w * dpr;
       canvas.height = h * dpr;
       ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
-      ps = Array.from({ length: count }, () => make(false));
+      ps = Array.from({ length: n }, () => make(false));
     };
 
     const draw = () => {

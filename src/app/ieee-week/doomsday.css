@@ -121,3 +121,25 @@ figure.dd-photo { -webkit-mask-image: none; mask-image: none; border: 1px solid 
 .dd-tone { background: linear-gradient(180deg, rgba(20, 114, 76, 0.55), rgba(4, 7, 10, 0.55)); mix-blend-mode: color; }
 .dd-tone::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, #04070a 0%, transparent 38%); }
 @media (max-width: 767px) { .dd-photo:not(figure) { -webkit-mask-image: linear-gradient(180deg, #000 30%, transparent 92%); mask-image: linear-gradient(180deg, #000 30%, transparent 92%); opacity: 0.55; } }
+
+/* Form fields: big, readable, 16px so phones do not zoom on focus */
+.dd-label { display: block; margin-bottom: 0.4rem; font-size: 0.95rem; color: rgba(169, 179, 186, 0.85); }
+.dd-field {
+  width: 100%;
+  min-height: 3rem;
+  padding: 0.7rem 0.9rem;
+  background: rgba(255, 255, 255, 0.04);
+  border: 1px solid rgba(169, 179, 186, 0.3);
+  border-radius: 0;
+  color: var(--dd-iron);
+  font-family: inherit;
+  font-size: 16px;
+}
+.dd-field::placeholder { color: rgba(169, 179, 186, 0.4); }
+.dd-field:focus { outline: 2px solid var(--dd-glow); outline-offset: 1px; border-color: transparent; }
+.dd-field option { background: #0a1214; color: #dfe7ea; }
+.dd-field[type="file"]::file-selector-button {
+  margin-right: 0.8rem; padding: 0.4rem 0.8rem; border: 0; background: var(--dd-glow); color: var(--dd-void); font-family: inherit; cursor: pointer;
+}
+html { scroll-behavior: smooth; }
+@media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }

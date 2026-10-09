@@ -2,7 +2,8 @@
 
 import { useRef } from "react";
 import { motion, useScroll, useSpring, useTransform, useInView, type MotionValue } from "framer-motion";
-import { IEEE_WEEK, WEEK_DAYS, type WeekDay } from "@/data/ieeeWeek";
+import { IEEE_WEEK, WEEK_DAYS, type WeekDay, type WeekEvent } from "@/data/ieeeWeek";
+import { selectEvent } from "./registerBus";
 
 /* ───────────────────────────────────────────────────────────────
    A tree of time. The trunk grows down the page as you scroll,
@@ -45,14 +46,14 @@ const BRANCHES: Branch[] = [
   { pts: [[508, 1060], [590, 1100], [660, 1180]], dead: true, width: 3 },
   // day 16
   { pts: [[496, 1330], [402, 1304], [292, 1342], [244, 1440]], event: 4, width: 5 },
-  { pts: [[496, 1330], [610, 1380], [700, 1470]], dead: true, width: 3 },
-  { pts: [[505, 1560], [430, 1600], [360, 1690]], dead: true, width: 3 },
+  { pts: [[496, 1330], [610, 1380], [710, 1440], [800, 1500]], event: 5, width: 5 },
   // day 17
-  { pts: [[502, 1740], [604, 1770], [712, 1830], [790, 1936]], event: 5, width: 5 },
-  { pts: [[712, 1830], [770, 1780], [860, 1770]], dead: true, width: 2.5 },
+  { pts: [[502, 1740], [400, 1790], [320, 1870], [250, 1960]], event: 6, width: 5 },
+  { pts: [[560, 1900], [610, 1990], [680, 2060]], dead: true, width: 3 },
 ];
 
-const EVENTS = WEEK_DAYS.flatMap((d) => d.events.map((e) => ({ ...e, day: d.day })));
+type Ev = WeekEvent & { day: number };
+const EVENTS: Ev[] = WEEK_DAYS.flatMap((d) => d.events.map((e) => ({ ...e, day: d.day })));
 
 const clamp01 = (n: number) => Math.min(1, Math.max(0, n));
 
@@ -77,7 +78,7 @@ function Tree() {
   const p = useSpring(scrollYProgress, { stiffness: 80, damping: 22, mass: 0.4 });
 
   return (
-    <div ref={wrap} className="relative mx-auto w-full max-w-[1000px]" style={{ aspectRatio: `1000 / ${H}` }}>
+    <div ref={wrap} className="relative mx-auto mb-[10%] w-full max-w-[1000px]" style={{ aspectRatio: `1000 / ${H}` }}>
       <svg viewBox={`0 0 1000 ${H}`} className="absolute inset-0 h-full w-full overflow-visible" aria-hidden>
         <defs>
           <filter id="tree-glow" x="-20%" y="-5%" width="140%" height="110%">
@@ -158,7 +159,43 @@ function ForkNode({ x, y, day, p }: { x: number; y: number; day: number; p: Moti
   );
 }
 
-function EventAtTip({ x, y, ev, p }: { x: number; y: number; ev: { title: string; line: string; day: number }; p: MotionValue<number> }) {
+function EventCardBody({ ev }: { ev: Ev }) {
+  const isEvent = ev.teamCount > 0;
+  return (
+    <>
+      <p className="text-sm text-[var(--dd-gold)]">
+        {ev.category}
+        {ev.categoryNote ? `, ${ev.categoryNote}` : ""}
+      </p>
+      <h3 className="dd-display mt-1 text-3xl leading-[1.1] text-[var(--dd-glow)]">{ev.title}</h3>
+      <p className="mt-1 text-base leading-relaxed">{ev.tagline}</p>
+      {isEvent && (
+        <>
+          <p className="mt-3 text-sm text-[var(--dd-iron)]/80">
+            {ev.venue}, {ev.time}
+          </p>
+          <div className="mt-4 flex gap-2">
+            <a
+              href={`#event-${ev.slug}`}
+              className="dd-btn dd-display inline-flex min-h-11 items-center border border-[var(--dd-iron)]/40 px-4 text-lg text-[var(--dd-iron)] transition-colors hover:border-[var(--dd-glow)] hover:text-[var(--dd-glow)]"
+            >
+              Details
+            </a>
+            <a
+              href="#register"
+              onClick={() => selectEvent(ev.slug)}
+              className="dd-btn dd-display inline-flex min-h-11 items-center bg-[var(--dd-glow)] px-4 text-lg text-[var(--dd-void)] transition-colors hover:bg-[var(--dd-iron)]"
+            >
+              Register
+            </a>
+          </div>
+        </>
+      )}
+    </>
+  );
+}
+
+function EventAtTip({ x, y, ev, p }: { x: number; y: number; ev: Ev; p: MotionValue<number> }) {
   const at = y / H;
   const show = useTransform(p, (v) => clamp01((v - at + 0.02) / 0.05));
   const lift = useTransform(show, (v) => (1 - v) * 18);
@@ -168,8 +205,7 @@ function EventAtTip({ x, y, ev, p }: { x: number; y: number; ev: { title: string
       style={{ x: "-50%", left: `${x / 10}%`, top: `calc(${(y / H) * 100}% + 18px)`, opacity: show, y: lift }}
     >
       <span className="absolute -top-[22px] left-1/2 h-4 w-4 -translate-x-1/2 rounded-full bg-[var(--dd-gold)] shadow-[0_0_14px_3px_rgba(217,172,63,0.8)]" aria-hidden />
-      <h3 className="dd-display text-3xl text-[var(--dd-glow)]">{ev.title}</h3>
-      <p className="mt-1 text-base leading-relaxed">{ev.line}</p>
+      <EventCardBody ev={ev} />
     </motion.article>
   );
 }
@@ -215,9 +251,8 @@ function MobileDay({ data }: { data: WeekDay }) {
         {data.name}, {IEEE_WEEK.monthLabel}. {data.blurb}
       </p>
       {data.events.map((e) => (
-        <article key={e.title} className="dd-slab relative p-5">
-          <h3 className="dd-display text-3xl text-[var(--dd-glow)]">{e.title}</h3>
-          <p className="mt-1 text-base leading-relaxed">{e.line}</p>
+        <article key={e.slug} className="dd-slab relative p-5">
+          <EventCardBody ev={{ ...e, day: data.day }} />
         </article>
       ))}
     </div>

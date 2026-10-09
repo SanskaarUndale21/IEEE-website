@@ -50,6 +50,9 @@ export const registrationSchema = z.object({
   branch: optional(80),
   semester: clean(10).pipe(z.union([z.literal(""), z.string().regex(/^[1-8]$/)])).optional().default(""),
   teamName: optional(120),
+  // Extra team members and IEEE membership, saved on the registration as a note for the admins.
+  members: optional(600),
+  membership: optional(120),
   transactionId: clean(80)
     .pipe(z.union([z.literal(""), z.string().regex(/^[A-Za-z0-9 _./-]{4,80}$/, "Invalid transaction id")]))
     .optional()

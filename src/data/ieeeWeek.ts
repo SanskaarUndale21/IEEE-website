@@ -1,15 +1,41 @@
-// IEEE Week content. Edit here: dates, event names and details.
-// Event names below are PLACEHOLDERS until the final names are shared.
+// IEEE Week content. Edit here: dates, event names, venues, fees and details.
 
 export const IEEE_WEEK = {
-  // First day of IEEE Week, in IST. Update the month/year if this changes.
-  start: "2026-10-14T09:00:00+05:30",
+  // First moment of IEEE Week (the start of the 14th), in IST.
+  start: "2026-10-14T00:00:00+05:30",
+  // The week is over from this moment (the 18th, IST).
+  end: "2026-10-18T00:00:00+05:30",
   monthLabel: "October 2026",
   days: [14, 15, 16, 17],
+  timing: "All events start at 2:30 PM sharp at their venue.",
 };
 
-export type WeekEvent = { title: string; line: string };
+export type Coordinator = { name: string; phone?: string };
+
+export type WeekEvent = {
+  /** Page anchor, and the database event row is `ieee-week-<slug>`. */
+  slug: string;
+  title: string;
+  tagline: string;
+  category: "Technical" | "Non-Technical" | "Ceremony";
+  /** Short note after the category, e.g. "design". */
+  categoryNote?: string;
+  venue: string;
+  time: string;
+  /** Participants per team. 0 means no registration. */
+  teamCount: number;
+  teamLabel: string;
+  roles?: string;
+  fee?: { ieee: number; nonIeee: number; note?: string };
+  coordinators: Coordinator[];
+  overview: string;
+  bring?: string;
+  rounds?: string;
+};
+
 export type WeekDay = { day: number; name: string; blurb: string; events: WeekEvent[] };
+
+const TIME = "2:30 PM";
 
 export const WEEK_DAYS: WeekDay[] = [
   {
@@ -17,8 +43,37 @@ export const WEEK_DAYS: WeekDay[] = [
     name: "Day one",
     blurb: "The week opens.",
     events: [
-      { title: "Convergence", line: "Opening ceremony and keynote that sets the week in motion." },
-      { title: "Forge", line: "A hands-on workshop where you build something before lunch." },
+      {
+        slug: "retrace",
+        title: "RETR?CE",
+        tagline: "A search for the forgotten",
+        category: "Technical",
+        venue: "AIDS Seminar Hall",
+        time: TIME,
+        teamCount: 2,
+        teamLabel: "2 members",
+        fee: { ieee: 49, nonIeee: 69 },
+        coordinators: [{ name: "Durvank Patil", phone: "8147939767" }, { name: "Jerrym David" }],
+        overview:
+          "A mini Alternate Reality Game / live-action roleplay. Participants forget who they are and solve a missing-person case by solving puzzles and analysing and travelling through files until they reach the final message and learn what happened.",
+        bring: "Laptop / smartphone, earphones or headphones, notepad and pen",
+      },
+      {
+        slug: "conquer-the-canvas",
+        title: "Conquer the Canvas",
+        tagline: "Add. Adapt. Create.",
+        category: "Non-Technical",
+        categoryNote: "design",
+        venue: "CSE Lab",
+        time: TIME,
+        teamCount: 2,
+        teamLabel: "2 members",
+        fee: { ieee: 49, nonIeee: 69 },
+        coordinators: [{ name: "Vaishnavi Dabu", phone: "7276964351" }, { name: "Prithvi Hiremath", phone: "7483653556" }],
+        overview:
+          "A live design challenge in Canva. Teams receive a base poster and new elements and instructions are revealed progressively; each must be added creatively to the same poster without starting over, within the time limit. PCs are provided, or teams can bring laptops.",
+        bring: "Laptop",
+      },
     ],
   },
   {
@@ -26,8 +81,35 @@ export const WEEK_DAYS: WeekDay[] = [
     name: "Day two",
     blurb: "The middle of the war.",
     events: [
-      { title: "Rift", line: "A timed hackathon: one problem, one team, no spare hours." },
-      { title: "Sanctum", line: "Project and paper showcase judged by faculty and seniors." },
+      {
+        slug: "prompt-injection",
+        title: "Prompt Injection",
+        tagline: "One attacker. One defender.",
+        category: "Technical",
+        venue: "ECE Seminar Hall",
+        time: TIME,
+        teamCount: 2,
+        teamLabel: "2 participants",
+        roles: "1 Attacker + 1 Defender",
+        fee: { ieee: 49, nonIeee: 69 },
+        coordinators: [{ name: "Sanskaar Undaale", phone: "6363066361" }, { name: "Aanchal Gur", phone: "8792914777" }],
+        overview:
+          "Prompt Injection War is a two-person AI security competition where one participant attacks an opponent's AI using prompt-injection techniques, while the other defends their AI from revealing protected information. Each match consists of three 5-minute rounds, with teams scored on attack success, defense, and AI utility.",
+      },
+      {
+        slug: "pixel-perfect",
+        title: "Pixel Perfect",
+        tagline: "See it. Find it. Recreate it. Perfect it.",
+        category: "Non-Technical",
+        venue: "CSBS Dep-E302",
+        time: TIME,
+        teamCount: 2,
+        teamLabel: "2 members",
+        fee: { ieee: 49, nonIeee: 69 },
+        coordinators: [{ name: "Aditi L", phone: "6361636547" }, { name: "Pooja P" }],
+        overview:
+          "A campus-based visual challenge. Teams get four blurred or modified photographs of the college campus, identify each location, reach the exact spot and recreate the photograph from approximately the same viewpoint. Accuracy of location, viewpoint and composition is scored by an AI image-comparison algorithm.",
+      },
     ],
   },
   {
@@ -35,18 +117,62 @@ export const WEEK_DAYS: WeekDay[] = [
     name: "Day three",
     blurb: "The reckoning.",
     events: [
-      { title: "Doomsday Quiz", line: "A technical quiz for teams that survived the first two days." },
+      {
+        slug: "code-relay",
+        title: "Code Relay",
+        tagline: "Blind coding relay in VS Code",
+        category: "Technical",
+        venue: "CSE Dep-Sankalp Lab",
+        time: TIME,
+        teamCount: 3,
+        teamLabel: "3 members",
+        fee: { ieee: 79, nonIeee: 99 },
+        coordinators: [{ name: "Mobeen Jamadar", phone: "7892202865" }, { name: "Dhanashree Ragade", phone: "9019301902" }],
+        overview:
+          "Code Relay is a team coding challenge with 3 members and 2 rounds, each having 2 problems. Teams get brief discussion time before each problem, then members code one at a time for equal time with no communication or code comments.",
+        rounds:
+          "Round 1: 60 minutes, with a mini-task and hint for each problem. Round 2: 75 minutes, with higher difficulty and a hint for only one problem. No internet, AI tools, or mobile phones are allowed. Phones must be switched off and submitted to coordinators.",
+      },
+      {
+        slug: "uncharted",
+        title: "Uncharted: Unveil the Hidden",
+        tagline: "A two-round story-driven mystery",
+        category: "Non-Technical",
+        venue: "AIDS Seminar Hall",
+        time: TIME,
+        teamCount: 3,
+        teamLabel: "3 members",
+        fee: { ieee: 79, nonIeee: 99, note: "per team" },
+        coordinators: [{ name: "Rigved Desai", phone: "8867010554" }, { name: "Nisarga Rajput", phone: "6363570109" }],
+        overview:
+          "Combines riddles, cryptograms, deduction, observation, teamwork and exploration. Round 1: teams investigate a fictional researcher's unfinished work and uncover evidence of a Pirate Captain's mystery. Round 2: qualified teams retrace the Captain's voyage across campus \"islands\", with possible mid-round eliminations, before reaching the final treasure.",
+      },
     ],
   },
   {
     day: 17,
     name: "Day four",
     blurb: "The last word.",
-    events: [{ title: "Valedictory", line: "Awards, results and the closing of IEEE Week." }],
+    events: [
+      {
+        slug: "valedictory",
+        title: "Valedictory",
+        tagline: "Awards, results and the closing of IEEE Week.",
+        category: "Ceremony",
+        venue: "",
+        time: "",
+        teamCount: 0,
+        teamLabel: "",
+        coordinators: [],
+        overview: "Awards, results and the closing of IEEE Week.",
+      },
+    ],
   },
 ];
+
+/** Events people can register for. */
+export const REGISTRABLE = WEEK_DAYS.flatMap((d) => d.events.map((e) => ({ ...e, day: d.day }))).filter((e) => e.teamCount > 0);
 
 // Hero image of Doctor Doom. Set this to a file you have the rights to use, for example
 // { src: "/images/ieee-week/doom.jpg", alt: "Doctor Doom" }. Leave null to show no portrait.
 export const DOOM_IMAGE: { src: string; alt: string } | null = null;
-

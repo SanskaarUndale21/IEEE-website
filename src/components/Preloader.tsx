@@ -91,14 +91,15 @@ export default function Preloader() {
       };
     }
 
+    const small = window.innerWidth < 768;
     const tick = (now: number) => {
       const elapsed = now - start;
-      const t = Math.min(elapsed / MIN_MS, 1);
+      const t = Math.min(elapsed / (small ? 1300 : MIN_MS), 1);
       const eased = 1 - Math.pow(1 - t, 1.5);
 
       // never finish before the globe has actually rendered, or the whole
       // point of the loader is a blank screen followed by a fade
-      const canFinish = (assetsReady && globeReady.current) || elapsed >= MAX_MS;
+      const canFinish = (assetsReady && globeReady.current) || elapsed >= (small ? 3000 : MAX_MS);
       const p = Math.min(eased, canFinish ? 1 : 0.94);
 
       progressRef.current = p;

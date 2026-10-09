@@ -12,12 +12,12 @@ function ThemeToggle() {
   const { theme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
   useEffect(() => setMounted(true), []);
-  if (!mounted) return <div className="h-9 w-9" />;
+  if (!mounted) return <div className="h-11 w-11 md:h-9 md:w-9" />;
 
   return (
     <button
       onClick={() => setTheme(theme === "dark" ? "light" : "dark")}
-      className="flex h-9 w-9 items-center justify-center rounded-full border border-gray-200 transition-all hover:border-ieee-light hover:bg-ieee-light/10 dark:border-white/10 dark:hover:border-ieee-light"
+      className="flex h-11 w-11 items-center justify-center rounded-full border md:h-9 md:w-9 border-gray-200 transition-all hover:border-ieee-light hover:bg-ieee-light/10 dark:border-white/10 dark:hover:border-ieee-light"
       aria-label="Toggle theme"
     >
       <motion.div
