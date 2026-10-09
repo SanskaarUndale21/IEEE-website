@@ -177,15 +177,6 @@ export const WEEK_DAYS: WeekDay[] = [
 /** Events people can register for. */
 export const REGISTRABLE = WEEK_DAYS.flatMap((d) => d.events.map((e) => ({ ...e, day: d.day }))).filter((e) => e.teamCount > 0);
 
-// Loki at the end of the timeline, a cutout of a costume photograph (CC BY-SA 2.0).
-// Swap the file or this entry to change it.
-export const LOKI_IMAGE = {
-  src: "/images/ieee-week/loki.webp",
-  alt: "A Loki costume with a golden horned helmet and sceptre",
-  credit: "Loki costume photo: William Tung, CC BY-SA 2.0, via Wikimedia Commons",
-  creditUrl: "https://commons.wikimedia.org/wiki/File:WonderCon_2015_-_Loki_cosplay_-_without_background.jpg",
-};
-
 // Artwork supplied by the branch. Swap the files in public/images/ieee-week/ to change them.
 // Hero portrait. Set to null to show no portrait.
 export const DOOM_IMAGE: { src: string; alt: string } | null = {

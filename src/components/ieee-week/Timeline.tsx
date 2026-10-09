@@ -2,8 +2,7 @@
 
 import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useScroll, useSpring, useTransform, useInView, type MotionValue } from "framer-motion";
-import Image from "next/image";
-import { IEEE_WEEK, LOKI_IMAGE, WEEK_DAYS, type WeekDay, type WeekEvent } from "@/data/ieeeWeek";
+import { IEEE_WEEK, WEEK_DAYS, type WeekDay, type WeekEvent } from "@/data/ieeeWeek";
 import { selectEvent } from "./registerBus";
 
 /* ───────────────────────────────────────────────────────────────
@@ -29,12 +28,11 @@ function smooth(pts: Pt[]): string {
   return d;
 }
 
-const H = 2750;
-// The trunk ends on Loki: his helmet sits at LOKI_TOP and the Valedictory card stands in front of him.
-const LOKI_TOP = 1960;
-const LOKI_H = 560;
-const FINALE_TOP = 2400;
-const TRUNK: Pt[] = [[500, 0], [490, 260], [512, 520], [498, 800], [508, 1060], [496, 1330], [505, 1560], [502, 1790], [500, LOKI_TOP + 40]];
+const H = 2450;
+// The trunk ends at the Valedictory card, centred below the last fork.
+const TRUNK_END = 2020;
+const FINALE_TOP = 2060;
+const TRUNK: Pt[] = [[500, 0], [490, 260], [512, 520], [498, 800], [508, 1060], [496, 1330], [505, 1560], [502, 1790], [500, TRUNK_END]];
 const FORKS: Pt[] = [TRUNK[1], TRUNK[3], TRUNK[5], TRUNK[7]]; // days 14, 15, 16, 17
 
 type Branch = { pts: Pt[]; event?: number; dead?: boolean; width: number };
@@ -218,38 +216,20 @@ function EventAtTip({ x, y, ev, p }: { x: number; y: number; ev: Ev; p: MotionVa
   );
 }
 
-/** Loki stands at the end of the tree. The Valedictory card is the centrepiece in front of him. */
+/** The end of the tree: the Valedictory card, centred, with a glow behind it. */
 function Finale({ ev, p }: { ev: Ev; p: MotionValue<number> }) {
-  const show = useTransform(p, (v) => clamp01((v - (LOKI_TOP - 120) / H) / 0.05));
-  const rise = useTransform(show, (v) => (1 - v) * 40);
+  const show = useTransform(p, (v) => clamp01((v - (TRUNK_END - 160) / H) / 0.05));
+  const rise = useTransform(show, (v) => (1 - v) * 30);
   return (
     <>
-      <motion.div
-        className="pointer-events-none absolute"
-        style={{
-          left: "50%",
-          x: "-50%",
-          top: `${(LOKI_TOP / H) * 100}%`,
-          height: `${(LOKI_H / H) * 100}%`,
-          aspectRatio: "889 / 1070",
-          opacity: show,
-          y: rise,
-        }}
-      >
-        <div className="absolute -inset-[30%] -z-10 bg-[radial-gradient(closest-side,rgba(59,227,154,0.28),transparent)]" aria-hidden />
-        <Image
-          src={LOKI_IMAGE.src}
-          alt={LOKI_IMAGE.alt}
-          fill
-          sizes="(max-width: 1024px) 80vw, 460px"
-          className="object-contain drop-shadow-[0_0_40px_rgba(59,227,154,0.35)]"
-        />
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[var(--dd-void)] to-transparent" aria-hidden />
-      </motion.div>
-
+      <div
+        className="pointer-events-none absolute -z-10 bg-[radial-gradient(closest-side,rgba(59,227,154,0.22),transparent)]"
+        style={{ left: "50%", top: `${((FINALE_TOP - 140) / H) * 100}%`, width: "90%", height: "16%", transform: "translateX(-50%)" }}
+        aria-hidden
+      />
       <motion.article
         className="dd-slab absolute w-[min(620px,64%)] border-[var(--dd-glow)]/60 p-8 text-center shadow-[0_0_60px_rgba(59,227,154,0.18)]"
-        style={{ left: "50%", x: "-50%", top: `${(FINALE_TOP / H) * 100}%`, opacity: show }}
+        style={{ left: "50%", x: "-50%", top: `${(FINALE_TOP / H) * 100}%`, opacity: show, y: rise }}
       >
         <p className="text-base text-[var(--dd-gold)]">Day four, {ev.day}-10-26</p>
         <h3 className="dd-display mt-2 text-6xl leading-none text-[var(--dd-glow)]">{ev.title}</h3>
@@ -444,12 +424,7 @@ function MFork({ y, h, day, p }: { y: number; h: number; day: number; p: MotionV
 function MobileFinale({ ev }: { ev: Ev }) {
   return (
     <div className="relative px-5 pt-16">
-      <div className="relative mx-auto aspect-[889/1070] w-[74%] max-w-[300px]">
-        <div className="absolute -inset-[20%] -z-10 bg-[radial-gradient(closest-side,rgba(59,227,154,0.28),transparent)]" aria-hidden />
-        <Image src={LOKI_IMAGE.src} alt={LOKI_IMAGE.alt} fill sizes="80vw" className="object-contain drop-shadow-[0_0_30px_rgba(59,227,154,0.35)]" />
-        <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[var(--dd-void)] to-transparent" aria-hidden />
-      </div>
-      <article className="dd-slab relative -mt-16 border-[var(--dd-glow)]/60 p-6 text-center shadow-[0_0_50px_rgba(59,227,154,0.18)]">
+      <article className="dd-slab relative border-[var(--dd-glow)]/60 p-6 text-center shadow-[0_0_50px_rgba(59,227,154,0.18)]">
         <p className="text-sm text-[var(--dd-gold)]">Day four, {ev.day}-10-26</p>
         <h3 className="dd-display mt-1 text-5xl leading-none text-[var(--dd-glow)]">{ev.title}</h3>
         <p className="mt-2 text-lg leading-relaxed">{ev.tagline}</p>
