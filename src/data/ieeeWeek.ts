@@ -37,6 +37,8 @@ export type WeekEvent = {
   rounds?: string;
   /** WhatsApp group invite link for this event. Paste it here and it shows on the registration page. */
   whatsapp?: string;
+  /** QR image for the same group. */
+  whatsappQr?: string;
 };
 
 export type WeekDay = { day: number; name: string; blurb: string; events: WeekEvent[] };
@@ -51,6 +53,8 @@ export const WEEK_DAYS: WeekDay[] = [
     events: [
       {
         slug: "retrace",
+        whatsapp: "https://chat.whatsapp.com/JlLYS36UmvvE35Q25jTUAU?s=qt&p=a&mlu=4&ilr=4",
+        whatsappQr: "/images/ieee-week/wa/retrace.png",
         title: "RETR?CE",
         tagline: "A search for the forgotten",
         category: "Technical",
@@ -66,6 +70,8 @@ export const WEEK_DAYS: WeekDay[] = [
       },
       {
         slug: "conquer-the-canvas",
+        whatsapp: "https://chat.whatsapp.com/FrPZrqqFIPN5ajdHT5qvHE?s=qt&p=a&mlu=4&ilr=4",
+        whatsappQr: "/images/ieee-week/wa/conquer-the-canvas.png",
         title: "Conquer the Canvas",
         tagline: "Add. Adapt. Create.",
         category: "Non-Technical",
@@ -89,6 +95,8 @@ export const WEEK_DAYS: WeekDay[] = [
     events: [
       {
         slug: "prompt-injection",
+        whatsapp: "https://chat.whatsapp.com/DLBPhxfiqcELHdUpqQYEtO?s=qt&p=a&mlu=4&ilr=4",
+        whatsappQr: "/images/ieee-week/wa/prompt-injection.png",
         title: "Prompt Injection",
         tagline: "One attacker. One defender.",
         category: "Technical",
@@ -104,6 +112,8 @@ export const WEEK_DAYS: WeekDay[] = [
       },
       {
         slug: "pixel-perfect",
+        whatsapp: "https://chat.whatsapp.com/CaR4Am1gXD4BqD9v9VR8rp?s=qt&p=a&mlu=4&ilr=4",
+        whatsappQr: "/images/ieee-week/wa/pixel-perfect.png",
         title: "Pixel Perfect",
         tagline: "See it. Find it. Recreate it. Perfect it.",
         category: "Non-Technical",
@@ -125,6 +135,9 @@ export const WEEK_DAYS: WeekDay[] = [
     events: [
       {
         slug: "code-relay",
+        // TODO: Code Relay has no group yet. This is a stand-in (the Prompt Injection group). Replace link and QR.
+        whatsapp: "https://chat.whatsapp.com/DLBPhxfiqcELHdUpqQYEtO?s=qt&p=a&mlu=4&ilr=4",
+        whatsappQr: "/images/ieee-week/wa/prompt-injection.png",
         title: "Code Relay",
         tagline: "Blind coding relay in VS Code",
         category: "Technical",
@@ -141,6 +154,8 @@ export const WEEK_DAYS: WeekDay[] = [
       },
       {
         slug: "uncharted",
+        whatsapp: "https://chat.whatsapp.com/GjbMuQ4hvyREb8oCdL5qU8",
+        whatsappQr: "/images/ieee-week/wa/uncharted.png",
         title: "Uncharted: Unveil the Hidden",
         tagline: "A two-round story-driven mystery",
         category: "Non-Technical",

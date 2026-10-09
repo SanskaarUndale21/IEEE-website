@@ -1,6 +1,7 @@
 "use client";
 
 import { Suspense, useEffect, useState } from "react";
+import Image from "next/image";
 import Link from "next/link";
 import { useSearchParams } from "next/navigation";
 import RegisterShell from "@/components/ieee-week/RegisterShell";
@@ -66,6 +67,14 @@ function Step2() {
                 >
                   Join the WhatsApp group
                 </a>
+                {event.whatsappQr && (
+                  <div className="mt-8 hidden sm:block">
+                    <p className="mb-3 text-base text-[var(--dd-iron)]/80">On a computer? Scan this with the WhatsApp camera on your phone.</p>
+                    <div className="relative h-44 w-44 bg-white p-2">
+                      <Image src={event.whatsappQr} alt={`WhatsApp group QR code for ${event.title}`} fill sizes="176px" className="object-contain p-2" />
+                    </div>
+                  </div>
+                )}
               </>
             ) : (
               <p className="max-w-[56ch] text-lg">
