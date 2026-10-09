@@ -20,7 +20,7 @@ Rotating `ADMIN_ROUTE_KEY` changes the URL; rotating `ADMIN_SESSION_SECRET` logs
 - Secret path: the only URL that serves the panel. `/admin`, `/sb-console`, wrong keys all return plain 404.
   If any admin env var is missing or malformed the panel simply does not exist.
 - Login: IEEE ID + scrypt hashed password, constant time compare, equalised timing, lockout after 5 fails
-  per IP / 50 global per 15 min, single active session (new login revokes old ones).
+  per IP / 50 global per 15 min, up to 3 signed-in devices (a 4th login ends the oldest).
 - Session: HMAC signed httpOnly `SameSite=Strict` `__Secure-` cookie scoped to the secret path, bound to the
   browser user agent, 4h absolute + 30 min idle timeout, server side revocable row in `admin_sessions`.
 - Every admin API: signed cookie check in middleware, DB session check, same-origin check, per-session CSRF token.

@@ -74,8 +74,18 @@ export async function POST(req: NextRequest) {
     return jsonError(left > 0 ? `Invalid credentials. ${left} attempt(s) left.` : "Invalid credentials. Locked.", 401);
   }
 
-  // Single active session: a new login kills every older one.
-  await db.from("admin_sessions").update({ revoked: true }).eq("admin_id", cfg.adminId).eq("revoked", false);
+  // Several devices may stay signed in at once (a laptop and a phone, say).
+  // Only sessions beyond the newest MAX_ACTIVE_SESSIONS - 1 are ended, so a login on one
+  // device no longer signs the others out.
+  const MAX_ACTIVE_SESSIONS = 3;
+  const { data: active } = await db
+    .from("admin_sessions")
+    .select("id")
+    .eq("admin_id", cfg.adminId)
+    .eq("revoked", false)
+    .order("created_at", { ascending: false });
+  const stale = (active ?? []).slice(MAX_ACTIVE_SESSIONS - 1).map((s) => s.id as string);
+  if (stale.length) await db.from("admin_sessions").update({ revoked: true }).in("id", stale);
 
   const now = Math.floor(Date.now() / 1000);
   const sid = randomUUID();
