@@ -1,6 +1,6 @@
 "use client";
 
-import { useRef } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useScroll, useSpring, useTransform, useInView, type MotionValue } from "framer-motion";
 import Image from "next/image";
 import { IEEE_WEEK, LOKI_IMAGE, WEEK_DAYS, type WeekDay, type WeekEvent } from "@/data/ieeeWeek";
@@ -259,73 +259,197 @@ function Finale({ ev, p }: { ev: Ev; p: MotionValue<number> }) {
   );
 }
 
-/* ───────────── mobile: a single branch ───────────── */
+/* ───────────── mobile: the same tree, measured from the page ───────────── */
+
+type MGeo = {
+  w: number;
+  h: number;
+  forks: { y: number; day: number }[];
+  cards: { y: number; left: number }[];
+  twigs: { y: number }[];
+  finTop: number | null;
+};
+
+const TX = (y: number) => 26 + 7 * Math.sin(y / 150);
 
 function MobileList() {
   const wrap = useRef<HTMLDivElement>(null);
-  const { scrollYProgress } = useScroll({ target: wrap, offset: ["start 70%", "end 75%"] });
-  const fill = useSpring(scrollYProgress, { stiffness: 90, damping: 24, mass: 0.4 });
+  const caps = useRef<(HTMLElement | null)[]>([]);
+  const cards = useRef<(HTMLElement | null)[]>([]);
+  const fin = useRef<HTMLDivElement>(null);
+  const [geo, setGeo] = useState<MGeo | null>(null);
+  const { scrollYProgress } = useScroll({ target: wrap, offset: ["start 80%", "end 65%"] });
+  const p = useSpring(scrollYProgress, { stiffness: 90, damping: 24, mass: 0.4 });
 
+  const days = WEEK_DAYS.filter((d) => d.events.some((e) => e.teamCount > 0));
+
+  useLayoutEffect(() => {
+    const el = wrap.current;
+    if (!el) return;
+    const measure = () => {
+      const root = el.getBoundingClientRect();
+      if (root.width === 0 || root.height === 0) return; // hidden on desktop
+      const rel = (n: HTMLElement) => {
+        const r = n.getBoundingClientRect();
+        return { top: r.top - root.top, mid: r.top - root.top + r.height / 2, bottom: r.top - root.top + r.height, left: r.left - root.left };
+      };
+      const forks = days.map((d, i) => ({ y: caps.current[i] ? rel(caps.current[i] as HTMLElement).mid : 0, day: d.day }));
+      const cs = cards.current.filter(Boolean).map((n) => rel(n as HTMLElement));
+      const twigs: { y: number }[] = [];
+      for (let i = 0; i < cs.length - 1; i++) {
+        const gap = cs[i + 1].top - cs[i].bottom;
+        if (gap > 30) twigs.push({ y: cs[i].bottom + gap / 2 });
+      }
+      const f = fin.current ? rel(fin.current).top : null;
+      if (f) forks.push({ y: f + 20, day: 17 });
+      setGeo({ w: root.width, h: root.height, forks, cards: cs.map((c) => ({ y: c.mid, left: c.left })), twigs, finTop: f });
+    };
+    measure();
+    const ro = new ResizeObserver(measure);
+    ro.observe(el);
+    window.addEventListener("load", measure);
+    return () => {
+      ro.disconnect();
+      window.removeEventListener("load", measure);
+    };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  let ci = -1;
   return (
     <div ref={wrap} className="relative">
-      <div className="pointer-events-none absolute bottom-0 left-7 top-0 w-[3px] -translate-x-1/2" aria-hidden>
-        <div className="absolute inset-0 bg-[var(--dd-glow)]/30" />
-        <motion.div className="absolute inset-0 origin-top bg-gradient-to-b from-[var(--dd-glow)] to-[var(--dd-gold)] shadow-[0_0_12px_2px_rgba(59,227,154,0.7)]" style={{ scaleY: fill }} />
-      </div>
-      <div className="space-y-16 pb-10">
-        {WEEK_DAYS.filter((d) => d.events.some((e) => e.teamCount > 0)).map((d) => (
-          <MobileDay key={d.day} data={d} />
+      {geo && <MobileBranches geo={geo} p={p} />}
+      <div className="relative z-10 pl-[4.5rem]">
+        {days.map((d, i) => (
+          <div key={d.day} className={i === 0 ? "" : "mt-14"}>
+            <p
+              ref={(n) => {
+                caps.current[i] = n;
+              }}
+              className="mb-5 text-lg text-[var(--dd-gold)]"
+            >
+              {d.name}, {IEEE_WEEK.monthLabel}. {d.blurb}
+            </p>
+            <div className="space-y-8">
+              {d.events.map((e) => {
+                ci += 1;
+                const idx = ci;
+                return (
+                  <article
+                    key={e.slug}
+                    ref={(n) => {
+                      cards.current[idx] = n;
+                    }}
+                    className="dd-slab relative p-5"
+                  >
+                    <EventCardBody ev={{ ...e, day: d.day }} />
+                  </article>
+                );
+              })}
+            </div>
+          </div>
         ))}
-        <MobileFinale ev={EVENTS[EVENTS.length - 1]} />
+        <div ref={fin} className="-ml-[4.5rem] mt-20">
+          <MobileFinale ev={EVENTS[EVENTS.length - 1]} />
+        </div>
       </div>
     </div>
   );
 }
 
-function MobileDay({ data }: { data: WeekDay }) {
-  const ref = useRef<HTMLDivElement>(null);
-  const lit = useInView(ref, { margin: "-40% 0px -40% 0px" });
+function MobileBranches({ geo, p }: { geo: MGeo; p: MotionValue<number> }) {
+  const end = geo.finTop ?? geo.h;
+  const pts: Pt[] = [];
+  for (let y = 0; y <= end - 40; y += 40) pts.push([TX(y), y]);
+  if (pts.length < 2) return null;
+  const lastY = pts[pts.length - 1][1];
+  const cx = geo.w / 2;
+  const trunk = smooth(pts) + ` C${TX(lastY)} ${lastY + 70} ${cx} ${end - 40} ${cx} ${end + 70}`;
   return (
-    <div ref={ref} className="grid grid-cols-[56px_1fr] gap-y-5">
-      <div className="relative row-span-3">
-        <div
-          className={`dd-display absolute left-1/2 top-0 flex h-12 w-12 -translate-x-1/2 items-center justify-center text-2xl transition-colors duration-500 ${
-            lit ? "bg-[var(--dd-glow)] text-[#06281b]" : "bg-[var(--dd-iron)]/40 text-[var(--dd-iron)]"
-          }`}
-          style={{ clipPath: "polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)" }}
-        >
-          {data.day}
-        </div>
-      </div>
-      <p className="text-lg text-[var(--dd-gold)]">
-        {data.name}, {IEEE_WEEK.monthLabel}. {data.blurb}
-      </p>
-      {data.events.map((e) => (
-        <article key={e.slug} className="dd-slab relative p-5">
-          <EventCardBody ev={{ ...e, day: data.day }} />
-        </article>
+    <>
+      <svg className="pointer-events-none absolute left-0 top-0 z-0 overflow-visible" width={geo.w} height={geo.h} viewBox={`0 0 ${geo.w} ${geo.h}`} aria-hidden>
+        <defs>
+          <linearGradient id="mt-grad" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2={geo.h}>
+            <stop offset="0" stopColor="#3be39a" />
+            <stop offset="1" stopColor="#d9ac3f" />
+          </linearGradient>
+          <filter id="mt-glow" x="-50%" y="-5%" width="200%" height="110%">
+            <feGaussianBlur stdDeviation="3.5" result="b" />
+            <feMerge>
+              <feMergeNode in="b" />
+              <feMergeNode in="SourceGraphic" />
+            </feMerge>
+          </filter>
+        </defs>
+        <path d={trunk} fill="none" stroke="#3be39a" strokeOpacity="0.16" strokeWidth="6" strokeLinecap="round" />
+        <motion.path d={trunk} fill="none" stroke="url(#mt-grad)" strokeWidth="6" strokeLinecap="round" filter="url(#mt-glow)" style={{ pathLength: p }} />
+        {geo.cards.map((c, i) => {
+          const y0 = Math.max(10, c.y - 78);
+          const x0 = TX(y0);
+          const d = `M${x0} ${y0} C${x0 + 26} ${y0 + 6} ${c.left - 34} ${c.y - 24} ${c.left - 3} ${c.y}`;
+          return <MBranch key={i} d={d} y={y0} h={geo.h} p={p} dot={[c.left - 3, c.y]} />;
+        })}
+        {geo.twigs.map((t, i) => {
+          const x0 = TX(t.y);
+          const len = 34 + (i % 3) * 14;
+          const d = `M${x0} ${t.y} C${x0 + 14} ${t.y - 6} ${x0 + len - 12} ${t.y - 14} ${x0 + len} ${t.y - 22}`;
+          return <MBranch key={`t${i}`} d={d} y={t.y} h={geo.h} p={p} dead />;
+        })}
+      </svg>
+      {geo.forks.map((f) => (
+        <MFork key={f.day} y={f.y} h={geo.h} day={f.day} p={p} />
       ))}
-    </div>
+    </>
+  );
+}
+
+function MBranch({ d, y, h, p, dead, dot }: { d: string; y: number; h: number; p: MotionValue<number>; dead?: boolean; dot?: [number, number] }) {
+  const grow = useTransform(p, (v) => clamp01((v - (y / h - 0.012)) / (dead ? 0.06 : 0.08)));
+  const dotOn = useTransform(grow, (g) => (g > 0.98 ? 1 : 0));
+  return (
+    <>
+      <path d={d} fill="none" stroke="#3be39a" strokeOpacity="0.14" strokeWidth={dead ? 2 : 3} strokeLinecap="round" />
+      <motion.path
+        d={d}
+        fill="none"
+        stroke={dead ? "#3be39a" : "url(#mt-grad)"}
+        strokeOpacity={dead ? 0.5 : 1}
+        strokeWidth={dead ? 2 : 3.5}
+        strokeLinecap="round"
+        filter="url(#mt-glow)"
+        style={{ pathLength: grow }}
+      />
+      {dot && <motion.circle cx={dot[0]} cy={dot[1]} r="5" fill="#d9ac3f" style={{ opacity: dotOn, filter: "drop-shadow(0 0 6px #d9ac3f)" }} />}
+    </>
+  );
+}
+
+function MFork({ y, h, day, p }: { y: number; h: number; day: number; p: MotionValue<number> }) {
+  const opacity = useTransform(p, (v) => (v >= y / h - 0.01 ? 1 : 0.4));
+  return (
+    <motion.div
+      className="dd-display absolute z-10 flex h-10 w-10 items-center justify-center bg-[var(--dd-glow)] text-xl text-[#06281b]"
+      style={{
+        left: TX(y) - 20,
+        top: y - 20,
+        clipPath: "polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)",
+        opacity,
+      }}
+    >
+      {day}
+    </motion.div>
   );
 }
 
 function MobileFinale({ ev }: { ev: Ev }) {
   return (
-    <div className="grid grid-cols-[56px_1fr] gap-y-3">
-      <div className="relative row-span-2">
-        <div
-          className="dd-display absolute left-1/2 top-0 flex h-12 w-12 -translate-x-1/2 items-center justify-center bg-[var(--dd-glow)] text-2xl text-[#06281b]"
-          style={{ clipPath: "polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)" }}
-        >
-          {ev.day}
-        </div>
-      </div>
-      <div className="relative mx-auto aspect-[889/1070] w-[78%] max-w-[320px]">
+    <div className="relative px-5 pt-16">
+      <div className="relative mx-auto aspect-[889/1070] w-[74%] max-w-[300px]">
         <div className="absolute -inset-[20%] -z-10 bg-[radial-gradient(closest-side,rgba(59,227,154,0.28),transparent)]" aria-hidden />
         <Image src={LOKI_IMAGE.src} alt={LOKI_IMAGE.alt} fill sizes="80vw" className="object-contain drop-shadow-[0_0_30px_rgba(59,227,154,0.35)]" />
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-[var(--dd-void)] to-transparent" aria-hidden />
       </div>
-      <article className="dd-slab relative col-start-2 -mt-14 border-[var(--dd-glow)]/60 p-6 text-center shadow-[0_0_50px_rgba(59,227,154,0.18)]">
+      <article className="dd-slab relative -mt-16 border-[var(--dd-glow)]/60 p-6 text-center shadow-[0_0_50px_rgba(59,227,154,0.18)]">
         <p className="text-sm text-[var(--dd-gold)]">Day four, {ev.day}-10-26</p>
         <h3 className="dd-display mt-1 text-5xl leading-none text-[var(--dd-glow)]">{ev.title}</h3>
         <p className="mt-2 text-lg leading-relaxed">{ev.tagline}</p>

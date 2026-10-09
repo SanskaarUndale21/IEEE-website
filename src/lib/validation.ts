@@ -40,6 +40,37 @@ export const querySchema = z
   })
   .refine((q) => q.email || q.phone, "Email or phone is required");
 
+// ─── IEEE Week registration (three steps: details, WhatsApp, payment) ─────
+export const ieeeMemberSchema = z.object({
+  name: required(80),
+  usn: required(30),
+  dept: required(80),
+  year: clean(1).pipe(z.string().regex(/^[1-4]$/, "Select the year")),
+  phone,
+});
+
+export const ieeeRegisterSchema = z.object({
+  event: clean(60).pipe(z.string().regex(/^[a-z0-9]+(-[a-z0-9]+)*$/, "Unknown event")),
+  teamName: required(120),
+  members: z.array(ieeeMemberSchema).min(1).max(5),
+  website: z.string().max(0).optional(),
+});
+
+const txId = clean(80).pipe(z.string().regex(/^[A-Za-z0-9 _./-]{4,80}$/, "Invalid transaction id"));
+
+export const ieeePaySchema = z
+  .object({
+    id: uuid,
+    plan: z.enum(["ieee", "non"]),
+    transactionId: txId,
+    confirmId: txId,
+    website: z.string().max(0).optional(),
+  })
+  .refine((v) => v.transactionId.toLowerCase() === v.confirmId.toLowerCase(), {
+    message: "The two transaction ids do not match",
+    path: ["confirmId"],
+  });
+
 export const registrationSchema = z.object({
   eventId: uuid,
   name: required(120),

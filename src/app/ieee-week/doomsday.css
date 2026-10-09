@@ -117,7 +117,7 @@
 
 .dd-photo { -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 38%); mask-image: linear-gradient(90deg, transparent 0%, #000 38%); }
 figure.dd-photo { -webkit-mask-image: none; mask-image: none; border: 1px solid rgba(169, 179, 186, 0.16); }
-.dd-photo img { filter: grayscale(1) contrast(1.15) brightness(0.95); }
+.dd-photo img { filter: saturate(1.05) contrast(1.05); }
 .dd-tone { background: linear-gradient(180deg, rgba(20, 114, 76, 0.55), rgba(4, 7, 10, 0.55)); mix-blend-mode: color; }
 .dd-tone::after { content: ""; position: absolute; inset: 0; background: linear-gradient(0deg, #04070a 0%, transparent 38%); }
 @media (max-width: 767px) { .dd-photo:not(figure) { -webkit-mask-image: linear-gradient(180deg, #000 30%, transparent 92%); mask-image: linear-gradient(180deg, #000 30%, transparent 92%); opacity: 0.55; } }
@@ -143,3 +143,8 @@ figure.dd-photo { -webkit-mask-image: none; mask-image: none; border: 1px solid 
 }
 html { scroll-behavior: smooth; }
 @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+
+/* Hero artwork stays bright on phones, with a fade only at the bottom for the text */
+@media (max-width: 767px) {
+  .dd-photo.dd-hero-art { opacity: 1; -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%); mask-image: linear-gradient(180deg, #000 55%, transparent 100%); }
+}

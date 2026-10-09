@@ -1,6 +1,7 @@
 "use client";
 
-import { FEE_RULE, IEEE_WEEK, WEEK_DAYS } from "@/data/ieeeWeek";
+import Image from "next/image";
+import { DOOM_MASK, FEE_RULE, IEEE_WEEK, WEEK_DAYS } from "@/data/ieeeWeek";
 import { selectEventLink } from "./registerLink";
 
 const rows = (items: [string, React.ReactNode][]) =>
@@ -19,9 +20,15 @@ export default function EventDetails() {
   return (
     <section id="details" className="relative scroll-mt-20 px-5 pb-24 md:px-10 md:pb-32" aria-labelledby="details-title">
       <div className="mx-auto max-w-6xl">
-        <h2 id="details-title" className="dd-display mb-4 text-5xl text-[var(--dd-iron)] sm:text-7xl">
-          Event details
-        </h2>
+        <div className="relative mb-10 h-[clamp(14rem,40vw,24rem)] overflow-hidden">
+          <Image src={DOOM_MASK.src} alt={DOOM_MASK.alt} fill sizes="(max-width: 1152px) 100vw, 1152px" className="object-cover object-[62%_50%]" />
+          <div className="absolute inset-0 bg-gradient-to-t from-[#02070a] via-[#02070a]/35 to-[#02070a]/55" />
+          <div className="absolute inset-x-0 bottom-0 p-5 sm:p-10">
+            <h2 id="details-title" className="dd-display text-5xl text-[var(--dd-iron)] drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)] sm:text-7xl">
+              Event details
+            </h2>
+          </div>
+        </div>
         <p className="mb-4 max-w-[56ch] text-lg">{IEEE_WEEK.timing}</p>
         <p className="mb-14 max-w-[62ch] border-l-2 border-[var(--dd-glow)] pl-4 text-lg">{FEE_RULE}</p>
 

@@ -186,6 +186,17 @@ export const LOKI_IMAGE = {
   creditUrl: "https://commons.wikimedia.org/wiki/File:WonderCon_2015_-_Loki_cosplay_-_without_background.jpg",
 };
 
-// Hero image of Doctor Doom. Set this to a file you have the rights to use, for example
-// { src: "/images/ieee-week/doom.jpg", alt: "Doctor Doom" }. Leave null to show no portrait.
-export const DOOM_IMAGE: { src: string; alt: string } | null = null;
+// Artwork supplied by the branch. Swap the files in public/images/ieee-week/ to change them.
+// Hero portrait. Set to null to show no portrait.
+export const DOOM_IMAGE: { src: string; alt: string } | null = {
+  src: "/images/ieee-week/doom-orb.webp",
+  alt: "Doctor Doom in a dark hood holding a glowing Earth",
+};
+export const DOOM_SMOKE = {
+  src: "/images/ieee-week/doom-smoke.webp",
+  alt: "A hooded figure walking away into green smoke",
+};
+export const DOOM_MASK = {
+  src: "/images/ieee-week/doom-mask.webp",
+  alt: "A steel faceplate half buried in green sand under a storm sky",
+};
