@@ -26,8 +26,9 @@
 
 .dd-metal {
   display: inline-block;
-  padding: 0.05em 0.32em 0.05em 0.08em;
-  margin: -0.05em -0.32em -0.05em -0.08em;
+  /* Headroom: the gradient only paints inside this box and the font's capitals rise above the line box */
+  padding: 0.3em 0.32em 0.1em 0.08em;
+  margin: -0.3em -0.32em -0.1em -0.08em;
   background: linear-gradient(180deg, #f1f5f7 0%, #a9b3ba 46%, #5d6a72 54%, #c4cdd3 100%);
   -webkit-background-clip: text;
   background-clip: text;
