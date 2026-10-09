@@ -151,46 +151,9 @@ export const WEEK_DAYS: WeekDay[] = [
         fee: { ieee: 79, nonIeee: 99, note: "per team" },
         coordinators: [{ name: "Mobeen Jamadar", phone: "7892202865" }, { name: "Dhanashree Ragade", phone: "9019301902" }],
         overview:
-          "Think fast. Code smart. Pass the challenge! A team coding challenge where every member gets a turn to code, but communication stops when the timer starts. Teams of three receive a problem statement and get designated discussion time to understand and plan their approach. Coding then follows in a relay format: one member codes at a time and the next takes over when the allocated turn ends.",
-        format: "Round 1: two easy-level problems with relay coding and a mini-task and hint in one problem. Round 2: one medium and one easy problem, testing strategy, speed and individual coding skills.",
-        roundsList: [
-          {
-            name: "Round 1",
-            points: [
-              "Two easy-level problem statements are given.",
-              "Problem 1: 5 minutes discussion and planning, then 15 minutes relay coding.",
-              "Problem 2: 5 minutes discussion and planning, then 15 minutes relay coding.",
-              "During coding, members take turns and get equal coding time.",
-              "Only one problem includes a mini-task and a hint.",
-            ],
-          },
-          {
-            name: "Round 2",
-            points: [
-              "One medium-level and one easy-level problem are given.",
-              "Medium problem: 8 minutes discussion and planning, then 30 minutes relay coding.",
-              "Easy problem: the team chooses one member to code for the final 15 minutes. The other two cannot communicate with the person coding.",
-              "Only one problem includes a mini-task and hint. The other must be solved without a hint.",
-              "During relay coding, members take turns and get equal coding time.",
-            ],
-          },
-        ],
-        rules: [
-          "Each team must have exactly 3 members.",
-          "No internet, AI tools or external assistance.",
-          "Switch off mobile phones and submit them to the coordinators before the event.",
-          "Use only the resources provided by the organizers.",
-          "Team members may discuss only during the designated discussion period before coding.",
-          "Only one member can code at a time.",
-          "No communication, discussion or explanation between team members once coding begins.",
-          "No comments in the code.",
-          "Copying code or solutions from other teams is prohibited.",
-          "Maintain fair and ethical conduct throughout the event.",
-          "Follow the instructions of organizers and volunteers.",
-          "Stop coding immediately when the allocated time ends.",
-          "Do not disturb or interfere with other teams.",
-          "The decision of the organizing committee is final.",
-        ],
+          "Think fast. Code smart. Pass the challenge! Teams of three plan together, then code in a relay: one member codes at a time and the next takes over when the turn ends, with no talking once coding starts.",
+        rounds:
+          "Round 1: two easy problems, 5 minutes planning and 15 minutes relay coding each. Round 2: one medium problem (8 minutes planning, 30 minutes coding) and one easy problem where one member codes for the final 15 minutes. No internet, AI tools, phones or code comments.",
       },
       {
         slug: "uncharted",
