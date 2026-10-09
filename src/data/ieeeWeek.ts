@@ -139,9 +139,8 @@ export const WEEK_DAYS: WeekDay[] = [
     events: [
       {
         slug: "code-relay",
-        // TODO: Code Relay has no group yet. This is a stand-in (the Prompt Injection group). Replace link and QR.
-        whatsapp: "https://chat.whatsapp.com/DLBPhxfiqcELHdUpqQYEtO?s=qt&p=a&mlu=4&ilr=4",
-        whatsappQr: "/images/ieee-week/wa/prompt-injection.png",
+        whatsapp: "https://chat.whatsapp.com/HQRXBiOACfa0iRsXHaKzvA?s=qt&p=a&mlu=4&ilr=4",
+        whatsappQr: "/images/ieee-week/wa/code-relay.png",
         title: "Code Relay",
         tagline: "3 Minds | 2 Rounds | 1 Goal",
         category: "Technical",
