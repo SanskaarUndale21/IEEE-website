@@ -58,7 +58,7 @@ export const WEEK_DAYS: WeekDay[] = [
         time: TIME,
         teamCount: 2,
         teamLabel: "2 members",
-        fee: { ieee: 49, nonIeee: 69 },
+        fee: { ieee: 79, nonIeee: 99, note: "per team" },
         coordinators: [{ name: "Durvank Patil", phone: "8147939767" }, { name: "Jerrym David" }],
         overview:
           "A mini Alternate Reality Game / live-action roleplay. Participants forget who they are and solve a missing-person case by solving puzzles and analysing and travelling through files until they reach the final message and learn what happened.",
@@ -74,7 +74,7 @@ export const WEEK_DAYS: WeekDay[] = [
         time: TIME,
         teamCount: 2,
         teamLabel: "2 members",
-        fee: { ieee: 49, nonIeee: 69 },
+        fee: { ieee: 79, nonIeee: 99, note: "per team" },
         coordinators: [{ name: "Vaishnavi Dabu", phone: "7276964351" }, { name: "Prithvi Hiremath", phone: "7483653556" }],
         overview:
           "A live design challenge in Canva. Teams receive a base poster and new elements and instructions are revealed progressively; each must be added creatively to the same poster without starting over, within the time limit. PCs are provided, or teams can bring laptops.",
@@ -97,7 +97,7 @@ export const WEEK_DAYS: WeekDay[] = [
         teamCount: 2,
         teamLabel: "2 participants",
         roles: "1 Attacker + 1 Defender",
-        fee: { ieee: 49, nonIeee: 69 },
+        fee: { ieee: 79, nonIeee: 99, note: "per team" },
         coordinators: [{ name: "Sanskaar Undaale", phone: "6363066361" }, { name: "Aanchal Gur", phone: "8792914777" }],
         overview:
           "Prompt Injection War is a two-person AI security competition where one participant attacks an opponent's AI using prompt-injection techniques, while the other defends their AI from revealing protected information. Each match consists of three 5-minute rounds, with teams scored on attack success, defense, and AI utility.",
@@ -111,7 +111,7 @@ export const WEEK_DAYS: WeekDay[] = [
         time: TIME,
         teamCount: 2,
         teamLabel: "2 members",
-        fee: { ieee: 49, nonIeee: 69 },
+        fee: { ieee: 79, nonIeee: 99, note: "per team" },
         coordinators: [{ name: "Aditi L", phone: "6361636547" }, { name: "Pooja P" }],
         overview:
           "A campus-based visual challenge. Teams get four blurred or modified photographs of the college campus, identify each location, reach the exact spot and recreate the photograph from approximately the same viewpoint. Accuracy of location, viewpoint and composition is scored by an AI image-comparison algorithm.",
@@ -132,7 +132,7 @@ export const WEEK_DAYS: WeekDay[] = [
         time: TIME,
         teamCount: 3,
         teamLabel: "3 members",
-        fee: { ieee: 79, nonIeee: 99 },
+        fee: { ieee: 79, nonIeee: 99, note: "per team" },
         coordinators: [{ name: "Mobeen Jamadar", phone: "7892202865" }, { name: "Dhanashree Ragade", phone: "9019301902" }],
         overview:
           "Code Relay is a team coding challenge with 3 members and 2 rounds, each having 2 problems. Teams get brief discussion time before each problem, then members code one at a time for equal time with no communication or code comments.",

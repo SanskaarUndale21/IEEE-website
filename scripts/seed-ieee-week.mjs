@@ -20,10 +20,10 @@ if (!base || !key) throw new Error("SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY a
 
 const PAY = "Payment details will be added here. Pay the fee for your membership type, then upload the screenshot and enter the transaction id.";
 const rows = [
-  { slug: "retrace", title: "RETR?CE", day: 14, venue: "AIDS Seminar Hall", fee: 49, tag: "Technical", blurb: "A search for the forgotten" },
-  { slug: "conquer-the-canvas", title: "Conquer the Canvas", day: 14, venue: "CSE Lab", fee: 49, tag: "Non-Technical", blurb: "Add. Adapt. Create." },
-  { slug: "prompt-injection", title: "Prompt Injection", day: 15, venue: "ECE Seminar Hall", fee: 49, tag: "Technical", blurb: "One attacker. One defender." },
-  { slug: "pixel-perfect", title: "Pixel Perfect", day: 15, venue: "CSBS Dep-E302", fee: 49, tag: "Non-Technical", blurb: "See it. Find it. Recreate it. Perfect it." },
+  { slug: "retrace", title: "RETR?CE", day: 14, venue: "AIDS Seminar Hall", fee: 79, tag: "Technical", blurb: "A search for the forgotten" },
+  { slug: "conquer-the-canvas", title: "Conquer the Canvas", day: 14, venue: "CSE Lab", fee: 79, tag: "Non-Technical", blurb: "Add. Adapt. Create." },
+  { slug: "prompt-injection", title: "Prompt Injection", day: 15, venue: "ECE Seminar Hall", fee: 79, tag: "Technical", blurb: "One attacker. One defender." },
+  { slug: "pixel-perfect", title: "Pixel Perfect", day: 15, venue: "CSBS Dep-E302", fee: 79, tag: "Non-Technical", blurb: "See it. Find it. Recreate it. Perfect it." },
   { slug: "code-relay", title: "Code Relay", day: 16, venue: "CSE Dep-Sankalp Lab", fee: 79, tag: "Technical", blurb: "Blind coding relay in VS Code" },
   { slug: "uncharted", title: "Uncharted: Unveil the Hidden", day: 16, venue: "AIDS Seminar Hall", fee: 79, tag: "Non-Technical", blurb: "A two-round story-driven mystery" },
 ].map((r, i) => ({
