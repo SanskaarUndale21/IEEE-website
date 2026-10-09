@@ -55,11 +55,12 @@ export default function IeeeWeekPage() {
           </span>
         </h1>
 
-        <div className="mt-6 grid gap-6 md:mt-10 md:grid-cols-[1fr_auto] md:items-end md:gap-10">
+        <div className="dd-hero-text mt-4 grid gap-5 md:mt-10 md:grid-cols-[1fr_auto] md:items-end md:gap-10">
           <div className="max-w-xl">
-            <p className="dd-display text-3xl text-[var(--dd-gold)] sm:text-4xl">
-              {IEEE_WEEK.days.join(" - ")} {IEEE_WEEK.monthLabel}
+            <p className="dd-display dd-date text-[2.2rem] leading-none text-[var(--dd-gold)] sm:text-5xl md:text-6xl">
+              {IEEE_WEEK.days.join(" - ")}
             </p>
+            <p className="dd-display dd-date mt-1 text-xl leading-none text-[var(--dd-iron)] sm:text-2xl md:text-3xl">{IEEE_WEEK.monthLabel}</p>
             <p className="dd-hero-copy mt-3 text-lg leading-relaxed sm:text-xl">
               Four days, six events, one campus. Build, compete and present with IEEE SGBIT before the week closes.
             </p>

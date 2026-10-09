@@ -34,13 +34,13 @@ export default function Countdown({ target, end: endAt }: { target: string; end?
   ];
   return (
     <div>
-      <div className="flex gap-5 sm:gap-8" role="timer" aria-label="Time until IEEE Week begins on 14 October">
+      <div className="flex gap-4 sm:gap-8" role="timer" aria-label="Time until IEEE Week begins on 14 October">
         {cells.map(([v, l]) => (
           <div key={l}>
-            <p className="dd-display text-4xl leading-none tabular-nums text-[var(--dd-iron)] sm:text-7xl">
+            <p className="dd-display text-[2.6rem] leading-none tabular-nums text-[var(--dd-iron)] sm:text-7xl">
               {now === null ? "--" : v}
             </p>
-            <p className="mt-1 text-sm text-[var(--dd-iron)]/60">{l}</p>
+            <p className="mt-1 text-xs text-[var(--dd-iron)]/70 sm:text-sm">{l}</p>
           </div>
         ))}
       </div>

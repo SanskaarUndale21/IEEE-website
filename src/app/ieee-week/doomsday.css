@@ -158,7 +158,7 @@ html { scroll-behavior: smooth; }
 
 /* Phones: compact hero so the title, dates and countdown all fit in the first screen */
 @media (max-width: 767px) {
-  .dd-title { font-size: min(24vw, 20svh); line-height: 1.12; }
+  .dd-title { font-size: min(33vw, 20svh); line-height: 1.06; white-space: nowrap; }
   .dd-hero-copy { font-size: 1rem; }
 }
 @media (max-height: 740px) {
@@ -184,4 +184,22 @@ html { scroll-behavior: smooth; }
     -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 40%), linear-gradient(180deg, #000 70%, transparent 100%);
     mask-image: linear-gradient(90deg, transparent 0%, #000 40%), linear-gradient(180deg, #000 70%, transparent 100%);
   }
+}
+
+/* ---- hero legibility pass ---- */
+/* The month in this font is clearer in capitals (lowercase letters render as odd small caps). */
+.dd-date { text-transform: uppercase; letter-spacing: 0.06em; }
+/* The glow slash: thinner and behind the lettering so every letter stays readable */
+.dd-crack { z-index: 0; opacity: 0.8; }
+.dd-crack i { clip-path: polygon(-5% 62.6%, 105% 36%, 105% 36.9%, -5% 63.5%); }
+.dd-title { filter: drop-shadow(0 4px 22px rgba(2, 7, 10, 0.95)) drop-shadow(0 0 26px rgba(70, 240, 160, 0.22)); }
+/* Soft dark panel under the text so it never fights the artwork */
+.dd-hero-text { position: relative; }
+.dd-hero-text::before { content: ""; position: absolute; inset: -2.5rem -1.5rem -1.5rem; z-index: -1; background: linear-gradient(180deg, transparent, rgba(2, 7, 10, 0.78) 38%, rgba(2, 7, 10, 0.9)); pointer-events: none; }
+.dd-hero-copy { color: rgba(223, 231, 234, 0.92); text-shadow: 0 1px 12px rgba(0, 0, 0, 0.9); }
+@media (min-width: 768px) {
+  .dd-hero-text::before { inset: -2rem -2rem -1rem; background: linear-gradient(90deg, rgba(2, 7, 10, 0.7), transparent 70%); }
+}
+@media (max-width: 767px) {
+  .dd-hero-text .dd-hero-copy { font-size: 0.95rem; line-height: 1.5; }
 }
