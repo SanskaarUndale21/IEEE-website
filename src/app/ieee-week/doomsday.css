@@ -147,12 +147,14 @@ html { scroll-behavior: smooth; }
 
 /* Hero artwork stays bright on phones, with a fade only at the bottom for the text */
 @media (max-width: 767px) {
-  .dd-photo.dd-hero-art { opacity: 1; -webkit-mask-image: linear-gradient(180deg, #000 55%, transparent 100%); mask-image: linear-gradient(180deg, #000 55%, transparent 100%); }
+  .dd-photo.dd-hero-art { opacity: 1; }
 }
 
 /* Magic circle over the hero artwork */
-.dd-sigil { mix-blend-mode: screen; opacity: 0.95; filter: drop-shadow(0 0 14px rgba(70, 240, 160, 0.55)); }
-.dd-sigil circle, .dd-sigil line, .dd-sigil polygon { vector-effect: non-scaling-stroke; }
+.dd-sigil { opacity: 0.9; filter: drop-shadow(0 0 10px rgba(70, 240, 160, 0.35)); }
+.dd-sigil circle, .dd-sigil line, .dd-sigil polygon { vector-effect: non-scaling-stroke; stroke-width: 1.6px; stroke-opacity: 0.95 !important; }
+.dd-sigil { filter: drop-shadow(0 0 8px rgba(70, 240, 160, 0.7)) brightness(1.5); opacity: 1; }
+.dd-sigil text { fill-opacity: 1 !important; }
 
 /* Phones: compact hero so the title, dates and countdown all fit in the first screen */
 @media (max-width: 767px) {
@@ -168,4 +170,18 @@ html { scroll-behavior: smooth; }
   .dd-hero { padding-top: 5.25rem; padding-bottom: 1.25rem; }
   .dd-title { font-size: min(clamp(4rem, 17vw, 19rem), 17svh); line-height: 1.1; }
   .dd-hero .dd-display.text-3xl { font-size: 1.5rem; }
+}
+
+/* Hero artwork: fades out on the left (so the ring behind it shows) and at the bottom (for the text) */
+.dd-photo.dd-hero-art {
+  -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 46%), linear-gradient(180deg, #000 60%, transparent 100%);
+  mask-image: linear-gradient(90deg, transparent 0%, #000 46%), linear-gradient(180deg, #000 60%, transparent 100%);
+  -webkit-mask-composite: source-in;
+  mask-composite: intersect;
+}
+@media (min-width: 768px) {
+  .dd-photo.dd-hero-art {
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, #000 40%), linear-gradient(180deg, #000 70%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, #000 40%), linear-gradient(180deg, #000 70%, transparent 100%);
+  }
 }
