@@ -104,7 +104,7 @@ export const WEEK_DAYS: WeekDay[] = [
         title: "Prompt Injection",
         tagline: "One attacker. One defender.",
         category: "Technical",
-        venue: "ECE Seminar Hall",
+        venue: "EC Dept, Classroom 133",
         time: TIME,
         teamCount: 2,
         teamLabel: "2 participants",
