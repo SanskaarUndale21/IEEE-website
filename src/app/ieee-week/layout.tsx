@@ -19,7 +19,7 @@ const spectral = Spectral({
 export const metadata: Metadata = {
   title: "IEEE Week: Doomsday Edition",
   description:
-    "Three days, six events. IEEE Week at IEEE SGBIT, Belagavi: workshops, a hackathon, showcases, a quiz and the awards.",
+    "Four days, six events. IEEE Week at IEEE SGBIT, Belagavi: workshops, a hackathon, showcases, a quiz and the awards.",
   alternates: { canonical: "/ieee-week" },
 };
 

@@ -5,7 +5,7 @@ export const IEEE_WEEK = {
   // First day of IEEE Week, in IST. Update the month/year if this changes.
   start: "2026-10-14T09:00:00+05:30",
   monthLabel: "October 2026",
-  days: [14, 15, 16],
+  days: [14, 15, 16, 17],
 };
 
 export type WeekEvent = { title: string; line: string };
@@ -36,8 +36,13 @@ export const WEEK_DAYS: WeekDay[] = [
     blurb: "The reckoning.",
     events: [
       { title: "Doomsday Quiz", line: "A technical quiz for teams that survived the first two days." },
-      { title: "Final Hour", line: "Results, awards and the closing of IEEE Week." },
     ],
+  },
+  {
+    day: 17,
+    name: "Day four",
+    blurb: "The last word.",
+    events: [{ title: "Valedictory", line: "Awards, results and the closing of IEEE Week." }],
   },
 ];
 

@@ -42,24 +42,18 @@ export default function IeeeWeekPage() {
         </div>
 
         <h1 className="dd-title dd-display self-start" aria-label="IEEE Week">
-          <span className="dd-half dd-half-a dd-metal" aria-hidden>
+          <span className="dd-metal" aria-hidden>
             IEEE<br />WEEK
-          </span>
-          <span className="dd-half dd-half-b dd-metal" aria-hidden>
-            IEEE<br />WEEK
-          </span>
-          <span className="dd-crack" aria-hidden>
-            <i />
           </span>
         </h1>
 
         <div className="mt-10 grid gap-10 md:grid-cols-[1fr_auto] md:items-end">
           <div className="max-w-xl">
             <p className="dd-display text-3xl text-[var(--dd-gold)] sm:text-4xl">
-              {IEEE_WEEK.days.join(" · ")} {IEEE_WEEK.monthLabel}
+              {IEEE_WEEK.days.join(" - ")} {IEEE_WEEK.monthLabel}
             </p>
             <p className="mt-3 text-lg leading-relaxed sm:text-xl">
-              Three days, six events, one campus. Build, compete and present with IEEE SGBIT before the week closes.
+              Four days, six events, one campus. Build, compete and present with IEEE SGBIT before the week closes.
             </p>
           </div>
           <Countdown target={IEEE_WEEK.start} />
@@ -73,7 +67,7 @@ export default function IeeeWeekPage() {
             Follow the branches
           </h2>
           <p className="mb-16 max-w-[56ch] text-lg">
-            One timeline, three days. It forks at each day and the six events hang from its branches. Names, timings and
+            One timeline, four days. It forks at each day and the six events hang from its branches. Names, timings and
             venues are announced soon.
           </p>
           <Timeline />

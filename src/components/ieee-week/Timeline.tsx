@@ -27,9 +27,9 @@ function smooth(pts: Pt[]): string {
   return d;
 }
 
-const H = 1700;
-const TRUNK: Pt[] = [[500, 0], [490, 260], [512, 520], [498, 800], [508, 1060], [496, 1330], [500, H]];
-const FORKS: Pt[] = [TRUNK[1], TRUNK[3], TRUNK[5]]; // days 14, 15, 16
+const H = 2150;
+const TRUNK: Pt[] = [[500, 0], [490, 260], [512, 520], [498, 800], [508, 1060], [496, 1330], [505, 1560], [502, 1740], [500, H]];
+const FORKS: Pt[] = [TRUNK[1], TRUNK[3], TRUNK[5], TRUNK[7]]; // days 14, 15, 16, 17
 
 type Branch = { pts: Pt[]; event?: number; dead?: boolean; width: number };
 const BRANCHES: Branch[] = [
@@ -45,8 +45,11 @@ const BRANCHES: Branch[] = [
   { pts: [[508, 1060], [590, 1100], [660, 1180]], dead: true, width: 3 },
   // day 16
   { pts: [[496, 1330], [402, 1304], [292, 1342], [244, 1440]], event: 4, width: 5 },
-  { pts: [[496, 1330], [610, 1426], [702, 1504], [776, 1590]], event: 5, width: 5 },
-  { pts: [[702, 1504], [770, 1470], [850, 1486]], dead: true, width: 2.5 },
+  { pts: [[496, 1330], [610, 1380], [700, 1470]], dead: true, width: 3 },
+  { pts: [[505, 1560], [430, 1600], [360, 1690]], dead: true, width: 3 },
+  // day 17
+  { pts: [[502, 1740], [604, 1770], [712, 1830], [790, 1936]], event: 5, width: 5 },
+  { pts: [[712, 1830], [770, 1780], [860, 1770]], dead: true, width: 2.5 },
 ];
 
 const EVENTS = WEEK_DAYS.flatMap((d) => d.events.map((e) => ({ ...e, day: d.day })));
@@ -201,7 +204,7 @@ function MobileDay({ data }: { data: WeekDay }) {
       <div className="relative row-span-3">
         <div
           className={`dd-display absolute left-1/2 top-0 flex h-12 w-12 -translate-x-1/2 items-center justify-center text-2xl transition-colors duration-500 ${
-            lit ? "bg-[var(--dd-glow)] text-[#06281b]" : "bg-[var(--dd-iron)]/40 text-[var(--dd-void)]"
+            lit ? "bg-[var(--dd-glow)] text-[#06281b]" : "bg-[var(--dd-iron)]/40 text-[var(--dd-iron)]"
           }`}
           style={{ clipPath: "polygon(50% 0, 100% 25%, 100% 75%, 50% 100%, 0 75%, 0 25%)" }}
         >
