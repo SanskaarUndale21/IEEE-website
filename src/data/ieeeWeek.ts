@@ -106,7 +106,7 @@ export const WEEK_DAYS: WeekDay[] = [
         teamLabel: "2 participants",
         roles: "1 Attacker + 1 Defender",
         fee: { ieee: 79, nonIeee: 99, note: "per team" },
-        coordinators: [{ name: "Sanskaar Undaale", phone: "6363066361" }, { name: "Aanchal Gur", phone: "8792914777" }],
+        coordinators: [{ name: "Sanskaar Undale", phone: "6363066361" }, { name: "Aanchal Gur", phone: "8792914777" }],
         overview:
           "Prompt Injection War is a two-person AI security competition where one participant attacks an opponent's AI using prompt-injection techniques, while the other defends their AI from revealing protected information. Each match consists of three 5-minute rounds, with teams scored on attack success, defense, and AI utility.",
       },
