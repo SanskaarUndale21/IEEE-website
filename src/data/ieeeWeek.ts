@@ -35,6 +35,8 @@ export type WeekEvent = {
   overview: string;
   bring?: string;
   rounds?: string;
+  /** WhatsApp group invite link for this event. Paste it here and it shows on the registration page. */
+  whatsapp?: string;
 };
 
 export type WeekDay = { day: number; name: string; blurb: string; events: WeekEvent[] };
@@ -173,6 +175,13 @@ export const WEEK_DAYS: WeekDay[] = [
     ],
   },
 ];
+
+/** Payment details shown on the payment page. Put the QR image in public/images/ieee-week/ and set qr. */
+export const PAYMENT = {
+  qr: "" as string,
+  qrAlt: "UPI QR code for IEEE SGBIT",
+  payee: "",
+};
 
 /** Events people can register for. */
 export const REGISTRABLE = WEEK_DAYS.flatMap((d) => d.events.map((e) => ({ ...e, day: d.day }))).filter((e) => e.teamCount > 0);

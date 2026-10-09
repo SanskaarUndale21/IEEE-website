@@ -3,7 +3,6 @@
 import { useLayoutEffect, useRef, useState } from "react";
 import { motion, useScroll, useSpring, useTransform, useInView, type MotionValue } from "framer-motion";
 import { IEEE_WEEK, WEEK_DAYS, type WeekDay, type WeekEvent } from "@/data/ieeeWeek";
-import { selectEvent } from "./registerBus";
 
 /* ───────────────────────────────────────────────────────────────
    A tree of time. The trunk grows down the page as you scroll,
@@ -188,8 +187,7 @@ function EventCardBody({ ev }: { ev: Ev }) {
               Details
             </a>
             <a
-              href="#register"
-              onClick={() => selectEvent(ev.slug)}
+              href={`/ieee-week/register?e=${ev.slug}`}
               className="dd-btn dd-display inline-flex min-h-11 items-center bg-[var(--dd-glow)] px-4 text-lg text-[var(--dd-void)] transition-colors hover:bg-[var(--dd-iron)]"
             >
               Register

@@ -9,7 +9,6 @@ import Sigil from "@/components/ieee-week/Sigil";
 import Timeline from "@/components/ieee-week/Timeline";
 import Countdown from "@/components/ieee-week/Countdown";
 import EventDetails from "@/components/ieee-week/EventDetails";
-import RegisterForm from "@/components/ieee-week/RegisterForm";
 import Footer from "@/components/Footer";
 import { IEEE_WEEK, DOOM_IMAGE, DOOM_SMOKE } from "@/data/ieeeWeek";
 import { SOCIAL } from "@/constants";
@@ -82,7 +81,6 @@ export default function IeeeWeekPage() {
       </section>
 
       <EventDetails />
-      <RegisterForm />
 
       {/* Close */}
       <section className="relative isolate overflow-hidden px-5 py-28 md:px-10 md:py-40">

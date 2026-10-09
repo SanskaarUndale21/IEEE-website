@@ -2,7 +2,6 @@
 
 import Image from "next/image";
 import { DOOM_MASK, FEE_RULE, IEEE_WEEK, WEEK_DAYS } from "@/data/ieeeWeek";
-import { selectEventLink } from "./registerLink";
 
 const rows = (items: [string, React.ReactNode][]) =>
   items
@@ -94,8 +93,7 @@ export default function EventDetails() {
                     </dl>
 
                     <a
-                      href="#register"
-                      {...selectEventLink(e.slug)}
+                      href={`/ieee-week/register?e=${e.slug}`}
                       className="dd-btn dd-display mt-6 inline-flex min-h-12 items-center bg-[var(--dd-glow)] px-6 text-xl text-[var(--dd-void)] transition-colors hover:bg-[var(--dd-iron)]"
                     >
                       Register for {e.title.split(":")[0]}
