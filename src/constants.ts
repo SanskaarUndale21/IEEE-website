@@ -13,9 +13,9 @@ export const SITE = {
 };
 
 export const SOCIAL = {
-  instagram: "https://www.instagram.com/ieee_sgbit/",
-  linkedin: "https://www.linkedin.com/company/ieee-sgbit/",
-  instagramHandle: "@ieee_sgbit",
+  instagram: "https://www.instagram.com/ieee_sgbitofficial/",
+  linkedin: "https://www.linkedin.com/in/ieee-student-branch-sgbit-871802312/",
+  instagramHandle: "@ieee_sgbitofficial",
   linkedinHandle: "IEEE SGBIT",
 };
 

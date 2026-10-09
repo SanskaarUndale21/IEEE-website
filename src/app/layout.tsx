@@ -59,7 +59,7 @@ const JSON_LD = {
   description: DESCRIPTION,
   parentOrganization: { "@type": "Organization", name: "S.G. Balekundri Institute of Technology" },
   address: { "@type": "PostalAddress", addressLocality: "Belagavi", addressRegion: "Karnataka", addressCountry: "IN" },
-  sameAs: ["https://www.instagram.com/ieee_sgbit/", "https://www.linkedin.com/company/ieee-sgbit/"],
+  sameAs: ["https://www.instagram.com/ieee_sgbitofficial/", "https://www.linkedin.com/in/ieee-student-branch-sgbit-871802312/"],
 };
 
 export default function RootLayout({

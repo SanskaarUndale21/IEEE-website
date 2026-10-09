@@ -33,11 +33,28 @@ export async function PATCH(req: NextRequest) {
   const body = await parseJson(req, reviewSchema);
   if (body instanceof NextResponse) return body;
 
-  const { error } = await getSupabase()
+  const db = getSupabase();
+  // The note column also holds the team details and IEEE IDs saved at registration.
+  // Reviewing must never overwrite them: only the "Admin:" line is replaced.
+  const { data: existing, error: readErr } = await db
+    .from("event_registrations")
+    .select("admin_note")
+    .eq("id", body.id)
+    .maybeSingle();
+  if (readErr) return dbError(readErr);
+  const kept = String(existing?.admin_note ?? "")
+    .split("\n")
+    .filter((l) => !l.startsWith("Admin: "));
+  const adminLine = body.note ? `Admin: ${body.note.replace(/\s+/g, " ").slice(0, 200)}` : "";
+  const room = 1000 - (adminLine ? adminLine.length + 1 : 0);
+  const base = kept.join("\n").slice(0, room);
+  const merged = adminLine ? base + "\n" + adminLine : base;
+
+  const { error } = await db
     .from("event_registrations")
     .update({
       status: body.status,
-      admin_note: body.note,
+      admin_note: merged,
       reviewed_at: body.status === "pending" ? null : new Date().toISOString(),
     })
     .eq("id", body.id);
