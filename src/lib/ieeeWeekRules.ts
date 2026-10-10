@@ -3,6 +3,9 @@ import { REGISTRABLE } from "@/data/ieeeWeek";
 /** Shared by the registration form (fast feedback) and the server (the real check). */
 
 export const USN_RE = /^[0-9][A-Z]{2}[0-9]{2}[A-Z]{2,3}[0-9]{3}$/;
+/** First years without a USN yet use division + roll number, for example A26. */
+export const DIV_ROLL_RE = /^[A-Z][0-9]{1,3}$/;
+export const isValidMemberId = (s: string) => USN_RE.test(s) || DIV_ROLL_RE.test(s);
 export const PHONE_RE = /^[6-9][0-9]{9}$/;
 export const NAME_RE = /^[A-Za-z][A-Za-z .'-]{1,79}$/;
 
@@ -10,7 +13,10 @@ export const NAME_RE = /^[A-Za-z][A-Za-z .'-]{1,79}$/;
 export const IEEE_ID_RE = /^[0-9]{6,12}$/;
 export const normalizeIeeeId = (s: string) => s.replace(/[\s-]+/g, "");
 
-export const normalizeUsn = (s: string) => s.replace(/\s+/g, "").toUpperCase();
+export const normalizeUsn = (s: string) => {
+  const t = s.replace(/\s+/g, "").toUpperCase();
+  return /^[A-Z]-[0-9]{1,3}$/.test(t) ? t.replace("-", "") : t; // "A-26" is the same as "A26"
+};
 
 export const normalizePhone = (s: string) => {
   const d = s.replace(/\D/g, "");
@@ -33,7 +39,7 @@ export function teamDuplicateError(members: TeamMember[]): string {
     const u = normalizeUsn(members[i].usn);
     const p = normalizePhone(members[i].phone);
     const label = (n: number) => (n === 0 ? "the team lead" : `member ${n + 1}`);
-    if (u && usns.has(u)) return `${label(usns.get(u) as number)} and ${label(i)} have the same USN. Each member needs their own.`;
+    if (u && usns.has(u)) return `${label(usns.get(u) as number)} and ${label(i)} have the same USN or roll number. Each member needs their own.`;
     if (p && phones.has(p)) return `${label(phones.get(p) as number)} and ${label(i)} have the same phone number. Each member needs their own.`;
     if (u) usns.set(u, i);
     if (p) phones.set(p, i);
@@ -45,7 +51,7 @@ export function teamDuplicateError(members: TeamMember[]): string {
 export function memberFormatError(m: TeamMember, index: number): string {
   const who = index === 0 ? "Team lead" : `Member ${index + 1}`;
   if (!NAME_RE.test(m.name.trim())) return `${who}: enter the name using letters only.`;
-  if (!USN_RE.test(normalizeUsn(m.usn))) return `${who}: enter a valid USN, for example 2BU24CS036.`;
+  if (!isValidMemberId(normalizeUsn(m.usn))) return `${who}: enter a valid USN (2BU24CS036), or division and roll number (A26) if you have no USN yet.`;
   if (!m.dept.trim()) return `${who}: enter the department.`;
   if (!/^[1-4]$/.test(m.year)) return `${who}: select the year.`;
   if (!PHONE_RE.test(normalizePhone(m.phone))) return `${who}: enter a 10 digit mobile number.`;

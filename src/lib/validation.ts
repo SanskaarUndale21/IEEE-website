@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { IEEE_ID_RE, normalizeIeeeId, NAME_RE, PHONE_RE, USN_RE, normalizePhone, normalizeUsn, teamDuplicateError } from "@/lib/ieeeWeekRules";
+import { IEEE_ID_RE, normalizeIeeeId, NAME_RE, PHONE_RE, isValidMemberId, normalizePhone, normalizeUsn, teamDuplicateError } from "@/lib/ieeeWeekRules";
 
 // Strip control chars, collapse surrounding whitespace.
 const clean = (max: number) =>
@@ -45,7 +45,7 @@ export const querySchema = z
 const ieeeName = clean(80).pipe(z.string().regex(NAME_RE, "Enter the name using letters only"));
 const ieeeUsn = clean(30)
   .transform((s) => normalizeUsn(s))
-  .pipe(z.string().regex(USN_RE, "Enter a valid USN, for example 2BU24CS036"));
+  .pipe(z.string().refine(isValidMemberId, "Enter a valid USN (2BU24CS036), or division and roll number (A26)"));
 const ieeePhone = clean(30)
   .transform((s) => normalizePhone(s))
   .pipe(z.string().regex(PHONE_RE, "Enter a 10 digit mobile number"));

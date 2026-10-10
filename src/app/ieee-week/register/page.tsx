@@ -191,7 +191,15 @@ function Step1() {
                 </p>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Input label="Name" value={m.name} onChange={(v) => setMember(i, "name", v)} max={80} autoComplete={i === 0 ? "name" : "off"} className="sm:col-span-2" />
-                  <Input label="USN" value={m.usn} onChange={(v) => setMember(i, "usn", v)} max={30} autoCapitalize="characters" />
+                  <Input
+                    label="USN, or division and roll no."
+                    hint="No USN yet? First years can enter division and roll number, for example A26."
+                    value={m.usn}
+                    onChange={(v) => setMember(i, "usn", v)}
+                    max={30}
+                    autoCapitalize="characters"
+                    placeholder="2BU24CS036 or A26"
+                  />
                   <Input label="Department" value={m.dept} onChange={(v) => setMember(i, "dept", v)} max={80} />
                   <div>
                     <label htmlFor={`year-${i}`} className="dd-label">
@@ -238,6 +246,7 @@ function Input({
   max,
   type = "text",
   className = "",
+  hint,
   ...rest
 }: {
   label: string;
@@ -246,12 +255,14 @@ function Input({
   max: number;
   type?: string;
   className?: string;
+  hint?: string;
 } & Omit<React.InputHTMLAttributes<HTMLInputElement>, "value" | "onChange" | "type" | "maxLength" | "required">) {
   return (
     <div className={className}>
       <label className="dd-label">
         {label}
         <input type={type} value={value} onChange={(e) => onChange(e.target.value)} required maxLength={max} className="dd-field mt-1.5" {...rest} />
+        {hint && <span className="mt-1.5 block text-sm font-normal normal-case text-[var(--dd-iron)]/70">{hint}</span>}
       </label>
     </div>
   );

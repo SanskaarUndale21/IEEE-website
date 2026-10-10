@@ -62,7 +62,7 @@ export async function POST(req: NextRequest) {
   /** Resume only when the USN matches too, so a phone number alone cannot open someone else's registration. */
   const resume = (row: RegRow & { usn: string }) => {
     if (normalizeUsn(row.usn) !== lead.usn) {
-      return fail("This phone number is already used for a registration for this event under a different USN. Use the same USN and phone you registered with.", 409);
+      return fail("This phone number is already used for a registration for this event under a different USN. Use the same USN (or roll number) and phone you registered with.", 409);
     }
     return NextResponse.json({ success: true, resumed: true, ...publicState(row, body.event) }, { headers: { "Cache-Control": "no-store" } });
   };
