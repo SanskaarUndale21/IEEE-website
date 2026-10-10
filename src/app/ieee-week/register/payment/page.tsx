@@ -135,7 +135,7 @@ function Step3() {
       {info === null && (
         <div className="dd-slab p-6" role="alert">
           <p className="text-lg">We could not find this registration. Check the link, or start again from the event page.</p>
-          <Link href="/ieee-week#details" className="dd-btn dd-display mt-5 inline-flex min-h-12 items-center border border-[var(--dd-iron)]/40 px-5 text-xl hover:border-[var(--dd-glow)] hover:text-[var(--dd-glow)]">
+          <Link href="/ieee-week#schedule" className="dd-btn dd-display mt-5 inline-flex min-h-12 items-center border border-[var(--dd-iron)]/40 px-5 text-xl hover:border-[var(--dd-glow)] hover:text-[var(--dd-glow)]">
             Back to events
           </Link>
         </div>
@@ -300,7 +300,7 @@ function Step3() {
           )}
 
           {!info.canPay && (
-            <Link href="/ieee-week#details" className="dd-btn dd-display inline-flex min-h-12 items-center border border-[var(--dd-iron)]/40 px-6 text-xl hover:border-[var(--dd-glow)] hover:text-[var(--dd-glow)]">
+            <Link href="/ieee-week#schedule" className="dd-btn dd-display inline-flex min-h-12 items-center border border-[var(--dd-iron)]/40 px-6 text-xl hover:border-[var(--dd-glow)] hover:text-[var(--dd-glow)]">
               Back to IEEE Week
             </Link>
           )}

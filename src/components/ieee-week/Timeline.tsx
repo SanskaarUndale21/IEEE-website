@@ -1,6 +1,7 @@
 "use client";
 
 import { useLayoutEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { motion, useScroll, useSpring, useTransform, useInView, type MotionValue } from "framer-motion";
 import { IEEE_WEEK, WEEK_DAYS, type WeekDay, type WeekEvent } from "@/data/ieeeWeek";
 
@@ -180,12 +181,12 @@ function EventCardBody({ ev }: { ev: Ev }) {
             {ev.venue}, {ev.time}
           </p>
           <div className="mt-4 flex gap-2">
-            <a
-              href={`#event-${ev.slug}`}
+            <Link
+              href={`/ieee-week/${ev.slug}`}
               className="dd-btn dd-display inline-flex min-h-11 items-center border border-[var(--dd-iron)]/40 px-4 text-lg text-[var(--dd-iron)] transition-colors hover:border-[var(--dd-glow)] hover:text-[var(--dd-glow)]"
             >
-              Details
-            </a>
+              View details
+            </Link>
             <a
               href={`/ieee-week/register?e=${ev.slug}`}
               className="dd-btn dd-display inline-flex min-h-11 items-center bg-[var(--dd-glow)] px-4 text-lg text-[var(--dd-void)] transition-colors hover:bg-[var(--dd-iron)]"

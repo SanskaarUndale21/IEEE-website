@@ -16,7 +16,7 @@ export default function RegisterShell({ step, title, children }: { step: 1 | 2 |
         <Image src={DOOM_MASK.src} alt="" fill priority sizes="100vw" className="object-cover object-[62%_50%]" aria-hidden />
         <div className="absolute inset-0 bg-gradient-to-t from-[#02070a] via-[#02070a]/45 to-[#02070a]/70" />
         <div className="relative mx-auto w-full max-w-3xl px-5 pb-6 md:px-0">
-          <Link href="/ieee-week#details" className="dd-link text-sm text-[var(--dd-iron)]/75 underline underline-offset-2 hover:text-[var(--dd-glow)]">
+          <Link href="/ieee-week#schedule" className="dd-link text-sm text-[var(--dd-iron)]/75 underline underline-offset-2 hover:text-[var(--dd-glow)]">
             Back to IEEE Week
           </Link>
           <h1 className="dd-display mt-2 text-5xl leading-none text-[var(--dd-iron)] drop-shadow-[0_4px_24px_rgba(0,0,0,0.9)] sm:text-6xl">{title}</h1>
