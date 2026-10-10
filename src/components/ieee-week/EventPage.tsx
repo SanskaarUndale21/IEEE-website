@@ -18,7 +18,7 @@ const rows = (items: [string, React.ReactNode][]) =>
     ));
 
 const REGISTER_BTN =
-  "dd-btn dd-display inline-flex min-h-12 items-center bg-[var(--dd-glow)] px-6 text-xl text-[var(--dd-void)] transition-colors hover:bg-[var(--dd-iron)]";
+  "dd-btn dd-display flex min-h-14 w-full items-center justify-center bg-[var(--dd-glow)] px-6 text-xl text-[var(--dd-void)] transition-colors hover:bg-[var(--dd-iron)] sm:inline-flex sm:w-fit sm:justify-start";
 
 /** One page per event: banner, details, rules and the register button. */
 export default function EventPage({ slug }: { slug: string }) {
@@ -130,9 +130,9 @@ export default function EventPage({ slug }: { slug: string }) {
                     </ol>
                   )}
                   {b.kind === "bullets" && (
-                    <ul className="mt-4 space-y-3">
+                    <ul className="mt-4 space-y-2.5">
                       {b.items.map((x) => (
-                        <li key={x} className="grid grid-cols-[1rem_1fr] items-baseline gap-2 text-base leading-relaxed">
+                        <li key={x} className="grid grid-cols-[1rem_1fr] items-baseline gap-2 text-base leading-normal sm:leading-relaxed">
                           <span className="mt-[0.45em] h-2 w-2 self-start bg-[var(--dd-glow)]" aria-hidden />
                           <span>{x}</span>
                         </li>
@@ -153,7 +153,7 @@ export default function EventPage({ slug }: { slug: string }) {
           <a href={rules} target="_blank" rel="noopener noreferrer" className="dd-link mt-6 block text-sm text-[var(--dd-iron)]/70 underline underline-offset-2 hover:text-[var(--dd-glow)]">
             View the original rulebook page
           </a>
-          <a href={`/ieee-week/register?e=${e.slug}`} className={`${REGISTER_BTN} mt-8 flex w-fit`}>
+          <a href={`/ieee-week/register?e=${e.slug}`} className={`${REGISTER_BTN} mt-8`}>
             Register for {e.title.split(":")[0]}
           </a>
         </section>
