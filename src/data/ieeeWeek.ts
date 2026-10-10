@@ -196,7 +196,7 @@ export const WEEK_DAYS: WeekDay[] = [
 
 /** Payment details shown on the payment page. Put the QR image in public/images/ieee-week/ and set qr. */
 export const PAYMENT = {
-  qr: "/images/ieee-week/payment-qr.png" as string,
+  qr: "/images/ieee-week/payment-qr-v2.png" as string,
   qrAlt: "PhonePe QR code to pay IEEE SGBIT",
   payee: "Srushti Mutalikdesai (PhonePe)",
 };
