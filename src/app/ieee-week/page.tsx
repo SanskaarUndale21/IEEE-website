@@ -8,6 +8,7 @@ import Embers from "@/components/ieee-week/Embers";
 import Sigil from "@/components/ieee-week/Sigil";
 import Timeline from "@/components/ieee-week/Timeline";
 import Countdown from "@/components/ieee-week/Countdown";
+import RulebookButton from "@/components/ieee-week/RulebookButton";
 import Footer from "@/components/Footer";
 import { IEEE_WEEK, DOOM_IMAGE, DOOM_SMOKE } from "@/data/ieeeWeek";
 import { SOCIAL } from "@/constants";
@@ -77,6 +78,7 @@ export default function IeeeWeekPage() {
           <p className="mb-16 max-w-[56ch] text-lg">
             One timeline, four days. It forks at each day and the six events hang from its branches. All start at 2:30 PM.
           </p>
+          <RulebookButton className="mb-16 -mt-8" />
           <Timeline />
         </div>
       </section>

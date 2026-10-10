@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FEE_RULE, REGISTRABLE } from "@/data/ieeeWeek";
+import RulebookButton from "./RulebookButton";
 import { RULEBOOK } from "@/data/ieeeWeekRulebook";
 import { useDarkTheme } from "./useDarkTheme";
 import Footer from "@/components/Footer";
@@ -62,6 +63,7 @@ export default function EventPage({ slug }: { slug: string }) {
             <a href={`/ieee-week/register?e=${e.slug}`} className={`${REGISTER_BTN} mt-6`}>
               Register for {e.title.split(":")[0]}
             </a>
+            <RulebookButton className="mt-3" />
 
             <dl className="mt-8">
               {rows([
@@ -156,6 +158,7 @@ export default function EventPage({ slug }: { slug: string }) {
           <a href={`/ieee-week/register?e=${e.slug}`} className={`${REGISTER_BTN} mt-8`}>
             Register for {e.title.split(":")[0]}
           </a>
+          <RulebookButton className="mt-3" />
         </section>
 
         <section className="mt-20" aria-labelledby="more-title">

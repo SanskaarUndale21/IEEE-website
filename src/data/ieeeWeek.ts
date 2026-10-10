@@ -10,6 +10,9 @@ export const IEEE_WEEK = {
   timing: "All events start at 2:30 PM sharp at their venue.",
 };
 
+/** Full rulebook for every event. File lives in public/. */
+export const RULEBOOK_PDF = { href: "/IEEE-Week-2026-Rulebook.pdf", size: "7 MB" };
+
 /** Team pricing rule, shown wherever a fee is shown. */
 export const FEE_RULE =
   "The IEEE price applies if even one member of your team is an IEEE member, and also if every member is. The non-IEEE price applies only when every member of the team is non-IEEE.";
