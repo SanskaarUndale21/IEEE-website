@@ -2,7 +2,9 @@
 
 import { Suspense, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import Link from "next/link";
 import RegisterShell from "@/components/ieee-week/RegisterShell";
+import { type RegState, fetchRegState, forgetReg, nextHref, recallReg, rememberReg } from "@/lib/ieeeWeekClient";
 import { REGISTRABLE } from "@/data/ieeeWeek";
 import { memberFormatError, normalizePhone, normalizeUsn, teamDuplicateError } from "@/lib/ieeeWeekRules";
 
@@ -26,6 +28,7 @@ function Step1() {
   const [members, setMembers] = useState<Member[]>([]);
   const [error, setError] = useState("");
   const [sending, setSending] = useState(false);
+  const [earlier, setEarlier] = useState<RegState | null>(null);
   const busy = useRef(false); // blocks a double tap from sending the team twice
 
   const event = useMemo(() => REGISTRABLE.find((e) => e.slug === slug), [slug]);
@@ -45,6 +48,24 @@ function Step1() {
       alive = false;
     };
   }, []);
+
+  // A returning visitor: if this device already started a registration for this event, ask the
+  // database where it stands and offer to continue instead of making them fill the form again.
+  useEffect(() => {
+    setEarlier(null);
+    if (!slug) return;
+    const id = recallReg(slug);
+    if (!id) return;
+    let alive = true;
+    fetchRegState(id).then((st) => {
+      if (!alive) return;
+      if (st && st.slug === slug) setEarlier(st);
+      else forgetReg(slug);
+    });
+    return () => {
+      alive = false;
+    };
+  }, [slug]);
 
   useEffect(() => {
     if (event) setMembers(Array.from({ length: event.teamCount }, blank));
@@ -82,14 +103,16 @@ function Step1() {
           website: "",
         }),
       });
-      const data = (await res.json().catch(() => ({}))) as { success?: boolean; error?: string; id?: string };
+      const data = (await res.json().catch(() => ({}))) as { success?: boolean; error?: string; id?: string; resumed?: boolean };
       if (!res.ok || !data.success || !data.id) {
         setError(data.error ?? "Could not save your registration. Try again.");
         busy.current = false;
         setSending(false);
         return;
       }
-      router.push(`/ieee-week/register/whatsapp?r=${data.id}`);
+      rememberReg(event.slug, data.id);
+      // Already registered earlier: do not start over, go straight to where they were.
+      router.push(data.resumed ? nextHref({ id: data.id, paymentStatus: "pending" }, true) : `/ieee-week/register/whatsapp?r=${data.id}`);
     } catch {
       setError("No connection. Check your internet and try again.");
       busy.current = false;
@@ -128,13 +151,32 @@ function Step1() {
             {event.roles ? ` (${event.roles})` : ""}.
           </p>
 
+          {earlier && (
+            <div className="dd-slab border-[var(--dd-glow)]/60 p-5" role="status">
+              <p className="dd-display text-2xl text-[var(--dd-glow)]">You already registered {earlier.teamName ? `as ${earlier.teamName}` : "for this event"}</p>
+              <p className="mt-2 text-base leading-relaxed">
+                {earlier.paymentStatus === "pending" && "Your team is saved. You only need to pay to finish."}
+                {earlier.paymentStatus === "submitted" && "Your payment is submitted and waiting to be checked."}
+                {earlier.paymentStatus === "verified" && "Your registration is confirmed."}
+                {earlier.paymentStatus === "rejected" && "Your payment was not accepted. You can send it again."}
+              </p>
+              <Link
+                href={nextHref(earlier, true)}
+                className="dd-btn dd-display mt-4 inline-flex min-h-12 items-center bg-[var(--dd-glow)] px-6 text-xl text-[var(--dd-void)] hover:bg-[var(--dd-iron)]"
+              >
+                {earlier.paymentStatus === "pending" ? "Continue to payment" : earlier.paymentStatus === "rejected" ? "Fix my payment" : "See my registration"}
+              </Link>
+            </div>
+          )}
+
           {open !== null && !open[event.slug] && (
             <p className="border border-[var(--dd-gold)]/50 bg-[var(--dd-gold)]/10 p-4 text-lg" role="status">
-              Registration for {event.title} opens soon. The form is ready, check back here.
+              Registration for new teams is closed for {event.title}. If you registered earlier, enter the same details
+              (same phone number and USN) and you will go straight to your registration.
             </p>
           )}
 
-          <fieldset disabled={open === null || !open[event.slug] || sending} className="space-y-10 disabled:opacity-60">
+          <fieldset disabled={open === null || sending} className="space-y-10 disabled:opacity-60">
             <div>
               <label htmlFor="teamName" className="dd-label">
                 Team name

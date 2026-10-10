@@ -5,6 +5,7 @@ import { ieeePaySchema, firstIssue } from "@/lib/validation";
 import { MAX_UPLOAD_BYTES, readImageUpload } from "@/lib/security/uploads";
 import { sameOrigin } from "@/lib/admin/auth";
 import { REGISTRABLE } from "@/data/ieeeWeek";
+import { paymentStatusOf, type RegRow } from "@/lib/ieeeWeekState";
 
 export const dynamic = "force-dynamic";
 
@@ -48,12 +49,17 @@ export async function POST(req: NextRequest) {
   try {
     const { data: reg, error } = await db
       .from("event_registrations")
-      .select("id, transaction_id, admin_note, events(slug)")
+      .select("id, status, transaction_id, payment_proof_path, admin_note, events(slug)")
       .eq("id", body.id)
       .maybeSingle();
     if (error) throw error;
     if (!reg) return fail("Registration not found", 404);
-    if (reg.transaction_id) return fail("Payment for this registration is already submitted", 409);
+
+    // What can this registration do right now? Read from the database, never from the browser.
+    const state = paymentStatusOf({ status: reg.status as RegRow["status"], transaction_id: reg.transaction_id as string });
+    if (state === "verified") return fail("Your payment is already verified. Nothing more to do.", 409);
+    if (state === "submitted") return fail("Your payment is already submitted and waiting to be checked.", 409);
+    // pending (first payment) and rejected (a corrected payment) may continue.
 
     // The same transaction id cannot pay for two registrations.
     const { data: used, error: usedErr } = await db
@@ -76,25 +82,45 @@ export async function POST(req: NextRequest) {
       .upload(proofPath, upload.bytes, { contentType: upload.kind.mime, upsert: false, cacheControl: "0" });
     if (upErr) throw upErr;
 
-    const lines = String(reg.admin_note ?? "").split("\n");
-    lines[0] = `[Payment submitted] ${body.plan === "ieee" ? "Team has an IEEE member" : "No IEEE member"}, Rs ${fee}`;
+    // Rebuild the note: new payment lines first, then the team lines and any admin line that were already there.
+    const old = String(reg.admin_note ?? "").split("\n");
+    const keep = old.filter((l) => /^(Lead|Member \d+): /.test(l) || l.startsWith("Admin: "));
+    const head = [`[Payment submitted] ${body.plan === "ieee" ? "Team has an IEEE member" : "No IEEE member"}, Rs ${fee}`];
     if (body.plan === "ieee") {
       const ids = body.ieeeIds.slice(0, info.teamCount).map((id, i) => (id ? `member ${i + 1}: ${id}` : "")).filter(Boolean);
-      lines.splice(1, 0, `IEEE IDs (to verify): ${ids.join(", ")}`);
+      head.push(`IEEE IDs (to verify): ${ids.join(", ")}`);
     }
+    const note = [...head, ...keep].join("\n").slice(0, 1000);
 
-    const { error: updErr } = await db
+    // Only one request can win: the update applies only if the registration is still in the state we read.
+    // A corrected payment after a rejection goes back to pending. It is never marked verified here;
+    // only an admin can do that.
+    const { data: changed, error: updErr } = await db
       .from("event_registrations")
       .update({
         transaction_id: body.transactionId,
         payment_proof_path: proofPath,
-        admin_note: lines.join("\n").slice(0, 1000),
+        admin_note: note,
+        status: "pending",
+        reviewed_at: null,
       })
       .eq("id", reg.id)
-      .eq("transaction_id", "");
+      .eq("status", reg.status as string)
+      .eq("transaction_id", reg.transaction_id as string)
+      .select("id");
     if (updErr) throw updErr;
+    if (!changed || changed.length === 0) {
+      await db.storage.from(BUCKETS.paymentProofs).remove([proofPath]);
+      proofPath = null;
+      return fail("This registration changed while you were paying. Reload the page to see its latest status.", 409);
+    }
 
-    return NextResponse.json({ success: true, fee });
+    // The earlier, rejected screenshot is no longer needed.
+    if (reg.payment_proof_path && reg.payment_proof_path !== proofPath) {
+      await db.storage.from(BUCKETS.paymentProofs).remove([reg.payment_proof_path as string]);
+    }
+
+    return NextResponse.json({ success: true, fee, paymentStatus: "submitted" });
   } catch (error) {
     if (proofPath) await db.storage.from(BUCKETS.paymentProofs).remove([proofPath]);
     console.error("ieee week payment failed", error);

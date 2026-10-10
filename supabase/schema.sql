@@ -214,3 +214,8 @@ values
    'Launch 2025 was the grand inauguration and orientation event that welcomed new members to the IEEE SGBIT family. The event set the tone for a year of innovation and technological exploration with keynote addresses from faculty advisors, demonstrations of past achievements, interactive sessions about IEEE membership benefits, and networking opportunities with senior members. New members were introduced to the various technical committees, special interest groups, and upcoming events planned for the academic year.',
    array['Inauguration', 'Orientation', 'Networking'], '/images/events/launch_2025.jpeg', '{}', 'past', 8)
 on conflict (slug) do nothing;
+
+-- A payment reference (UTR) can be used by only one registration.
+create unique index if not exists event_registrations_transaction_unique
+  on public.event_registrations (lower(transaction_id))
+  where transaction_id <> '';

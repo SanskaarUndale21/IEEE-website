@@ -17,7 +17,7 @@ export default function WhatsAppPage() {
 
 function Step2() {
   const id = useSearchParams().get("r") ?? "";
-  const [info, setInfo] = useState<{ slug: string; teamName: string; paid: boolean } | null | undefined>(undefined);
+  const [info, setInfo] = useState<{ slug: string; teamName: string; paid: boolean; canPay: boolean; paymentStatus: string } | null | undefined>(undefined);
 
   useEffect(() => {
     if (!id) return setInfo(null);
@@ -105,8 +105,8 @@ function Step2() {
           </div>
 
           <div className="border-t border-[var(--dd-iron)]/15 pt-8">
-            <p className="mb-4 text-lg">{info.paid ? "Your payment is already submitted." : "Your registration is not complete until you pay."}</p>
-            {!info.paid && (
+            <p className="mb-4 text-lg">{info.paymentStatus === "verified" ? "Your registration is confirmed." : info.paymentStatus === "submitted" ? "Your payment is submitted and waiting to be checked." : info.paymentStatus === "rejected" ? "Your payment was not accepted. You can send it again." : "Your registration is not complete until you pay."}</p>
+            {info.canPay && (
               <Link
                 href={`/ieee-week/register/payment?r=${id}`}
                 className="dd-btn dd-display inline-flex min-h-14 w-full items-center justify-center bg-[var(--dd-glow)] px-8 text-2xl text-[var(--dd-void)] transition-colors hover:bg-[var(--dd-iron)] sm:w-auto"
