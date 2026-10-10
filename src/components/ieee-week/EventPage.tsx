@@ -3,6 +3,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { FEE_RULE, REGISTRABLE } from "@/data/ieeeWeek";
+import { RULEBOOK } from "@/data/ieeeWeekRulebook";
 import { useDarkTheme } from "./useDarkTheme";
 import Footer from "@/components/Footer";
 
@@ -27,6 +28,7 @@ export default function EventPage({ slug }: { slug: string }) {
   if (!e) return null;
   const others = REGISTRABLE.filter((o) => o.slug !== slug);
   const banner = `/images/ieee-week/rulebook/${slug}-banner.webp`;
+  const book = RULEBOOK[slug];
   const rules = `/images/ieee-week/rulebook/${slug}-rules.webp`;
 
   return (
@@ -112,18 +114,46 @@ export default function EventPage({ slug }: { slug: string }) {
           <h2 id="rules-title" className="dd-display text-4xl text-[var(--dd-iron)] sm:text-6xl">
             Rules and regulations
           </h2>
-          <p className="mt-2 text-base text-[var(--dd-iron)]/70">Tap the page to open it full size and zoom in.</p>
-          <a href={rules} target="_blank" rel="noopener noreferrer" className="mt-6 block max-w-3xl" aria-label={`Open the ${e.title} rules full size`}>
-            <Image
-              src={rules}
-              alt={`${e.title} rules and regulations`}
-              width={1241}
-              height={1755}
-              sizes="(max-width: 768px) 100vw, 768px"
-              className="h-auto w-full border border-[var(--dd-iron)]/20"
-            />
+          {book && (
+            <div className="mt-8 grid grid-cols-[minmax(0,1fr)] gap-5 lg:grid-cols-2">
+              {book.blocks.map((b) => (
+                <div key={b.title} className={`dd-slab p-5 sm:p-7 ${b.kind === "numbered" ? "lg:col-span-2" : ""}`}>
+                  {b.title !== "Rules and regulations" && <h3 className="dd-display text-3xl leading-none text-[var(--dd-gold)]">{b.title}</h3>}
+                  {b.kind === "numbered" && (
+                    <ol className={`${b.title === "Rules and regulations" ? "" : "mt-5"} grid gap-x-10 gap-y-3 ${b.items.length > 8 ? "lg:grid-cols-2" : ""}`}>
+                      {b.items.map((x, n) => (
+                        <li key={x} className="grid grid-cols-[2.25rem_1fr] items-baseline gap-2 text-base leading-relaxed">
+                          <span className="dd-display text-2xl leading-none text-[var(--dd-glow)]">{n + 1}</span>
+                          <span>{x}</span>
+                        </li>
+                      ))}
+                    </ol>
+                  )}
+                  {b.kind === "bullets" && (
+                    <ul className="mt-4 space-y-3">
+                      {b.items.map((x) => (
+                        <li key={x} className="grid grid-cols-[1rem_1fr] items-baseline gap-2 text-base leading-relaxed">
+                          <span className="mt-[0.45em] h-2 w-2 self-start bg-[var(--dd-glow)]" aria-hidden />
+                          <span>{x}</span>
+                        </li>
+                      ))}
+                    </ul>
+                  )}
+                  {b.kind === "text" && <p className="mt-4 max-w-[62ch] text-base leading-relaxed">{b.text}</p>}
+                </div>
+              ))}
+              {book.note && (
+                <p className="max-w-[70ch] border-l-2 border-[var(--dd-glow)] pl-4 text-base leading-relaxed lg:col-span-2">
+                  <span className="font-semibold text-[var(--dd-gold)]">Note. </span>
+                  {book.note}
+                </p>
+              )}
+            </div>
+          )}
+          <a href={rules} target="_blank" rel="noopener noreferrer" className="dd-link mt-6 block text-sm text-[var(--dd-iron)]/70 underline underline-offset-2 hover:text-[var(--dd-glow)]">
+            View the original rulebook page
           </a>
-          <a href={`/ieee-week/register?e=${e.slug}`} className={`${REGISTER_BTN} mt-8`}>
+          <a href={`/ieee-week/register?e=${e.slug}`} className={`${REGISTER_BTN} mt-8 flex w-fit`}>
             Register for {e.title.split(":")[0]}
           </a>
         </section>
