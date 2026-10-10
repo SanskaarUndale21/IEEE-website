@@ -85,7 +85,7 @@ export const WEEK_DAYS: WeekDay[] = [
         teamCount: 2,
         teamLabel: "2 members",
         fee: { ieee: 79, nonIeee: 99, note: "per team" },
-        coordinators: [{ name: "Vaishnavi Dabu", phone: "7276964351" }, { name: "Prithvi Hiremath", phone: "7483653556" }],
+        coordinators: [{ name: "Vaishnavi Dhabu", phone: "7276964351" }, { name: "Prithvi Hiremath", phone: "7483653556" }],
         overview:
           "A live design challenge in Canva. Teams receive a base poster and new elements and instructions are revealed progressively; each must be added creatively to the same poster without starting over, within the time limit. PCs are provided, or teams can bring laptops.",
         bring: "Laptop",
